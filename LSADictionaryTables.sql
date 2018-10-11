@@ -570,7 +570,6 @@ insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 34,730, '548-730 days')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 34,1094, '731-1094 days')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 34,1095, '1095 days+')
-insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 35,-1, 'Not applicable')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 35,0, '0 days')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 35,7, '1-7 days')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 35,30, '8-30 days')
