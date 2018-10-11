@@ -1594,7 +1594,6 @@ ExitDate info from active_Enrollment, confirmation that an ExitDate
 is in report period is not illustrated here. 
 **********************************************************************/
 
-
 update hh
 set ESTStatus = coalesce ((select 
 		min(case when an.ExitDate is null then 1
@@ -2257,8 +2256,7 @@ inner join ref_Calendar cal on
 	and cal.theDate < coalesce(sn.MoveInDate, sn.ExitDate, rpt.ReportEnd)
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
-where (sn.Active = 1 or sn.MoveInDate is null)
-	and cal.theDate > lhh.LastInactive
+where cal.theDate > lhh.LastInactive
 	and other.sysDate is null and sn.ProjectType in (3,13)
 group by sn.HoHID, sn.HHType, cal.theDate
 /*****************************************************************
@@ -2794,13 +2792,24 @@ update ex
 set ex.HHAdultAge = ageGroup.AgeGroup
 from 
 tmp_Exit ex
-inner join (select adultAges.HoHID, adultAges.EnrollmentID
+inner join 
+			----HHTypes 3 and 99 are excluded by the CASE statement
+			--case when max(n.AgeGroup) >= 98 then -1
+			--		when max(n.AgeGroup) <= 17 then -1
+			--		when min(n.AgeGroup) between 18 and 25 
+			--			and max(n.AgeGroup) between 25 and 55 then 25
+			--		when max(n.AgeGroup) = 21 then 18
+			--		when max(n.AgeGroup) = 24 then 24
+			--		when min(n.AgeGroup) between 64 and 65 then 55
+			--		else -1 end
+	(select adultAges.HoHID, adultAges.EnrollmentID
 		, case when max(adultAges.AgeGroup) = 99 then -1
 			when max(adultAges.AgeGroup) = 18 then 18
 			when max(adultAges.AgeGroup) = 24 then 24
-			when max(adultAges.AgeGroup) = 25 then 25
-			when max(adultAges.AgeGroup) = 55 then 55
-			else -1 end as AgeGroup
+			when min(adultAges.AgeGroup) = 55 then 55
+			when min(adultAges.AgeGroup) < 55
+				and max(adultAges.AgeGroup) > 24 then 25
+			else NULL end as AgeGroup
 	from (select distinct ex.HoHID, hoh.EnrollmentID 
 			, case when c.DOB is null 
 					or c.DOB = '1/1/1900'
@@ -2830,6 +2839,13 @@ inner join (select adultAges.HoHID, adultAges.EnrollmentID
 			) adultAges
 	group by adultAges.HoHID, adultAges.EnrollmentID 
 		) ageGroup on ageGroup.EnrollmentID = ex.EnrollmentID
+			and (ex.HHType = 1 
+				or (ex.HHType = 2 and ageGroup between 18 and 24))
+
+update ex
+set ex.HHAdultAge = -1 
+from tmp_Exit ex
+where ex.HHAdultAge is null
 
 update ex
 set ex.HHParent = 0 
@@ -2994,7 +3010,6 @@ from tmp_Exit ex
 inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
 where (dateadd(dd, 365, hn.MoveInDate) <= ex.ExitDate
 		and ex.ExitFrom in (5,6))
-	or (ex.ExitFrom = 6 and hn.MoveInDate <= ex.ExitDate)
 
 update ex
 set ex.SystemPath = case 
@@ -3003,14 +3018,17 @@ set ex.SystemPath = case
 	when ex.ExitFrom = 3 then 2
 	when ex.ExitFrom = 4 then 1
 	when ex.ExitFrom = 5 then 4
-	when ex.ExitFrom = 6 and sn.MoveInDate < cd.CohortStart then 12
+	when ex.ExitFrom = 6 then 8
 	else 8 end
 from tmp_Exit ex 
 inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
 inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
-where dateadd(dd, -1, ex.EntryDate) = ex.LastInactive
-	or ex.ExitFrom = 1
-	or (ex.ExitFrom = 6 and sn.MoveInDate < cd.CohortStart)
+where ex.SystemPath is null
+	and (
+		(dateadd(dd, -1, ex.EntryDate) = ex.LastInactive)
+			or (ex.ExitFrom = 1)
+			or (ex.ExitFrom = 6 and sn.MoveInDate >= cd.CohortStart)
+		)
 
 update ex
 set ex.SystemPath = case ptype.summary
