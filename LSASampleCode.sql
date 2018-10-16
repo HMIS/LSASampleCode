@@ -25,6 +25,7 @@ Requires:
 		-hmis_Exit
 
 10/11/2018 - uploaded to github v1.22
+10/15/2018 - corrections and addition of some indexes 
 
 4.1 Create Intermediate Tables 
 **********************************************************************/
@@ -33,26 +34,37 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-if object_id ('active_Enrollment') is not null drop table active_Enrollment
-CREATE TABLE dbo.active_Enrollment(
-	EnrollmentID varchar(32) NOT NULL,
-	PersonalID varchar(32) NOT NULL,
-	HouseholdID varchar(32) NOT NULL,
-	RelationshipToHoH int NULL,
-	EntryDate date NULL,
-	MoveInDate date NULL,
-	ExitDate date NULL,
-	AgeDate date NULL,
-	AgeGroup int NULL,
-	MostRecent int NULL,
-	HHType int NULL,
-	ProjectID varchar(32) NULL,
-	ProjectType int NULL,
-	TrackingMethod int NULL,
-    PRIMARY KEY (EnrollmentID) 
-)
-;
-if object_id ('active_Household') is not null drop table active_Household
+if object_id ('active_Enrollment') is null 
+begin
+	CREATE TABLE dbo.active_Enrollment(
+		EnrollmentID varchar(32) NOT NULL,
+		PersonalID varchar(32) NOT NULL,
+		HouseholdID varchar(32) NOT NULL,
+		RelationshipToHoH int NULL,
+		EntryDate date NULL,
+		MoveInDate date NULL,
+		ExitDate date NULL,
+		AgeDate date NULL,
+		AgeGroup int NULL,
+		MostRecent int NULL,
+		HHType int NULL,
+		ProjectID varchar(32) NULL,
+		ProjectType int NULL,
+		TrackingMethod int NULL,
+		PRIMARY KEY (EnrollmentID) 
+	)
+	;
+end
+else delete from active_Enrollment
+
+if not exists (select * from sys.indexes where name = 'ix_active_Enrollment_PersonalID_HouseholdID')
+begin
+	create index ix_active_Enrollment_PersonalID_HouseholdID 
+		on active_Enrollment (PersonalID, HouseholdID) include (AgeGroup)
+end 
+
+if object_id ('active_Household') is null
+begin
 CREATE TABLE dbo.active_Household(
 	HouseholdID varchar(32) NOT NULL,
 	HoHID varchar(32) NULL,
@@ -73,8 +85,18 @@ CREATE TABLE dbo.active_Household(
 	AC3Plus int NULL,
 	PRIMARY KEY (HouseholdID) 
 );
+end
+else delete from active_Household
 
-if object_id ('ch_Enrollment') is not null drop table ch_Enrollment
+
+if not exists (select * from sys.indexes where name = 'ix_active_Household_HoHID_HHType')
+begin
+	create index ix_active_Household_HoHID_HHType 
+		on active_Household (HoHID, HHType) include (ProjectType)
+end
+
+if object_id ('ch_Enrollment') is null 
+begin
 CREATE TABLE dbo.ch_Enrollment(
 	PersonalID varchar(32) NULL,
 	EnrollmentID varchar(32) NOT NULL,
@@ -86,6 +108,14 @@ CREATE TABLE dbo.ch_Enrollment(
     PRIMARY KEY (EnrollmentID) 
 )
 ;
+end
+else delete from ch_Enrollment
+
+if not exists (select * from sys.indexes where name = 'ix_ch_Enrollment_PersonalID_ProjectType')
+begin
+create index ix_ch_Enrollment_PersonalID_ProjectType 
+	on ch_Enrollment (PersonalID, ProjectType) include (StartDate, StopDate) 
+end
 
 if object_id ('ch_Episodes') is not null drop table ch_Episodes
 CREATE TABLE dbo.ch_Episodes(
@@ -112,7 +142,8 @@ CREATE TABLE dbo.ch_Time(
 )
 ;
 
-if object_id ('dq_Enrollment') is not null drop table dq_Enrollment
+if object_id ('dq_Enrollment') is null 
+begin
 CREATE TABLE dbo.dq_Enrollment(
 	EnrollmentID varchar(32) NOT NULL,
 	PersonalID varchar(32) NULL,
@@ -127,8 +158,17 @@ CREATE TABLE dbo.dq_Enrollment(
 	PRIMARY KEY (EnrollmentID) 
 )
 ;
+end
+else delete from dq_Enrollment
 
-if object_id ('ex_Enrollment') is not null drop table ex_Enrollment
+if not exists (select * from sys.indexes where name = 'ix_dq_Enrollment_PersonalID_HouseholdID')
+begin
+	create index ix_dq_Enrollment_PersonalID_HouseholdID
+		on dq_Enrollment (PersonalID, HouseholdID) include (RelationshipToHoH, Adult)
+end
+
+if object_id ('ex_Enrollment') is null 
+begin
 CREATE TABLE dbo.ex_Enrollment(
 	Cohort int NOT NULL,
 	HoHID varchar(32) NOT NULL,
@@ -143,6 +183,14 @@ CREATE TABLE dbo.ex_Enrollment(
 	PRIMARY KEY (EnrollmentID) 
 )
 ;
+end
+else delete from ex_Enrollment
+
+if not exists (select * from sys.indexes where name = 'ix_ex_Enrollment_Cohort_HoHID_HHType')
+begin
+	create index ix_ex_Enrollment_Cohort_HoHID_HHType 
+		on ex_Enrollment (Cohort, HoHID, HHType) include (EntryDate, ExitDate, ExitTo)
+end
 
 if object_id ('lsa_Calculated') is not null drop table lsa_Calculated
 CREATE TABLE dbo.lsa_Calculated(
@@ -437,18 +485,28 @@ VALUES (1009
 	, N'Tamale Inc.', N'Tamale Online', N'Molly', N'molly@squarepegdata.com'
 	, 1)
 
-if object_id ('sys_Enrollment') is not null drop table sys_Enrollment
+if object_id ('sys_Enrollment') is null 
+begin
 CREATE TABLE dbo.sys_Enrollment(
-	HoHID varchar(32) NULL,
-	HHType int NULL,
-	EnrollmentID varchar(32) NULL,
+	HoHID varchar(32) not null,
+	HHType int not null,
+	EnrollmentID varchar(32) not null,
 	ProjectType int NULL,
 	EntryDate date NULL,
 	MoveInDate date NULL,
 	ExitDate date NULL,
-	Active bit NULL
+	Active bit NULL,
+    PRIMARY KEY (EnrollmentID) 
 )
 ;
+end
+else delete from sys_Enrollment
+
+if not exists (select * from sys.indexes where name = 'ix_sys_Enrollment_HoHID_HHType')
+begin
+	create index ix_sys_Enrollment_HoHID_HHType 
+		on sys_Enrollment (HoHID, HHType) include (ProjectType, EntryDate, ExitDate)
+end
 
 if object_id ('sys_Time') is not null drop table sys_Time
 CREATE TABLE dbo.sys_Time(
@@ -464,11 +522,13 @@ if object_id ('tmp_CohortDates') is not null drop table tmp_CohortDates
 CREATE TABLE dbo.tmp_CohortDates(
 	Cohort int NOT NULL,
 	CohortStart date NULL,
-	CohortEnd date NULL
+	CohortEnd date NULL,
+	PRIMARY KEY (Cohort)
 )
 ;
 
-if object_id ('tmp_Exit') is not null drop table tmp_Exit
+if object_id ('tmp_Exit') is null 
+begin
 CREATE TABLE dbo.tmp_Exit(
 	HoHID varchar(32) NOT NULL,
 	EnrollmentID varchar(32) NULL,
@@ -496,8 +556,19 @@ CREATE TABLE dbo.tmp_Exit(
 	PRIMARY KEY (Cohort, HoHID, HHType) 
 )
 ;
+end 
+else delete from tmp_Exit
 
-if object_id ('tmp_Household') is not null drop table tmp_Household
+if not exists (select * from sys.indexes where name = 'ix_tmp_Exit_EntryDate_ExitDate_Stat')
+begin
+	create index ix_tmp_Exit_EntryDate_ExitDate_Stat 
+		on tmp_Exit (EntryDate, ExitDate, Stat) include (ExitFrom)
+end
+
+
+
+if object_id ('tmp_Household') is null 
+begin
 CREATE TABLE dbo.tmp_Household(
 	HoHID varchar(32) NOT NULL,
 	LastInactive date NULL,
@@ -548,8 +619,11 @@ CREATE TABLE dbo.tmp_Household(
 	PRIMARY KEY (HoHID, HHType) 
 )
 ;
+end
+else delete from tmp_Household
 
-if object_id ('tmp_Person') is not null drop table tmp_Person
+if object_id ('tmp_Person') is null 
+begin
 CREATE TABLE dbo.tmp_Person(
 	PersonalID varchar(32) NOT NULL,
 	HoHAdult int NULL,
@@ -580,6 +654,10 @@ CREATE TABLE dbo.tmp_Person(
 	ReportID int NULL,
 	PRIMARY KEY (PersonalID) 
 )
+; 
+end
+else delete from tmp_Person
+
 /**********************************************************************
 4.2 Get Project Records / lsa_Project
 **********************************************************************/
@@ -2783,7 +2861,8 @@ inner join (
 			else 0 end) as HHChild
 		-- NOTE:  HHParent value is preliminary -- it is reset to 0 for AC
 		--  households with adults over 24 at the end of this section.
-		, max(case when hn.RelationshipToHoH = 2 then 1
+		--  CHANGE 10/15/2018 - child of HoH must be < 18 to set HHParent = 1
+		, max(case when hn.RelationshipToHoH = 2 and age.ageStat = 0 then 1
 			else 0 end) as HHParent
 	from tmp_Exit ex
 	inner join hmis_Enrollment hoh on hoh.EnrollmentID = ex.EnrollmentID
@@ -2816,15 +2895,6 @@ set ex.HHAdultAge = ageGroup.AgeGroup
 from 
 tmp_Exit ex
 inner join 
-			----HHTypes 3 and 99 are excluded by the CASE statement
-			--case when max(n.AgeGroup) >= 98 then -1
-			--		when max(n.AgeGroup) <= 17 then -1
-			--		when min(n.AgeGroup) between 18 and 25 
-			--			and max(n.AgeGroup) between 25 and 55 then 25
-			--		when max(n.AgeGroup) = 21 then 18
-			--		when max(n.AgeGroup) = 24 then 24
-			--		when min(n.AgeGroup) between 64 and 65 then 55
-			--		else -1 end
 	(select adultAges.HoHID, adultAges.EnrollmentID
 		, case when max(adultAges.AgeGroup) = 99 then -1
 			when max(adultAges.AgeGroup) = 18 then 18
@@ -2957,7 +3027,9 @@ select distinct hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
 	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
-	, case when hn.EnrollmentID = ex.EnrollmentID then 1 else 0 end
+	--CHANGE 10/15/2018 to use MAX - enrollments were being inserted multiple
+	--times
+	, max(case when hn.EnrollmentID = ex.EnrollmentID then 1 else 0 end)
 from tmp_Exit ex
 inner join hmis_Enrollment hn on hn.PersonalID = ex.HoHID
 	and hn.RelationshipToHoH = 1
@@ -2997,6 +3069,10 @@ inner join
 			) hhid
 		group by hhid.HouseholdID
 		) hh on hh.HouseholdID = hn.HouseholdID
+group by hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectType
+	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
+	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
+	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
 
 update ex
 set ex.LastInactive = lastDay.inactive
@@ -3034,13 +3110,22 @@ inner join (select ex.Cohort, ex.HoHID, ex.HHType, max(cal.theDate) as inactive
 /*****************************************************************
 4.46 Set SystemPath for Exit Cohort Households
 *****************************************************************/
+-- SystemPath n/a for:
+-- - Any household exiting after 365+ days housed in RRH/PSH
+-- - Any household housed in PSH before CohortStart
 update ex
 set ex.SystemPath = -1 
 from tmp_Exit ex 
 inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
+inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
 where (dateadd(dd, 365, hn.MoveInDate) <= ex.ExitDate
 		and ex.ExitFrom in (5,6))
+	 or (ex.ExitFrom = 6 and hn.MoveInDate < cd.CohortStart)
 
+-- SystemPath can be set directly based on ExitFrom for
+-- -Any household exiting from street outreach (ExitFrom = 1)
+-- -Any first time homeless household (Stat = 1)
+-- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
 update ex
 set ex.SystemPath = case 
 	when ex.ExitFrom = 1 then 12
@@ -3054,11 +3139,7 @@ from tmp_Exit ex
 inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
 inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
 where ex.SystemPath is null
-	and (
-		(dateadd(dd, -1, ex.EntryDate) = ex.LastInactive)
-			or (ex.ExitFrom = 1)
-			or (ex.ExitFrom = 6 and sn.MoveInDate >= cd.CohortStart)
-		)
+	and ex.Stat in (1,2,3,4) or ex.ExitFrom = 1
 
 update ex
 set ex.SystemPath = case ptype.summary
@@ -3075,19 +3156,18 @@ set ex.SystemPath = case ptype.summary
 	when 1100 then 11
 	else 12 end 
 from tmp_Exit ex
-inner join (select ptypes.HoHID, ptypes.HHType, ptypes.Cohort
-	, sum(ProjectType) as summary 
-	from (select distinct ex.HoHID, ex.HHType, ex.Cohort
-			, case when rrh.HoHID is not null then 100
-				when th.HoHID is not null then 10
-				when es.HoHID is not null or nbn.HoHID is not null then 1
-				when pshpre.HoHID is not null then 1000
-				when rrhpre.HoHID is not null then 13
-				else 0 end as ProjectType
+inner join ( --CHANGE 10/15/2018 correction to include multiple project types in path 
+			 -- where appropriate.
+		select distinct ex.HoHID, ex.HHType, ex.Cohort
+			, case when rrh.HoHID is not null then 100 else 0 end
+				+ case when th.HoHID is not null then 10 else 0 end
+				+ case when es.HoHID is not null or nbn.HoHID is not null then 1 else 0 end
+				+ case when pshpre.HoHID is not null then 1000 else 0 end
+					as summary
 		from tmp_Exit ex 
 		left outer join sys_Enrollment rrh on rrh.ProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.HHType = ex.HHType
-			and rrh.MoveInDate <= ex.ExitDate and rrh.ExitDate > ex.LastInactive
+			and rrh.EntryDate <= ex.ExitDate and rrh.ExitDate > ex.LastInactive
 		left outer join sys_Enrollment th on th.ProjectType = 2
 			and th.HoHID = ex.HoHID and th.HHType = ex.HHType
 			and th.EntryDate <= ex.ExitDate and th.ExitDate > ex.LastInactive
@@ -3096,17 +3176,11 @@ inner join (select ptypes.HoHID, ptypes.HHType, ptypes.Cohort
 			and es.EntryDate <= ex.ExitDate and es.ExitDate > ex.LastInactive
 		left outer join sys_Enrollment nbn on nbn.EntryDate is null
 			and nbn.HoHID = ex.HoHID and nbn.HHType = ex.HHType
-		left outer join sys_Enrollment rrhpre on rrhpre.ProjectType = 13
-			and rrhpre.HoHID = ex.HoHID and rrhpre.HHType = ex.HHType
-			and rrhpre.EntryDate <= ex.ExitDate 
-				and coalesce(rrhpre.MoveInDate, rrhpre.ExitDate) > ex.LastInactive
 		left outer join sys_Enrollment pshpre on pshpre.ProjectType = 3
 			and pshpre.HoHID = ex.HoHID and pshpre.HHType = ex.HHType
 			and pshpre.EntryDate <= ex.ExitDate
 				and coalesce(pshpre.MoveInDate, pshpre.ExitDate) > ex.LastInactive 
-		) ptypes
-	group by ptypes.HoHID, ptypes.HHType, ptypes.Cohort
-	) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
+		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.SystemPath is null
 
