@@ -1252,7 +1252,7 @@ set lp.HHTypeEST =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1260,7 +1260,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for EST
+		from --Level 1 Â– get distinct HHTypes for EST
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1277,7 +1277,7 @@ set lp.HHTypeRRH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1286,7 +1286,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach
 			) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for RRH
+		from --Level 1 Â– get distinct HHTypes for RRH
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1303,7 +1303,7 @@ set lp.HHTypePSH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1311,7 +1311,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for PSH
+		from --Level 1 Â– get distinct HHTypes for PSH
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1335,7 +1335,7 @@ set lp.HoHEST =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1343,7 +1343,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for EST
+		from --Level 1 Â– get distinct HHTypes for EST
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
@@ -1361,7 +1361,7 @@ set lp.HoHRRH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1370,7 +1370,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach
 			) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for RRH
+		from --Level 1 Â– get distinct HHTypes for RRH
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
@@ -1388,7 +1388,7 @@ set lp.HoHPSH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2 – combine HHTypes into a single value
+left outer join --Level 2 Â– combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1396,7 +1396,7 @@ left outer join --Level 2 – combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1 – get distinct HHTypes for PSH
+		from --Level 1 Â– get distinct HHTypes for PSH
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
@@ -1845,14 +1845,16 @@ from tmp_Household lhh where PSHGeography is null
 /*************************************************************************
 4.28.c Set tmp_Household Living Situation for Each Project Group 
 **********************************************************************/
+--UPDATE 10/22/2018 - populate Living Situation based on EARLIEST active  
+-- enrollment in project group (and NOT most recent active enrollment) 
 
 update lhh
-set ESTLivingSit = -1 
+set lhh.ESTLivingSit = -1 
 from tmp_Household lhh
-where ESTStatus <= 10
+where lhh.ESTStatus <= 10
 
 update lhh
-set ESTLivingSit = 
+set lhh.ESTLivingSit = 
 	case when hn.LivingSituation = 16 then 1 --Homeless - Street
 		when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 		when hn.LivingSituation = 27 then 3	--Interim Housing
@@ -1870,20 +1872,25 @@ set ESTLivingSit =
 		when hn.LivingSituation = 7 then 15	--Institutions - incarceration
 		when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
 		else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1
-	and an.MostRecent = 1 and an.ProjectType in (1,2,8)
-
-update lhh
-set RRHLivingSit = -1 
 from tmp_Household lhh
-where RRHStatus <= 10
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+where lhh.ESTLivingSit is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType in (1,2,8) 
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.EntryDate asc)
 
 update lhh
-set RRHLivingSit = 
+set lhh.RRHLivingSit = -1 
+from tmp_Household lhh
+where lhh.RRHStatus <= 10
+
+update lhh
+set lhh.RRHLivingSit = 
 	case when hn.LivingSituation = 16 then 1 --Homeless - Street
 		when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 		when hn.LivingSituation = 27 then 3	--Interim Housing
@@ -1901,20 +1908,24 @@ set RRHLivingSit =
 		when hn.LivingSituation = 7 then 15	--Institutions - incarceration
 		when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
 		else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1
-	and an.MostRecent = 1 and an.ProjectType = 13
-
-update lhh
-set PSHLivingSit = -1 
 from tmp_Household lhh
-where PSHStatus <= 10
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+where lhh.RRHLivingSit is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType = 13 
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.EntryDate asc)
+update lhh
+set lhh.PSHLivingSit = -1 
+from tmp_Household lhh
+where lhh.PSHStatus <= 10
 
 update lhh
-set PSHLivingSit = 
+set lhh.PSHLivingSit = 
 	case when hn.LivingSituation = 16 then 1 --Homeless - Street
 		when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 		when hn.LivingSituation = 27 then 3	--Interim Housing
@@ -1932,12 +1943,17 @@ set PSHLivingSit =
 		when hn.LivingSituation = 7 then 15	--Institutions - incarceration
 		when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
 		else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1
-	and an.MostRecent = 1 and an.ProjectType = 3
+from tmp_Household lhh
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+where lhh.PSHLivingSit is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType = 3 
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.EntryDate asc)
 
 /*************************************************************************
 4.28.d Set tmp_Household Destination for Each Project Group 
@@ -1972,7 +1988,6 @@ inner join tmp_Household lhh on lhh.HoHID = an.PersonalID
 inner join hmis_Exit hx on hx.EnrollmentID = an.EnrollmentID
 where an.RelationshipToHoH = 1 and an.ExitDate is not null
 	and an.MostRecent = 1 and an.ProjectType in (1,2,8)
-
 	
 update lhh
 set RRHDestination = -1 
