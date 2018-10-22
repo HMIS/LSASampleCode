@@ -3013,7 +3013,7 @@ set ex.StatEnrollmentID = (select top 1 previous.EnrollmentID
     and hx.ExitDate < ex.ExitDate
   inner join
     --HouseholdIDs with LSA household types
-    #hh on hh.HouseholdID = previous.HouseholdID
+    #hh on #hh.HouseholdID = previous.HouseholdID
       where previous.PersonalID = ex.HoHID and previous.RelationshipToHoH = 1
         and #hh.HHType = ex.HHType
       order by hx.ExitDate desc)
