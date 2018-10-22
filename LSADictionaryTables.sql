@@ -310,8 +310,8 @@ insert into ref_lsaColumns (FileNumber, ColumnNumber, ColumnName, DataType, Null
 insert into ref_lsaColumns (FileNumber, ColumnNumber, ColumnName, DataType, Nullable, List) values (99, 2, 'HHComposition', 'int', 1, 1)
 
 --Populate ref_lsaValues
-insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (1, 2,1, 'Systemwide')
-insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (1, 2,2, 'Project-focused')
+insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (1, 10,1, 'Systemwide')
+insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (1, 10,2, 'Project-focused')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 2,1, 'Engage with continuum for first time or after at least 730 days inactive')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 2,2, 'Return 15-730 days after exit to permanent destination')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (2, 2,3, 'Re-engage 15-730 days after exit to temporary destination')
