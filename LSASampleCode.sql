@@ -1252,7 +1252,7 @@ set lp.HHTypeEST =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1260,7 +1260,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for EST
+		from --Level 1 - get distinct HHTypes for EST
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1277,7 +1277,7 @@ set lp.HHTypeRRH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1286,7 +1286,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach
 			) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for RRH
+		from --Level 1 - get distinct HHTypes for RRH
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1303,7 +1303,7 @@ set lp.HHTypePSH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1311,7 +1311,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for PSH
+		from --Level 1 - get distinct HHTypes for PSH
 				 (select distinct an.PersonalID
 					, case when an.HHType = 1 then 100
 						when an.HHType = 2 then 20
@@ -1335,7 +1335,7 @@ set lp.HoHEST =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1343,7 +1343,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for EST
+		from --Level 1 - get distinct HHTypes for EST
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
@@ -1361,7 +1361,7 @@ set lp.HoHRRH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1370,7 +1370,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach
 			) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for RRH
+		from --Level 1 - get distinct HHTypes for RRH
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
@@ -1388,7 +1388,7 @@ set lp.HoHPSH =
 	case when hh.HHTypeCombined is null then -1
 	else hh.HHTypeCombined end	
 from tmp_Person lp
-left outer join --Level 2  combine HHTypes into a single value
+left outer join --Level 2 - combine HHTypes into a single value
 	 (select HHTypes.PersonalID, case sum(HHTypes.HHTypeEach) 
 			when 100 then 1
 			when 120 then 12
@@ -1396,7 +1396,7 @@ left outer join --Level 2  combine HHTypes into a single value
 			when 20 then 2
 			when 0 then 99
 			else sum(HHTypes.HHTypeEach) end as HHTypeCombined
-		from --Level 1  get distinct HHTypes for PSH
+		from --Level 1 - get distinct HHTypes for PSH
 			(select distinct an.PersonalID
 			, case when an.HHType = 1 then 100
 				when an.HHType = 2 then 20
