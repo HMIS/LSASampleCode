@@ -2475,17 +2475,22 @@ where lhh.PSHHousedDays = 0 and lhh.PSHStatus = 0
 /*****************************************************************
 4.37 Update ESTStatus and RRHStatus
 *****************************************************************/
+--CHANGE 10/23/2018 - for both UPDATE statements, join to sys_Time
+-- and align methodology with specs (github issue #24)
+
 update lhh
 set lhh.ESTStatus = 2
 from tmp_Household lhh
+inner join sys_Time st on st.HoHID = lhh.HoHID and st.HHType = lhh.HHType
 where lhh.ESTStatus = 0 
-	and (lhh.ESTDays > 0) 
+	and st.sysStatus in (3,4) 
 
 update lhh
 set lhh.RRHStatus = 2
 from tmp_Household lhh
+inner join sys_Time st on st.HoHID = lhh.HoHID and st.HHType = lhh.HHType
 where lhh.RRHStatus = 0 
-	and (RRHPreMoveInDays > 0 or RRHHousedDays > 0)
+	and st.sysStatus = 6
 
 /*****************************************************************
 4.38 Set SystemPath for LSAHousehold
