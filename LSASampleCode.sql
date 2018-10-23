@@ -2922,7 +2922,8 @@ inner join
 			when min(adultAges.AgeGroup) = 55 then 55
 			when min(adultAges.AgeGroup) < 55
 				and max(adultAges.AgeGroup) > 24 then 25
-			else NULL end as AgeGroup
+	 		--CHANGE 10/23/2018 set to -1 vs NULL as default
+			else -1 end as AgeGroup
 	from (select distinct ex.HoHID, hoh.EnrollmentID 
 			, case when c.DOB is null 
 					or c.DOB = '1/1/1900'
@@ -4989,7 +4990,7 @@ select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 	, PSHGeography, PSHLivingSit, PSHDestination
 	--NOTE:  These are different grouping categories from above!
 	, case when PSHMoveIn not in (1,2) then -1
-		when PSHHousedDays < 90 then 3
+		when PSHHousedDays <= 90 then 3
 		when PSHHousedDays between 91 and 180 then 6 
 		when PSHHousedDays between 181 and 365 then 12 
 		when PSHHousedDays between 366 and 730 then 24 
