@@ -3036,7 +3036,11 @@ insert into sys_Enrollment (HoHID, HHType, EnrollmentID, ProjectType
 	, MoveInDate
 	, ExitDate
 	, Active)
-select distinct hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectType
+select distinct hn.PersonalID
+	--CHANGE 10/22/2018 use HHType as already calculated for StatEnrollmentID; 
+	-- otherwise, use HHType based on HH member age(s) at project entry.
+	, case when ex.StatEnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
+	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
 	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
@@ -3082,7 +3086,9 @@ inner join
 			) hhid
 		group by hhid.HouseholdID
 		) hh on hh.HouseholdID = hn.HouseholdID
-group by hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectType
+group by hn.PersonalID
+	, case when ex.StatEnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
+	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
 	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
