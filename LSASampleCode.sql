@@ -4545,7 +4545,8 @@ update rpt
 			where lp.ReportID = rpt.ReportID
 				and an.RelationshipToHoH = 1 
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
-				and (hn.LengthOfStay in (8,9) or hn.LengthOfStay is null))
+				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay
+				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
 	,	HomelessDate1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4763,7 +4764,8 @@ update rpt
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
-				and (hn.LengthOfStay in (8,9) or hn.LengthOfStay is null))
+				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay				 
+				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
 	,	HomelessDate3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
