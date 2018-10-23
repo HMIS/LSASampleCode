@@ -4157,7 +4157,8 @@ inner join tmp_CohortDates cd on cd.CohortEnd >= an.EntryDate
 	  and (cd.CohortStart < an.ExitDate or an.ExitDate is null)
 inner join lsa_Project p on p.ProjectID = an.ProjectID
 where cd.Cohort > 0 
-	and pop.PopType = 3 
+	--CHANGE 10/23/2018 exclude popID 100, which is not required by specs
+	and pop.PopType = 3 and pop.PopID <> 100
 	and (
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
@@ -4204,7 +4205,8 @@ inner join tmp_CohortDates cd on cd.CohortEnd >= an.EntryDate
 	  and (cd.CohortStart < an.ExitDate or an.ExitDate is null)
 inner join lsa_Project p on p.ProjectID = an.ProjectID
 where cd.Cohort > 0 
-	and pop.PopType = 3 
+	--CHANGE 10/23/2018 exclude PopID 100, which is not required by specs ( issue #8).
+	and pop.PopType = 3 and pop.PopID <> 100
 	and (
 		--for night-by-night ES, count only people with bednights in period
 		(p.TrackingMethod = 3 
