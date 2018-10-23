@@ -1501,19 +1501,16 @@ from active_Household ahh
 4.23 Set tmp_Person Population Identifiers from Active Households
 **********************************************************************/
 update lp
-	--CHANGE 10/5/2018 - more corrections to HHAdultAge 
-set lp.HHAdultAge = coalesce((select 
-			--HHTypes 3 and 99 are excluded by the CASE statement
-			case when max(n.AgeGroup) >= 98 then -1
-				when max(n.AgeGroup) <= 17 then -1
-				when min(n.AgeGroup) between 18 and 25 
-					and max(n.AgeGroup) between 25 and 55 then 25
-				when max(n.AgeGroup) = 21 then 18
-				when max(n.AgeGroup) = 24 then 24
-				when min(n.AgeGroup) between 64 and 65 then 55
-				else -1 end
+	--CHANGE 10/23/2018 - correction to pull HHAdultAge from active_Household
+	-- and not from active_Enrollment (github issue #23).
+set lp.HHAdultAge = coalesce((select case when min(hh.HHAdultAge) between 18 and 24
+			then min(hh.HHAdultAge) 
+		else max(hh.HHAdultAge) end
 		from active_Enrollment n 
-		where n.PersonalID = lp.PersonalID and n.HHType in (1,2)), -1)
+		inner join active_Household hh on hh.HouseholdID = n.HouseholdID
+			and ((hh.HHType = 1 and hh.HHAdultAge between 18 and 55) 
+				or (hh.HHType = 2 and hh.HHAdultAge between 18 and 24))
+		where n.PersonalID = lp.PersonalID), -1)
    , lp.AC3Plus = (select max(hhid.AC3Plus) 
 		from active_Household hhid
 		inner join active_Enrollment n on hhid.HouseholdID = n.HouseholdID
