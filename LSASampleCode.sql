@@ -5129,7 +5129,8 @@ group by Stat
 		else TotalHomelessDays end 
 	, PSHGeography, PSHLivingSit, PSHDestination
 	, case when PSHMoveIn not in (1,2) then -1
-		when PSHHousedDays < 90 then 3
+		--CHANGE 10/23/2018 set to 3 for <= 90, not < 90
+		when PSHHousedDays <= 90 then 3
 		when PSHHousedDays between 91 and 180 then 6 
 		when PSHHousedDays between 181 and 365 then 12 
 		when PSHHousedDays between 366 and 730 then 24 
