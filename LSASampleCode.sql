@@ -1955,7 +1955,8 @@ where lhh.PSHLivingSit is null
 /*************************************************************************
 4.28.d Set tmp_Household Destination for Each Project Group 
 **********************************************************************/
-
+--CHANGE 10/23/2018 - populate EST/RRH/PSHDestination based on most recent EXIT  
+-- from project group (and NOT exit for enrollment with most recent entry date)  
 update lhh
 set ESTDestination = -1 
 from tmp_Household lhh
@@ -1979,12 +1980,18 @@ set ESTDestination =
 	 when hx.Destination = 13 then 14	--Friends - temp
 	 when hx.Destination = 24 then 15	--Deceased
 	 else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Exit hx on hx.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1 and an.ExitDate is not null
-	and an.MostRecent = 1 and an.ProjectType in (1,2,8)
+from tmp_Household lhh 
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
+where lhh.ESTDestination is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType in (1,2,8) 
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.ExitDate desc)
 	
 update lhh
 set RRHDestination = -1 
@@ -2009,12 +2016,18 @@ set RRHDestination =
 	 when hx.Destination = 13 then 14	--Friends - temp
 	 when hx.Destination = 24 then 15	--Deceased
 	 else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Exit hx on hx.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1 and an.ExitDate is not null
-	and an.MostRecent = 1 and an.ProjectType = 13
+from tmp_Household lhh 
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
+where lhh.RRHDestination is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType = 13
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.ExitDate desc)
 
 update lhh
 set PSHDestination = -1 
@@ -2039,12 +2052,18 @@ set PSHDestination =
 	 when hx.Destination = 13 then 14	--Friends - temp
 	 when hx.Destination = 24 then 15	--Deceased
 	 else 99	end
-from active_Enrollment an 
-inner join tmp_Household lhh on lhh.HoHID = an.PersonalID 	
-	and lhh.HHType = an.HHType
-inner join hmis_Exit hx on hx.EnrollmentID = an.EnrollmentID
-where an.RelationshipToHoH = 1 and an.ExitDate is not null
-	and an.MostRecent = 1 and an.ProjectType = 3
+from tmp_Household lhh 
+inner join hmis_Enrollment hn on hn.PersonalID = lhh.HoHID
+inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
+where lhh.PSHDestination is null 
+	and hn.EnrollmentID in 
+		(select top 1 an.EnrollmentID 
+		 from active_Enrollment an
+		 where an.ProjectType = 13
+			and an.PersonalID = lhh.HoHID
+			and an.RelationshipToHoH = 1
+			and an.HHType = lhh.HHType
+		 order by an.ExitDate desc)
 
 
 /*************************************************************************
