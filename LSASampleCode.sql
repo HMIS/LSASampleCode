@@ -1737,25 +1737,31 @@ where PSHStatus > 0
 /*************************************************************************
 4.27 Set tmp_Household RRH and PSH Move-In Status Indicators
 **********************************************************************/
+--CHANGE 10/23/2018 - To align with specs where household has multiple RRH/PSH
+-- enrollments, updated so status is preferentially based on MoveInDate in 
+-- report period (top priority), MoveInDate prior to ReportStart (2nd),
+-- or no MoveInDate (lowest).
 update hh
 set hh.RRHMoveIn = case when hh.RRHStatus = 0 then -1
+		when stat.RRHMoveIn = 10 then 1
 		else stat.RRHMoveIn end
 	, hh.PSHMoveIn = case when hh.PSHStatus = 0 then -1
+		when stat.PSHMoveIn = 10 then 1
 		else stat.PSHMoveIn end
 from tmp_Household hh
 left outer join (select distinct hhid.HoHID, hhid.HHType
-		, RRHMoveIn = (select min(case when an.MoveInDate is null
+		, RRHMoveIn = (select max(case when an.MoveInDate is null
 				then 0
-				when an.MoveInDate >= rpt.ReportStart then 1
+				when an.MoveInDate >= rpt.ReportStart then 10
 				else 2 end)
 			from active_Enrollment an 
 			inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
 			where an.PersonalID = hhid.HoHID 
 				and an.HouseholdID = hhid.HouseholdID
 				and hhid.ProjectType = 13)
-		, PSHMoveIn = (select min(case when an.MoveInDate is null
+		, PSHMoveIn = (select max(case when an.MoveInDate is null
 				then 0
-				when an.MoveInDate >= rpt.ReportStart then 1
+				when an.MoveInDate >= rpt.ReportStart then 10
 				else 2 end)
 			from active_Enrollment an 
 			inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
@@ -3038,9 +3044,9 @@ insert into sys_Enrollment (HoHID, HHType, EnrollmentID, ProjectType
 	, ExitDate
 	, Active)
 select distinct hn.PersonalID
-	--CHANGE 10/22/2018 use HHType as already calculated for StatEnrollmentID; 
+	--CHANGE 10/22/2018 use HHType as already calculated for qualifying exit; 
 	-- otherwise, use HHType based on HH member age(s) at project entry.
-	, case when ex.StatEnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
+	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
 	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
@@ -3088,7 +3094,7 @@ inner join
 		group by hhid.HouseholdID
 		) hh on hh.HouseholdID = hn.HouseholdID
 group by hn.PersonalID
-	, case when ex.StatEnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
+	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
 	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
