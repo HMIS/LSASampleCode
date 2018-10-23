@@ -3586,7 +3586,7 @@ inner join ref_Populations pop on
 	and (lh.HoHRace = pop.HoHRace or pop.HoHRace is null)
 	and (lh.HoHEthnicity = pop.HoHEthnicity or pop.HoHEthnicity is null)
 	and (lh.SystemPath = pop.SystemPath or pop.SystemPath is null)
-where lh.RRHMoveIn > 0
+where lh.RRHStatus > 2 --CHANGED 10/23/2018 from 'where lh.RRHMoveIn > 0'
 	and pop.Core = 1
 group by pop.PopID
 	, pop.HHType
