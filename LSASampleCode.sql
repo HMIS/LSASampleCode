@@ -2495,31 +2495,34 @@ where lhh.RRHStatus = 0
 /*****************************************************************
 4.38 Set SystemPath for LSAHousehold
 *****************************************************************/
+--CHANGE 10/23/2018 use 'ESTStatus = 0' instead of 'ESDays <= 0 and THDays <= 0' 
+-- for SystemPath 4, 8, and 11 (no impact on output; modified for consistency with specs).
+-- (issue #23)
 update lhh
-set SystemPath = 
-	case when ESTStatus not in (21,22) and RRHStatus not in (21,22) and PSHMoveIn = 2 
+set lhh.SystemPath = 
+	case when lhh.ESTStatus not in (21,22) and lhh.lhh.RRHStatus not in (21,22) and lhh.lhh.PSHMoveIn = 2 
 		then -1
-	when ESDays >= 1 and THDays <= 0 and RRHStatus = 0 and PSHStatus = 0 
+	when lhh.ESDays >= 1 and lhh.THDays <= 0 and lhh.RRHStatus = 0 and lhh.PSHStatus = 0 
 		then 1
-	when ESDays <= 0 and THDays >= 1 and RRHStatus = 0 and PSHStatus = 0 
+	when lhh.ESDays <= 0 and lhh.THDays >= 1 and lhh.RRHStatus = 0 and lhh.PSHStatus = 0 
 		then 2
-	when ESDays >= 1 and THDays >= 1 and RRHStatus = 0 and PSHStatus = 0 
+	when lhh.ESDays >= 1 and lhh.THDays >= 1 and lhh.RRHStatus = 0 and lhh.PSHStatus = 0 
 		then 3
-	when ESDays <= 0 and THDays <= 0 and RRHStatus >= 2 and PSHStatus = 0 
+	when lhh.ESTStatus = 0 and lhh.RRHStatus >= 2 and lhh.PSHStatus = 0 
 		then 4
-	when ESDays >= 1 and THDays <= 0 and RRHStatus >= 2 and PSHStatus = 0 
+	when lhh.ESDays >= 1 and lhh.THDays <= 0 and lhh.RRHStatus >= 2 and lhh.PSHStatus = 0 
 		then 5
-	when ESDays <= 0 and THDays >= 1 and RRHStatus >= 2 and PSHStatus = 0 
+	when lhh.ESDays <= 0 and lhh.THDays >= 1 and lhh.RRHStatus >= 2 and lhh.PSHStatus = 0 
 		then 6
-	when ESDays >= 1 and THDays >= 1 and RRHStatus >= 2 and PSHStatus = 0 
+	when lhh.ESDays >= 1 and lhh.THDays >= 1 and lhh.RRHStatus >= 2 and lhh.PSHStatus = 0 
 		then 7
-	when ESDays <= 0 and THDays <= 0 and RRHStatus = 0 and PSHStatus >= 11 and PSHMoveIn <> 2
+	when lhh.ESTStatus = 0 and lhh.RRHStatus = 0 and lhh.PSHStatus >= 11 and lhh.PSHMoveIn <> 2
 		then 8
-	when ESDays >= 1 and THDays <= 0 and RRHStatus = 0 and PSHStatus >= 11 and PSHMoveIn <> 2
+	when lhh.ESDays >= 1 and lhh.THDays <= 0 and lhh.RRHStatus = 0 and lhh.PSHStatus >= 11 and lhh.PSHMoveIn <> 2
 		then 9
-	when ESDays >= 1 and THDays <= 0 and RRHStatus >= 2 and PSHStatus >= 11 and PSHMoveIn <> 2
+	when lhh.ESDays >= 1 and lhh.THDays <= 0 and lhh.RRHStatus >= 2 and lhh.PSHStatus >= 11 and lhh.PSHMoveIn <> 2
 		then 10
-	when ESDays <= 0 and THDays <= 0 and RRHStatus >= 2 and PSHStatus >= 11 and PSHMoveIn <> 2
+	when lhh.ESTStatus = 0 and lhh.RRHStatus >= 2 and lhh.PSHStatus >= 11 and lhh.PSHMoveIn <> 2
 		then 11
 	else 12 end
 from tmp_Household lhh
