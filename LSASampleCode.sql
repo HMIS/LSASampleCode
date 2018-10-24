@@ -3093,6 +3093,9 @@ inner join
 			) hhid
 		group by hhid.HouseholdID
 		) hh on hh.HouseholdID = hn.HouseholdID
+--CHANGE 10/24/2018 - limit inserts to enrollments where the HHType as calculated by the subquery 
+--  matches tmp_Exit HHType OR the enrollment is associated with the qualifying exit. (issue #28)
+where hh.HHType = ex.HHType or hn.EnrollmentID = ex.EnrollmentID
 group by hn.PersonalID
 	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
 	, hn.EnrollmentID, p.ProjectType
