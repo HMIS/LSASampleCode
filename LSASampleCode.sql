@@ -1232,8 +1232,8 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 				and ((hn.PreviousStreetESSH is NULL)
 					or (hn.PreviousStreetESSH = 1 
 						and hn.DateToStreetESSH is null))))
-where CHTime <> 400
-	and CHTimeStatus not in (1,2)
+--CHANGE 10/24/2018 - align WHERE clause to specs (no change in output)
+where (CHTime in (1,270) or CHTimeStatus = 3)
 	and HoHAdult > 0
 
 update tmp_Person 
