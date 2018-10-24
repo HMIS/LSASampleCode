@@ -2278,8 +2278,9 @@ inner join (select hhid.HouseholdID, case
 where 
 	an.EnrollmentID is not null --All active enrollments are relevant.
 	or (hx.ExitDate >= '10/1/2012'-- Inactive enrollments potentially relevant...
-		and lhh.Stat = 5 --... if HH was 'continously engaged' at ReportStart...
-		and lhh.PSHMoveIn <> 2) --...and not housed in PSH at ReportStart.
+	    	and hh.HHType = lhh.HHType -- if they occurred under the same HHType
+		and lhh.Stat = 5 --... and HH was 'continously engaged' at ReportStart...
+		and lhh.PSHMoveIn <> 2) --...and HH was not housed in PSH at ReportStart.
 /*****************************************************************
 4.33 Get Last Inactive Date
 *****************************************************************/
