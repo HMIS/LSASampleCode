@@ -716,7 +716,7 @@ insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 10,1, 'DV victim, currently fleeing')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 10,2, 'DV victim, not currently fleeing')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 10,3, 'DV victim, unknown if currently fleeing')
-insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 9,98, 'Client doesn''t know/refused')
+insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 10,98, 'Client doesn''t know/refused')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 10,99, 'Missing/invalid')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 11,-1, 'Not served in project group')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (3, 11,1, 'AO')
