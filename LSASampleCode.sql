@@ -1196,15 +1196,17 @@ where HoHAdult > 0 and CHTime is null
 4.19 Update Selected CHTime and CHTimeStatus Values
 **********************************************************************/
 --Anyone not CH based on system use data + 3.917 date ranges
---will be counted as chronically homeless if an *active* enrollment shows
+--will be counted as chronically homeless if any enrollment where 
+--EntryDate is in the year ending on LastActive shows
 --12 or more ESSHSTreet months and 4 or more times homeless
 --(and DisabilityStatus = 1)
+
 update lp 
 set CHTime = 400
 	, CHTimeStatus = 2
 from tmp_Person lp
-inner join active_Enrollment an on an.PersonalID = lp.PersonalID
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
+inner join ch_Enrollment cn on cn.PersonalID = lp.PersonalID
+inner join hmis_Enrollment hn on hn.EnrollmentID = cn.EnrollmentID
 	and hn.MonthsHomelessPastThreeYears in (112,113) 
 	and hn.TimesHomelessPastThreeYears = 4
 	and hn.EntryDate >= dateadd(dd, -364, lp.LastActive)
