@@ -1138,10 +1138,13 @@ where cht.chDate is null
 **********************************************************************/
 delete from ch_Episodes
 
+
+
 insert into ch_Episodes (PersonalID, episodeStart, episodeEnd)
 select distinct s.PersonalID, s.chDate, min(e.chDate)
 from ch_Time s 
-inner join ch_Time e on e.PersonalID = s.PersonalID  and e.chDate > s.chDate
+--CHANGE 10/24/2018 'e.chDate > s.chDate' to >= for one day episodes
+inner join ch_Time e on e.PersonalID = s.PersonalID  and e.chDate >= s.chDate
 where s.PersonalID not in (select PersonalID from ch_Time where chDate = dateadd(dd, -1, s.chDate))
 	and e.PersonalID not in (select PersonalID from ch_Time where chDate = dateadd(dd, 1, e.chDate))
 group by s.PersonalID, s.chDate
