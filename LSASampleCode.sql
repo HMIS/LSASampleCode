@@ -2070,12 +2070,12 @@ where lhh.PSHDestination is null
 	and hn.EnrollmentID in 
 		(select top 1 an.EnrollmentID 
 		 from active_Enrollment an
-		 where an.ProjectType = 13
+		 --CHANGE 10/24/2018 correct project type to 3 (was 13)
+		 where an.ProjectType = 3
 			and an.PersonalID = lhh.HoHID
 			and an.RelationshipToHoH = 1
 			and an.HHType = lhh.HHType
 		 order by an.ExitDate desc)
-
 
 /*************************************************************************
 4.29.a Get Earliest EntryDate from Active Enrollments 
