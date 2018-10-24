@@ -2530,7 +2530,7 @@ where lhh.RRHStatus = 0
 -- (issue #23)
 update lhh
 set lhh.SystemPath = 
-	case when lhh.ESTStatus not in (21,22) and lhh.lhh.RRHStatus not in (21,22) and lhh.lhh.PSHMoveIn = 2 
+	case when lhh.ESTStatus not in (21,22) and lhh.RRHStatus not in (21,22) and lhh.PSHMoveIn = 2 
 		then -1
 	when lhh.ESDays >= 1 and lhh.THDays <= 0 and lhh.RRHStatus = 0 and lhh.PSHStatus = 0 
 		then 1
