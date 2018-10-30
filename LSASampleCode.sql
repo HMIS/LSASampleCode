@@ -1196,15 +1196,17 @@ where HoHAdult > 0 and CHTime is null
 4.19 Update Selected CHTime and CHTimeStatus Values
 **********************************************************************/
 --Anyone not CH based on system use data + 3.917 date ranges
---will be counted as chronically homeless if an *active* enrollment shows
+--will be counted as chronically homeless if any enrollment where 
+--EntryDate is in the year ending on LastActive shows
 --12 or more ESSHSTreet months and 4 or more times homeless
 --(and DisabilityStatus = 1)
+
 update lp 
 set CHTime = 400
 	, CHTimeStatus = 2
 from tmp_Person lp
-inner join active_Enrollment an on an.PersonalID = lp.PersonalID
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
+inner join ch_Enrollment cn on cn.PersonalID = lp.PersonalID
+inner join hmis_Enrollment hn on hn.EnrollmentID = cn.EnrollmentID
 	and hn.MonthsHomelessPastThreeYears in (112,113) 
 	and hn.TimesHomelessPastThreeYears = 4
 	and hn.EntryDate >= dateadd(dd, -364, lp.LastActive)
@@ -2068,12 +2070,12 @@ where lhh.PSHDestination is null
 	and hn.EnrollmentID in 
 		(select top 1 an.EnrollmentID 
 		 from active_Enrollment an
-		 where an.ProjectType = 13
+		 --CHANGE 10/24/2018 correct project type to 3 (was 13)
+		 where an.ProjectType = 3
 			and an.PersonalID = lhh.HoHID
 			and an.RelationshipToHoH = 1
 			and an.HHType = lhh.HHType
 		 order by an.ExitDate desc)
-
 
 /*************************************************************************
 4.29.a Get Earliest EntryDate from Active Enrollments 
