@@ -1194,6 +1194,8 @@ insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (12, 3,40, 'VA:  Grant Per Diem - Clinical Treatment')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (12, 3,41, 'VA:  Grant Per Diem - Service Intensive Transitional Housing')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (12, 3,42, 'VA:  Grant Per Diem - Transition in Place')
+--CHANGE 11/8/2018 add option 43
+insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (12, 3,43, 'HUD:  CoC Youth Demonstration Program (YHDP)')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (13, 5,1, 'Households without children')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (13, 5,3, 'Households with at least one adult and one child')
 insert into ref_lsaValues (FileNumber, ColumnNumber, intValue, textValue) values (13, 5,4, 'Households with only children')
