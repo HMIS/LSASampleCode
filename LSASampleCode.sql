@@ -4673,7 +4673,8 @@ inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
 inner join hmis_Project p on p.ProjectID = n.ProjectID
 inner join hmis_Client c on c.PersonalID = n.PersonalID
 left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
-	and x.ExitDate >= dateadd(yy, -3, rpt.ReportStart)
+	--CHANGE 11/8/2018 ExitDate >= ReportEnd (not ReportStart) - 3 years
+	and x.ExitDate >= dateadd(yy, -3, rpt.ReportEnd)
 inner join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
 	from hmis_Enrollment hh
 	inner join lsa_Report rpt on hh.EntryDate <= rpt.ReportEnd
