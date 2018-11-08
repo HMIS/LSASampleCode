@@ -3064,7 +3064,7 @@ from tmp_Exit ex
 inner join hmis_Enrollment hn on hn.PersonalID = ex.HoHID
 	and hn.RelationshipToHoH = 1
 inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-	and hx.ExitDate <= ex.ExitDate
+	--CHANGE 11/8/2018 move ExitDate criteria from join to WHERE clause (with changes to criteria) 
 inner join hmis_Project p on p.ProjectID = hn.ProjectID
 inner join 
 		--HouseholdIDs with LSA household types
@@ -3101,7 +3101,20 @@ inner join
 		) hh on hh.HouseholdID = hn.HouseholdID
 --CHANGE 10/24/2018 - limit inserts to enrollments where the HHType as calculated by the subquery 
 --  matches tmp_Exit HHType OR the enrollment is associated with the qualifying exit. (issue #28)
-where hh.HHType = ex.HHType or hn.EnrollmentID = ex.EnrollmentID
+--CHANGE 11/8/2018 revise/expand and comment/explain WHERE criteria
+where (hh.HHType = ex.HHType or hn.EnrollmentID = ex.EnrollmentID)
+	-- exclude enrollments not active on/after 10/1/2012 -- never relevant
+	and hx.ExitDate between '10/1/2012' and ex.ExitDate
+	--The enrollment for the qualifying exit is always relevant 	
+	and ((hn.EnrollmentID = ex.EnrollmentID)
+		 --Enrollments prior to ES/SH/TH (homeless) qualifying exits are potentially relevant 
+		 or (p.ProjectType in (1,2,8))
+		 --Enrollments prior to RRH/PSH qualifying exits without MoveInDate (homeless) 
+		 --  are potentially relevant
+		 or (p.ProjectType in (3,13) and hn.MoveInDate is null)
+		 --Enrollments prior to RRH/PSH qualifying exits w/MoveInDates are only potentially relevant 
+		 --  if the stay in PH was less than seven days 
+		 or (p.ProjectType in (3,13) and datediff(dd, hn.MoveInDate, hx.ExitDate) < 7))
 group by hn.PersonalID
 	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
 	, hn.EnrollmentID, p.ProjectType
