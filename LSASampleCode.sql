@@ -1746,35 +1746,71 @@ where PSHStatus > 0
 -- enrollments, updated so status is preferentially based on MoveInDate in 
 -- report period (top priority), MoveInDate prior to ReportStart (2nd),
 -- or no MoveInDate (lowest).
+--CHANGE 11/9/2018 - Revise change described above (did not work as intended). 
+
 update hh
-set hh.RRHMoveIn = case when hh.RRHStatus = 0 then -1
-		when stat.RRHMoveIn = 10 then 1
-		else stat.RRHMoveIn end
-	, hh.PSHMoveIn = case when hh.PSHStatus = 0 then -1
-		when stat.PSHMoveIn = 10 then 1
-		else stat.PSHMoveIn end
+set hh.RRHMoveIn = -1 --not served in RRH
 from tmp_Household hh
-left outer join (select distinct hhid.HoHID, hhid.HHType
-		, RRHMoveIn = (select max(case when an.MoveInDate is null
-				then 0
-				when an.MoveInDate >= rpt.ReportStart then 10
-				else 2 end)
-			from active_Enrollment an 
-			inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
-			where an.PersonalID = hhid.HoHID 
-				and an.HouseholdID = hhid.HouseholdID
-				and hhid.ProjectType = 13)
-		, PSHMoveIn = (select max(case when an.MoveInDate is null
-				then 0
-				when an.MoveInDate >= rpt.ReportStart then 10
-				else 2 end)
-			from active_Enrollment an 
-			inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
-			where an.PersonalID = hhid.HoHID 
-				and an.HouseholdID = hhid.HouseholdID
-				and hhid.ProjectType = 3)			
-	from active_Household hhid) stat on 
-		stat.HoHID = hh.HoHID and stat.HHType = hh.HHType
+where hh.RRHStatus = 0
+
+update hh
+set hh.RRHMoveIn = 1 --move-in to PH in current report period
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 13 and an.MoveInDate >= rpt.ReportStart
+	and hh.RRHMoveIn is null 
+
+update hh
+set hh.RRHMoveIn = 2 --move-in to PH prior to ReportStart
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 13 and an.MoveInDate < rpt.ReportStart
+	and hh.RRHMoveIn is null 
+
+update hh
+set hh.RRHMoveIn = 0 --served in RRH with no move-in 
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 13 and an.MoveInDate is null
+	and hh.RRHMoveIn is null 
+
+update hh
+set hh.PSHMoveIn = -1 --not served in PSH
+from tmp_Household hh
+where hh.PSHStatus = 0
+
+update hh
+set hh.PSHMoveIn = 1 --move-in to PH in current report period
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 3 and an.MoveInDate >= rpt.ReportStart
+	and hh.PSHMoveIn is null 
+
+update hh
+set hh.PSHMoveIn = 2 --move-in to PH prior to ReportStart
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 3 and an.MoveInDate < rpt.ReportStart
+	and hh.PSHMoveIn is null 
+
+update hh
+set hh.PSHMoveIn = 0 --served in PSH with no move-in
+from tmp_Household hh
+inner join active_Enrollment an on an.PersonalID = hh.HoHID
+	and an.HHType = hh.HHType 
+inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
+where an.ProjectType = 3 and an.MoveInDate is null
+	and hh.PSHMoveIn is null 
 
 /*************************************************************************
 4.28.a Get Most Recent Enrollment in Each ProjectGroup for HoH 
