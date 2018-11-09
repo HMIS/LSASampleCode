@@ -4364,7 +4364,7 @@ left outer join ref_Calendar rrhpsh on rrhpsh.theDate >= an.MoveInDate
 left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 	and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 where pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
-group by p.ProjectID, p.ExportID, pop.PopID, pop.HHType, p.ProjectType
+group by p.ExportID, pop.PopID, pop.HHType, p.ProjectType
 
 insert into lsa_Calculated
 	(Value, Cohort, Universe, HHType
@@ -4393,6 +4393,7 @@ left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 	and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 where pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 	and p.ProjectType in (1,8,2)
+--CHANGE 11/9/2018 - remove ProjectID from GROUP BY
 group by p.ExportID, pop.PopID, pop.HHType
 
 /**********************************************************************
@@ -4477,7 +4478,8 @@ left outer join ref_Calendar rrhpsh on rrhpsh.theDate >= an.MoveInDate
 left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 	and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 where pop.PopID in (3,6) and pop.PopType = 3
-group by p.ProjectID, p.ExportID, pop.PopID, pop.HHType, p.ProjectType
+--CHANGE 11/9/2018 - remove ProjectID from GROUP BY
+group by p.ExportID, pop.PopID, pop.HHType, p.ProjectType
 
 --ES/SH/TH unduplicated
 insert into lsa_Calculated
