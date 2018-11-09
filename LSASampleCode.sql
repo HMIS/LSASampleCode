@@ -2680,7 +2680,11 @@ inner join
 				when dateadd(yy, 18, c.DOB) <= cd.CohortStart then 10 
 				else 1 end as AgeStatus
 			from hmis_Enrollment hn
-			inner join tmp_CohortDates cd on cd.CohortEnd >= hn.EntryDate
+			--CHANGE 11/9/2018 add join to hmis_Exit, correct join criteria for tmp_CohortDates
+			--to eliminate counting some individuals as both an adult and a child.
+			inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
+			inner join tmp_CohortDates cd on hx.ExitDate between cd.CohortStart and cd.CohortEnd 
+				and cd.Cohort <= 1
 			inner join hmis_Client c on c.PersonalID = hn.PersonalID
 			inner join 
 					--hoh identifies exits for heads of household
