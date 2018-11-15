@@ -4618,6 +4618,14 @@ update rpt
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
 				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay
 				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
+		/***************
+		CHANGE 11/15/2018 to correct identification of circumstances under which DateToStreetESSH, 
+			TimesHomelessPastThreeYears, and MonthsHomelessPastThreeYears are required for collection.
+			Note that THE SAMPLE CODE FOR THESE THREE FIELDS IS NOT CONSISTENT WITH THE SPECS
+			because the specs are wrong about when they are required.
+			
+			For FY2018, the HDX will ignore DQ values for these fields.
+		***************/
 	,	HomelessDate1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4625,14 +4633,19 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
-				and ( 
-					(hn.LivingSituation in (1,16,18,27) and hn.DateToStreetESSH is null) 
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11) 
-							and hn.DateToStreetESSH is null)
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-						and hn.LivingSituation in (4,5,6,7,15,24) 
-						and hn.DateToStreetESSH is null))
-					)
+				-- DateToStreetESSH is required and may not be after hn.EntryDate if...
+				and (hn.DateToStreetESSH is null or hn.DateToStreetESSH > hn.EntryDate) 
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	TimesHomeless1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4640,8 +4653,20 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
+				--TimesHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
-					or hn.TimesHomelessPastThreeYears is null))
+					or hn.TimesHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	MonthsHomeless1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4649,8 +4674,20 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
+				--MonthsHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
-				or hn.MonthsHomelessPastThreeYears is null))
+					or hn.MonthsHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))	
+					))
 	,	DV1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4838,30 +4875,67 @@ update rpt
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
 				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay				 
 				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
+		/***************
+		CHANGE 11/15/2018 to correct identification of circumstances under which DateToStreetESSH, 
+			TimesHomelessPastThreeYears, and MonthsHomelessPastThreeYears are required for collection.
+			Note that THE SAMPLE CODE FOR THESE THREE FIELDS IS NOT CONSISTENT WITH THE SPECS
+			because the specs are wrong about when they are required.
+			
+			For FY2018, the HDX will ignore DQ values for these fields.
+		***************/
 	,	HomelessDate3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
-				and ( 
-				(hn.LivingSituation in (1,16,18,27) and hn.DateToStreetESSH is null) 
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11) 
-							and hn.DateToStreetESSH is null)
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-						and hn.LivingSituation in (4,5,6,7,15,24) 
-						and hn.DateToStreetESSH is null))
-				)
+				-- DateToStreetESSH is required and may not be after hn.EntryDate if...
+				and (hn.DateToStreetESSH is null or hn.DateToStreetESSH > hn.EntryDate) 
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	TimesHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
+				--TimesHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
-					or hn.TimesHomelessPastThreeYears is null))
+					or hn.TimesHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	MonthsHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
+				--MonthsHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
-				or hn.MonthsHomelessPastThreeYears is null))
+				or hn.MonthsHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))	
+					))
 	,	DV3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			left outer join hmis_HealthAndDV dv on dv.EnrollmentID = n.EnrollmentID
