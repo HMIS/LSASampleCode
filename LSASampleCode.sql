@@ -4467,7 +4467,8 @@ select count (distinct an.PersonalID + cast(est.theDate as nvarchar))
 		when 13 then 14	
 		else 15 end 
 	, coalesce(pop.HHType, 0)
-	, pop.PopID, -1, 56
+	--CHANGE 11/19/2018 correct ReportRow to 57 (was 56)
+	, pop.PopID, -1, 57
 	, cast(p.ExportID as int)
 from active_Enrollment an 
 inner join tmp_Person lp on lp.PersonalID = an.PersonalID
@@ -4504,7 +4505,8 @@ select count (distinct an.PersonalID + cast(est.theDate as nvarchar))
 	+ count (distinct an.PersonalID + cast(bnd.theDate as nvarchar))
 	, 1, 16
 	, coalesce(pop.HHType, 0)
-	, pop.PopID, -1, 56
+	--CHANGE 11/19/2018 correct ReportRow to 57 (was 56)
+	, pop.PopID, -1, 57
 	, cast(p.ExportID as int)
 from active_Enrollment an 
 inner join tmp_Person lp on lp.PersonalID = an.PersonalID
