@@ -805,6 +805,7 @@ where
 		or (x.ExitDate >= rpt.ReportStart 
 			and (x.ExitDate > hn.EntryDate or
 				(x.ExitDate = hn.EntryDate and hn.MoveInDate is null and p.ProjectType in (3,13))))
+	) 
 	and p.ProjectType in (1,2,3,8,13)
 	and p.ContinuumProject = 1
 	and ((p.TrackingMethod is null or p.TrackingMethod <> 3) or bn.DateProvided is not null)
