@@ -2662,6 +2662,8 @@ inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
 	and hx.ExitDate > hn.EntryDate
 inner join tmp_CohortDates cd on cd.CohortStart <= hx.ExitDate 
 	and cd.CohortEnd >= hx.ExitDate 
+--CHANGE 11/19/2018 add join to lsa_Report -- need ReportCoC in WHERE clause
+inner join lsa_Report rpt on rpt.ReportEnd >= cd.CohortEnd
 inner join 
 		--hh identifies household exits by HHType from relevant projects
 		--and adds HHType their HHType  
@@ -2769,6 +2771,8 @@ left outer join
 								inner join hmis_EnrollmentCoC coc on 
 									coc.EnrollmentID = hhinfo.EnrollmentID
 									and coc.CoCCode = rpt.ReportCoC
+									--CHANGE 11/19/2018 location after ReportEnd is not relevant
+									and coc.InformationDate <= rpt.ReportEnd
 								--only ES/SH/TH/RRH/PSH enrollments are relevant
 								where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 								group by hhinfo.HouseholdID, coc.CoCCode
@@ -2794,7 +2798,13 @@ left outer join
 --If there is at least one exit followed by 15 days of inactivity during a cohort period,
 --the HoHID/HHType is included in the relevant exit cohort.
 where hn.RelationshipToHoH = 1 and b.HoHID is null and cd.Cohort <= 0
-
+	--CHANGE 11/19/2018 - verify that household was in ReportCoC
+	--  as of most recent EnrollmentCoC record associated with 
+	--  the qualifying exit.
+	and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
+		from hmis_EnrollmentCoC mostrecent
+		where mostrecent.EnrollmentID = hn.EnrollmentID 
+		order by mostrecent.InformationDate desc)
 
 /*****************************************************************
 4.41 Get EnrollmentIDs for Exit Cohort Households
