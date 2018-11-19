@@ -2878,9 +2878,6 @@ set ex.ReturnDate = (select min(hn.EntryDate)
 							inner join hmis_EnrollmentCoC coc on 
 								coc.EnrollmentID = hhinfo.EnrollmentID
 								and coc.CoCCode = rpt.ReportCoC
-								--CHANGE 11/19/2018 per specs, household must be in ReportCoC at ENTRY 
-								-- to be considered a return 
-								and (coc.DataCollectionStage = 1 or coc.InformationDate = hhinfo.EntryDate)
 							--only later ES/SH/TH/RRH/PSH enrollments are relevant
 							where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 							group by hhinfo.HouseholdID, coc.CoCCode
