@@ -3086,17 +3086,7 @@ set ex.StatEnrollmentID = (select top 1 previous.EnrollmentID
 						coc.EnrollmentID = hhinfo.EnrollmentID
 						and coc.CoCCode = rpt.ReportCoC
 					where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-					--CHANGE 11/19/2018 -- align criteria for CoC with business logic
-					--  defined by the specs for tmp_Household.Stat.  The specs fail to 
-					--  mention EnrollmentCoC at all in relation to Stat for exit
-					--  cohort households.  The join to hmis_EnrollmentCoC and the criteria 
-					--  below are, therefore, not required -- but they are consistent 
-					--  with the intent.  
-						and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
-							from hmis_EnrollmentCoC mostrecent
-							where mostrecent.EnrollmentID = hhinfo.EnrollmentID
-							order by mostrecent.InformationDate desc)
-					group by hhinfo.HouseholdID, coc.CoCCode
+							group by hhinfo.HouseholdID, coc.CoCCode
 							) hoh on hoh.HouseholdID = hn.HouseholdID
 					) hhid
 			group by hhid.HouseholdID
