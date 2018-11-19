@@ -793,8 +793,18 @@ left outer join hmis_Exit x on x.EnrollmentID = hn.EnrollmentID
 left outer join hmis_Services bn on bn.EnrollmentID = hn.EnrollmentID
 	and bn.DateProvided between rpt.ReportStart and rpt.ReportEnd
 	and bn.RecordType = 200 
-where ((x.ExitDate >= rpt.ReportStart and x.ExitDate > hn.EntryDate)
-		or x.ExitDate is null)
+where 
+	/* CHANGE 11/19/2018 
+	Specs do not require a defined sequence for entry/exit dates --> altering
+	code to illustrate that relevant data should be minimally compliant with 
+	HMIS Data Standards but to allow ExitDate = EntryDate for project types 
+	(RRH/PSH) with a period of non-residential service.  
+	See https://github.com/HMIS/LSASampleCode/issues/34	for detailed notes on this.
+	*/
+	(x.ExitDate is null 
+		or (x.ExitDate >= rpt.ReportStart 
+			and (x.ExitDate > hn.EntryDate or
+				(x.ExitDate = hn.EntryDate and hn.MoveInDate is null and p.ProjectType in (3,13))))
 	and p.ProjectType in (1,2,3,8,13)
 	and p.ContinuumProject = 1
 	and ((p.TrackingMethod is null or p.TrackingMethod <> 3) or bn.DateProvided is not null)
