@@ -2451,11 +2451,13 @@ set lhh.Other3917Days = (select datediff (dd,
 		inner join hmis_Enrollment hn on hn.EnrollmentID = sn.EnrollmentID
 		where sn.HHType = lhh.HHType  
 			and sn.HoHID = lhh.HoHID 
-			and dateadd(dd, 1, lhh.LastInactive) between hn.DateToStreetESSH and hn.EntryDate
+			--CHANGE 11/20/2018 -- correct criteria 
+			and sn.EntryDate > lhh.LastInactive
+			and hn.DateToStreetESSH <= lhh.LastInactive 
+			and hn.DateToStreetESSH < hn.EntryDate
 		order by hn.DateToStreetESSH asc)
-	, lhh.LastInactive))
+	, lhh.LastInactive)) 
 from tmp_Household lhh
-
 
 insert into sys_Time (HoHID, HHType, sysDate, sysStatus)
 select distinct sn.HoHID, sn.HHType, cal.theDate, 7
