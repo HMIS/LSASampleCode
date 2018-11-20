@@ -1279,7 +1279,9 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 					or (hn.PreviousStreetESSH = 1 
 						and hn.DateToStreetESSH is null))))
 --CHANGE 10/24/2018 - align WHERE clause to specs (no change in output)
-where (CHTime in (1,270) or CHTimeStatus = 3)
+--CHANGE 11/9/2018 - correct typo (was:  CHTime in (1,270))
+--  This correction WILL change output.
+where (CHTime in (0,270) or CHTimeStatus = 3)
 	and HoHAdult > 0
 
 update tmp_Person 
