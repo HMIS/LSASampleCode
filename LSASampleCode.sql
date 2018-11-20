@@ -909,18 +909,12 @@ inner join active_Household hhid on hhid.HouseholdID = an.HouseholdID
 **********************************************************************/
 delete from tmp_Person
 
-insert into tmp_Person (PersonalID, HoHAdult, Age, LastActive, ReportID)
+--CHANGE 11/20/2018 -  To align with specs (no change in final output):
+--	Moved SET for HoHAdult and Age to section 4.12
+--  Moved SET for LastActive to section 4.13
+
+insert into tmp_Person (PersonalID, ReportID)
 select distinct an.PersonalID
-	--Ever served as an adult = 1...
-	, max(case when an.AgeGroup between 18 and 65 then 1
-		else 0 end) 
-	--Plus ever served-as-HoH = 2 
-	  + max(case when hhid.HoHID is null then 0
-		else 2 end)
-	--Equals:  0=Not HoH or Adult, 1=Adult, 2=HoH, 3=Both
-	, min(an.AgeGroup)
-	--LastActive date in report period is used for CH
-	, max(case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end) 
 	, rpt.ReportID
 from lsa_Report rpt
 inner join active_Enrollment an on an.EntryDate <= rpt.ReportEnd
@@ -929,6 +923,29 @@ group by an.PersonalID, rpt.ReportID
 /*************************************************************************
 4.12 Set Demographic Values in tmp_Person 
 **********************************************************************/
+--CHANGE 11/20/2018 - move SET for HoHAdult and Age here from section 4.11
+--  to align with specs (no change in final output)
+
+update lp
+set lp.HoHAdult =  (select 	
+	--Ever served as an adult = 1...
+	  max(case when an.AgeGroup between 18 and 65 then 1
+		else 0 end) 
+	--Plus ever served-as-HoH = 2 
+	  + max(case when hhid.HoHID is null then 0
+		else 2 end)
+	--Equals:  0=Not HoH or Adult, 1=Adult, 2=HoH, 3=Both
+	from active_Enrollment an 
+	left outer join active_Household hhid on hhid.HoHID = an.PersonalID 
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+
+update lp
+set lp.Age =  (select min(an.AgeGroup)
+	from active_Enrollment an 
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+
 update lp
 set 
 	lp.Gender = case 
@@ -1008,6 +1025,19 @@ left outer join (select alldv.PersonalID, min(alldv.DV) as DV
 /*************************************************************************
 4.13 Get Chronic Homelessness Date Range for Each Head of Household/Adult
 **********************************************************************/
+--CHANGE 11/20/2018 - move SET for LastActive here from section 4.11
+--  to align with specs (no change in final output, but will change 
+--  intermediate output by not setting LastActive for non-HoH children)
+
+update lp
+set lp.LastActive =  
+	(select max(case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end) 
+	from lsa_Report rpt
+	inner join active_Enrollment an on an.EntryDate <= rpt.ReportEnd
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+where lp.HoHAdult > 0
+
 --The three year period ending on a HoH/adult's last active date in the report
 --period is relevant for determining chronic homelessness.  
 --The start of the period is:
