@@ -793,8 +793,19 @@ left outer join hmis_Exit x on x.EnrollmentID = hn.EnrollmentID
 left outer join hmis_Services bn on bn.EnrollmentID = hn.EnrollmentID
 	and bn.DateProvided between rpt.ReportStart and rpt.ReportEnd
 	and bn.RecordType = 200 
-where ((x.ExitDate >= rpt.ReportStart and x.ExitDate > hn.EntryDate)
-		or x.ExitDate is null)
+where 
+	/* CHANGE 11/19/2018 
+	Specs do not require a defined sequence for entry/exit dates --> altering
+	code to illustrate that relevant data should be minimally compliant with 
+	HMIS Data Standards but to allow ExitDate = EntryDate for project types 
+	(RRH/PSH) with a period of non-residential service.  
+	See https://github.com/HMIS/LSASampleCode/issues/34	for detailed notes on this.
+	*/
+	(x.ExitDate is null 
+		or (x.ExitDate >= rpt.ReportStart 
+			and (x.ExitDate > hn.EntryDate or
+				(x.ExitDate = hn.EntryDate and hn.MoveInDate is null and p.ProjectType in (3,13))))
+	) 
 	and p.ProjectType in (1,2,3,8,13)
 	and p.ContinuumProject = 1
 	and ((p.TrackingMethod is null or p.TrackingMethod <> 3) or bn.DateProvided is not null)
@@ -898,18 +909,12 @@ inner join active_Household hhid on hhid.HouseholdID = an.HouseholdID
 **********************************************************************/
 delete from tmp_Person
 
-insert into tmp_Person (PersonalID, HoHAdult, Age, LastActive, ReportID)
+--CHANGE 11/20/2018 -  To align with specs (no change in final output):
+--	Moved SET for HoHAdult and Age to section 4.12
+--  Moved SET for LastActive to section 4.13
+
+insert into tmp_Person (PersonalID, ReportID)
 select distinct an.PersonalID
-	--Ever served as an adult = 1...
-	, max(case when an.AgeGroup between 18 and 65 then 1
-		else 0 end) 
-	--Plus ever served-as-HoH = 2 
-	  + max(case when hhid.HoHID is null then 0
-		else 2 end)
-	--Equals:  0=Not HoH or Adult, 1=Adult, 2=HoH, 3=Both
-	, min(an.AgeGroup)
-	--LastActive date in report period is used for CH
-	, max(case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end) 
 	, rpt.ReportID
 from lsa_Report rpt
 inner join active_Enrollment an on an.EntryDate <= rpt.ReportEnd
@@ -918,6 +923,29 @@ group by an.PersonalID, rpt.ReportID
 /*************************************************************************
 4.12 Set Demographic Values in tmp_Person 
 **********************************************************************/
+--CHANGE 11/20/2018 - move SET for HoHAdult and Age here from section 4.11
+--  to align with specs (no change in final output)
+
+update lp
+set lp.HoHAdult =  (select 	
+	--Ever served as an adult = 1...
+	  max(case when an.AgeGroup between 18 and 65 then 1
+		else 0 end) 
+	--Plus ever served-as-HoH = 2 
+	  + max(case when hhid.HoHID is null then 0
+		else 2 end)
+	--Equals:  0=Not HoH or Adult, 1=Adult, 2=HoH, 3=Both
+	from active_Enrollment an 
+	left outer join active_Household hhid on hhid.HoHID = an.PersonalID 
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+
+update lp
+set lp.Age =  (select min(an.AgeGroup)
+	from active_Enrollment an 
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+
 update lp
 set 
 	lp.Gender = case 
@@ -997,6 +1025,19 @@ left outer join (select alldv.PersonalID, min(alldv.DV) as DV
 /*************************************************************************
 4.13 Get Chronic Homelessness Date Range for Each Head of Household/Adult
 **********************************************************************/
+--CHANGE 11/20/2018 - move SET for LastActive here from section 4.11
+--  to align with specs (no change in final output, but will change 
+--  intermediate output by not setting LastActive for non-HoH children)
+
+update lp
+set lp.LastActive =  
+	(select max(case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end) 
+	from lsa_Report rpt
+	inner join active_Enrollment an on an.EntryDate <= rpt.ReportEnd
+	where an.PersonalID = lp.PersonalID)
+from tmp_Person lp
+where lp.HoHAdult > 0
+
 --The three year period ending on a HoH/adult's last active date in the report
 --period is relevant for determining chronic homelessness.  
 --The start of the period is:
@@ -1238,7 +1279,9 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 					or (hn.PreviousStreetESSH = 1 
 						and hn.DateToStreetESSH is null))))
 --CHANGE 10/24/2018 - align WHERE clause to specs (no change in output)
-where (CHTime in (1,270) or CHTimeStatus = 3)
+--CHANGE 11/9/2018 - correct typo (was:  CHTime in (1,270))
+--  This correction WILL change output.
+where (CHTime in (0,270) or CHTimeStatus = 3)
 	and HoHAdult > 0
 
 update tmp_Person 
@@ -2440,11 +2483,13 @@ set lhh.Other3917Days = (select datediff (dd,
 		inner join hmis_Enrollment hn on hn.EnrollmentID = sn.EnrollmentID
 		where sn.HHType = lhh.HHType  
 			and sn.HoHID = lhh.HoHID 
-			and dateadd(dd, 1, lhh.LastInactive) between hn.DateToStreetESSH and hn.EntryDate
+			--CHANGE 11/20/2018 -- correct criteria 
+			and sn.EntryDate > lhh.LastInactive
+			and hn.DateToStreetESSH <= lhh.LastInactive 
+			and hn.DateToStreetESSH < hn.EntryDate
 		order by hn.DateToStreetESSH asc)
-	, lhh.LastInactive))
+	, lhh.LastInactive)) 
 from tmp_Household lhh
-
 
 insert into sys_Time (HoHID, HHType, sysDate, sysStatus)
 select distinct sn.HoHID, sn.HHType, cal.theDate, 7
@@ -2651,6 +2696,8 @@ inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
 	and hx.ExitDate > hn.EntryDate
 inner join tmp_CohortDates cd on cd.CohortStart <= hx.ExitDate 
 	and cd.CohortEnd >= hx.ExitDate 
+--CHANGE 11/19/2018 add join to lsa_Report -- need ReportCoC in WHERE clause
+inner join lsa_Report rpt on rpt.ReportEnd >= cd.CohortEnd
 inner join 
 		--hh identifies household exits by HHType from relevant projects
 		--and adds HHType their HHType  
@@ -2758,6 +2805,8 @@ left outer join
 								inner join hmis_EnrollmentCoC coc on 
 									coc.EnrollmentID = hhinfo.EnrollmentID
 									and coc.CoCCode = rpt.ReportCoC
+									--CHANGE 11/19/2018 location after ReportEnd is not relevant
+									and coc.InformationDate <= rpt.ReportEnd
 								--only ES/SH/TH/RRH/PSH enrollments are relevant
 								where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 								group by hhinfo.HouseholdID, coc.CoCCode
@@ -2783,7 +2832,13 @@ left outer join
 --If there is at least one exit followed by 15 days of inactivity during a cohort period,
 --the HoHID/HHType is included in the relevant exit cohort.
 where hn.RelationshipToHoH = 1 and b.HoHID is null and cd.Cohort <= 0
-
+	--CHANGE 11/19/2018 - verify that household was in ReportCoC
+	--  as of most recent EnrollmentCoC record associated with 
+	--  the qualifying exit.
+	and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
+		from hmis_EnrollmentCoC mostrecent
+		where mostrecent.EnrollmentID = hn.EnrollmentID 
+		order by mostrecent.InformationDate desc)
 
 /*****************************************************************
 4.41 Get EnrollmentIDs for Exit Cohort Households
@@ -2857,6 +2912,9 @@ set ex.ReturnDate = (select min(hn.EntryDate)
 							inner join hmis_EnrollmentCoC coc on 
 								coc.EnrollmentID = hhinfo.EnrollmentID
 								and coc.CoCCode = rpt.ReportCoC
+								--CHANGE 11/19/2018 per specs, household must be in ReportCoC at ENTRY 
+								-- to be considered a return 
+								and (coc.DataCollectionStage = 1 or coc.InformationDate = hhinfo.EntryDate)
 							--only later ES/SH/TH/RRH/PSH enrollments are relevant
 							where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 							group by hhinfo.HouseholdID, coc.CoCCode
@@ -3062,7 +3120,17 @@ set ex.StatEnrollmentID = (select top 1 previous.EnrollmentID
 						coc.EnrollmentID = hhinfo.EnrollmentID
 						and coc.CoCCode = rpt.ReportCoC
 					where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-							group by hhinfo.HouseholdID, coc.CoCCode
+					--CHANGE 11/19/2018 -- align criteria for CoC with business logic
+					--  defined by the specs for tmp_Household.Stat.  The specs fail to 
+					--  mention EnrollmentCoC at all in relation to Stat for exit
+					--  cohort households.  The join to hmis_EnrollmentCoC and the criteria 
+					--  below are, therefore, not required -- but they are consistent 
+					--  with the intent.  
+						and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
+							from hmis_EnrollmentCoC mostrecent
+							where mostrecent.EnrollmentID = hhinfo.EnrollmentID
+							order by mostrecent.InformationDate desc)
+					group by hhinfo.HouseholdID, coc.CoCCode
 							) hoh on hoh.HouseholdID = hn.HouseholdID
 					) hhid
 			group by hhid.HouseholdID
@@ -4456,7 +4524,8 @@ select count (distinct an.PersonalID + cast(est.theDate as nvarchar))
 		when 13 then 14	
 		else 15 end 
 	, coalesce(pop.HHType, 0)
-	, pop.PopID, -1, 56
+	--CHANGE 11/19/2018 correct ReportRow to 57 (was 56)
+	, pop.PopID, -1, 57
 	, cast(p.ExportID as int)
 from active_Enrollment an 
 inner join tmp_Person lp on lp.PersonalID = an.PersonalID
@@ -4493,7 +4562,8 @@ select count (distinct an.PersonalID + cast(est.theDate as nvarchar))
 	+ count (distinct an.PersonalID + cast(bnd.theDate as nvarchar))
 	, 1, 16
 	, coalesce(pop.HHType, 0)
-	, pop.PopID, -1, 56
+	--CHANGE 11/19/2018 correct ReportRow to 57 (was 56)
+	, pop.PopID, -1, 57
 	, cast(p.ExportID as int)
 from active_Enrollment an 
 inner join tmp_Person lp on lp.PersonalID = an.PersonalID
@@ -4618,6 +4688,14 @@ update rpt
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
 				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay
 				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
+		/***************
+		CHANGE 11/15/2018 to correct identification of circumstances under which DateToStreetESSH, 
+			TimesHomelessPastThreeYears, and MonthsHomelessPastThreeYears are required for collection.
+			Note that THE SAMPLE CODE FOR THESE THREE FIELDS IS NOT CONSISTENT WITH THE SPECS
+			because the specs are wrong about when they are required.
+			
+			For FY2018, the HDX will ignore DQ values for these fields.
+		***************/
 	,	HomelessDate1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4625,14 +4703,19 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
-				and ( 
-					(hn.LivingSituation in (1,16,18,27) and hn.DateToStreetESSH is null) 
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11) 
-							and hn.DateToStreetESSH is null)
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-						and hn.LivingSituation in (4,5,6,7,15,24) 
-						and hn.DateToStreetESSH is null))
-					)
+				-- DateToStreetESSH is required and may not be after hn.EntryDate if...
+				and (hn.DateToStreetESSH is null or hn.DateToStreetESSH > hn.EntryDate) 
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	TimesHomeless1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4640,8 +4723,20 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
+				--TimesHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
-					or hn.TimesHomelessPastThreeYears is null))
+					or hn.TimesHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	MonthsHomeless1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4649,8 +4744,20 @@ update rpt
 			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				and (an.RelationshipToHoH = 1 or an.AgeGroup between 18 and 65)
+				--MonthsHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
-				or hn.MonthsHomelessPastThreeYears is null))
+					or hn.MonthsHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (an.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))	
+					))
 	,	DV1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -4838,30 +4945,67 @@ update rpt
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
 				-- CHANGE 10/23/2018 add 99 to list of checked values for LengthOfStay				 
 				and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null))
+		/***************
+		CHANGE 11/15/2018 to correct identification of circumstances under which DateToStreetESSH, 
+			TimesHomelessPastThreeYears, and MonthsHomelessPastThreeYears are required for collection.
+			Note that THE SAMPLE CODE FOR THESE THREE FIELDS IS NOT CONSISTENT WITH THE SPECS
+			because the specs are wrong about when they are required.
+			
+			For FY2018, the HDX will ignore DQ values for these fields.
+		***************/
 	,	HomelessDate3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
-				and ( 
-				(hn.LivingSituation in (1,16,18,27) and hn.DateToStreetESSH is null) 
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11) 
-							and hn.DateToStreetESSH is null)
-					or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-						and hn.LivingSituation in (4,5,6,7,15,24) 
-						and hn.DateToStreetESSH is null))
-				)
+				-- DateToStreetESSH is required and may not be after hn.EntryDate if...
+				and (hn.DateToStreetESSH is null or hn.DateToStreetESSH > hn.EntryDate) 
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	TimesHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
+				--TimesHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
-					or hn.TimesHomelessPastThreeYears is null))
+					or hn.TimesHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))
+					))
 	,	MonthsHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Adult = 1)
+				--MonthsHomelessPastThreeYears is required and must be a valid value if...
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
-				or hn.MonthsHomelessPastThreeYears is null))
+				or hn.MonthsHomelessPastThreeYears is null)
+				-- ...ProjectType is ES/SH...
+				and (n.ProjectType in (1,8)
+						-- ... or when LivingSituation is ES/SH/street/interim housing
+						or hn.LivingSituation in (1,16,18,27) 
+						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+						-- ... or when LivingSituation is institutional, LOS is < 90 days
+							-- and PreviousStreetESSH = 1 
+						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+							and hn.LivingSituation in (4,5,6,7,15,24))	
+					))
 	,	DV3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			left outer join hmis_HealthAndDV dv on dv.EnrollmentID = n.EnrollmentID
