@@ -1868,30 +1868,22 @@ where an.ProjectType = 3 and an.MoveInDate is null
 
 /*************************************************************************
 4.28.a Get Most Recent Enrollment in Each ProjectGroup for HoH 
-***********************************************************************/
-update active_Enrollment set MostRecent = null
 
-update an
-set an.MostRecent =
-	case when mr.EnrollmentID is null then 1
-	else 0 end 
-from active_Enrollment an
-left outer join (select later.PersonalID, later.EnrollmentID
-		, later.EntryDate, later.HHType
-		, case when later.ProjectType in (1,2,8) then 1
-			else later.ProjectType end as PT
-	from active_Enrollment later
-	where later.RelationshipToHoH = 1
-	) mr on mr.PersonalID = an.PersonalID 
-		and mr.HHType = an.HHType 
-		and mr.PT = case when an.ProjectType in (1,2,8) then 1 else an.ProjectType end
-		and (mr.EntryDate > an.EntryDate 
-			or (mr.EntryDate = an.EntryDate and mr.EnrollmentID > an.EnrollmentID))
-where an.RelationshipToHoH = 1 
+--CHANGE 11/27/2018 deleted SET for active_Enrollment.MostRecent --
+--  not needed.
+***********************************************************************/
 
 /*************************************************************************
 4.28.b Set tmp_Household Geography for Each Project Group 
 **********************************************************************/
+update tmp_Household set ESTGeography = null
+
+--CHANGE 11/27/2018 - incorporate identification of most recent
+-- active enrollment for use in setting EST/RRH/PSHGeography into 
+-- each UPDATE statement rather than using active_Enrollment.MostRecent.
+-- This follows the steps described in the specs more closely; it shouldn't 
+-- alter output but may improve performance.
+
 update lhh
 set ESTGeography = -1 
 from tmp_Household lhh
@@ -1901,11 +1893,14 @@ update lhh
 set ESTGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
+	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
 	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
-	where an.MostRecent = 1 and an.ProjectType in (1,2,8)
+	where an.ProjectType in (1,2,8)
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
-	order by lg.InformationDate desc), 99)
+	order by case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end desc
+		, an.EntryDate desc
+		, lg.InformationDate desc), 99)
 from tmp_Household lhh where ESTGeography is null
 
 update lhh
@@ -1917,11 +1912,14 @@ update lhh
 set RRHGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
+	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
 	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
-	where an.MostRecent = 1 and an.ProjectType = 13
+	where an.ProjectType = 13
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
-	order by lg.InformationDate desc), 99)
+	order by case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end desc
+		, an.EntryDate desc
+		, lg.InformationDate desc), 99)
 from tmp_Household lhh where RRHGeography is null
 
 update lhh
@@ -1933,11 +1931,14 @@ update lhh
 set PSHGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
+	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
 	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
-	where an.MostRecent = 1 and an.ProjectType = 3
+	where an.ProjectType = 3
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
-	order by lg.InformationDate desc), 99)
+	order by case when an.ExitDate is null then rpt.ReportEnd else an.ExitDate end desc
+		, an.EntryDate desc
+		, lg.InformationDate desc), 99)
 from tmp_Household lhh where PSHGeography is null
 
 /*************************************************************************
