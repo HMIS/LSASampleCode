@@ -24,8 +24,7 @@ Requires:
 		-hmis_HealthAndDV
 		-hmis_Exit
 
-10/11/2018 - uploaded to github v1.22
-10/15/2018 - corrections and addition of some indexes 
+Revision history is maintained in github: https://github.com/HMIS/LSASampleCode/commits/master/LSASampleCode.sql
 
 4.1 Create Intermediate Tables 
 **********************************************************************/
@@ -1150,12 +1149,14 @@ left outer join ch_Time cht on cht.chDate = cal.theDate
 	and cht.PersonalID = chn.PersonalID
 where chx.excludeDate is null
 	and cht.chDate is null
-	and (chn.ProjectType in (1,8)
-		or hn.LivingSituation in (1,18,16)		
-		or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
-		or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-			and hn.LivingSituation in (4,5,6,7,15,24) ) 
-		)
+		--CHANGE 11/27/2018 only dates between CHStart and LastActive are relevant
+		and cal.theDate between lp.CHStart and lp.LastActive
+		and (chn.ProjectType in (1,8)
+			or hn.LivingSituation in (1,18,16)		
+			or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+			or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+				and hn.LivingSituation in (4,5,6,7,15,24) ) 
+			)
 
 --Gaps of less than 7 nights between two ESSHStreet dates are counted
 insert into ch_Time (PersonalID, chDate)
