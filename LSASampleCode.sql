@@ -841,8 +841,13 @@ inner join active_Household hhid on hhid.HouseholdID = hn.HouseholdID
 left outer join hmis_Exit x on x.EnrollmentID = hn.EnrollmentID
 	and x.ExitDate <= rpt.ReportEnd
 --CHANGE 9/28/2018: where ExitDate >= ReportStart (was just >)
-where ((x.ExitDate >= rpt.ReportStart and x.ExitDate > hn.EntryDate)
-		or x.ExitDate is null)
+--CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
+-- under some circumstances (see note with 11/19 change in section 4.7).  
+where	(x.ExitDate is null 
+		or (x.ExitDate >= rpt.ReportStart 
+			and (x.ExitDate > hn.EntryDate or
+				(x.ExitDate = hn.EntryDate and hhid.MoveInDate is null and hhid.ProjectType in (3,13))))
+	) 
 
 /*************************************************************************
 4.9 Set Age Group for Each Active Enrollment
@@ -1469,6 +1474,11 @@ set ahh.HHChronic = (select max(
 					or lp.DisabilityStatus <> 1 
 					or hh.HHType not in (1,2,3) then 0
 				when (lp.CHTime = 365 and lp.CHTimeStatus in (1,2))
+				--NOTE 11/27/2018 - the specs omitted CHTime = 400, 
+				-- and the specs are final for FY2018.  These people ARE, 
+				-- however, chronically homeless and it is appropriate 
+				-- to include them, so the sample code varies here from 
+				-- the specs document.
 					or (lp.CHTime = 400 and lp.CHTimeStatus = 2) then 1
 				else 0 end)
 		from tmp_Person lp
@@ -2174,8 +2184,12 @@ update lhh
 set lhh.StatEnrollmentID = 
 	(select top 1 prior.EnrollmentID
 	from hmis_Enrollment prior 
+	inner join hmis_Project p on p.ProjectID = prior.ProjectID
 	inner join hmis_Exit hx on hx.EnrollmentID = prior.EnrollmentID
-		and hx.ExitDate > prior.EntryDate 
+		and (hx.ExitDate > prior.EntryDate
+			--CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
+			-- under some circumstances (see note with 11/19 change in section 4.7).  
+			or (hx.ExitDate = prior.EntryDate and prior.MoveInDate is null and p.ProjectType in (3,13)))
 		and hx.ExitDate between dateadd(dd,-730,lhh.FirstEntry) and lhh.FirstEntry
 	inner join --Get enrollments for the same HoH and HHType prior to FirstEntry
 		(select hhid.HouseholdID
@@ -2694,14 +2708,18 @@ select distinct cd.Cohort, hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectT
 from hmis_Enrollment hn
 inner join hmis_Project p on p.ProjectID = hn.ProjectID
 inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-	and hx.ExitDate > hn.EntryDate
+	--CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
+	-- under some circumstances (see note with 11/19 change in section 4.7).  
+	and (hx.ExitDate > hn.EntryDate
+			or (hx.ExitDate = hn.EntryDate 
+				and (hn.MoveInDate is null and p.ProjectType in (3,13))
+					or p.ProjectType = 4))
 inner join tmp_CohortDates cd on cd.CohortStart <= hx.ExitDate 
 	and cd.CohortEnd >= hx.ExitDate 
 --CHANGE 11/19/2018 add join to lsa_Report -- need ReportCoC in WHERE clause
 inner join lsa_Report rpt on rpt.ReportEnd >= cd.CohortEnd
 inner join 
 		--hh identifies household exits by HHType from relevant projects
-		--and adds HHType their HHType  
 		(select hhid.HouseholdID, case
 			when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
 			when sum(hhid.AgeStatus/100) > 0 then 99
