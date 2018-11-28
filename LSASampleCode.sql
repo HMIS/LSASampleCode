@@ -1514,19 +1514,23 @@ set ahh.HHChronic = (select max(
 		inner join active_Enrollment n on n.PersonalID = lp.PersonalID
 		inner join active_Household hh on hh.HouseholdID = n.HouseholdID
 		where n.HouseholdID = ahh.HouseholdID)
-	--CHANGE 10/5/2018 - more corrections to HHAdultAge 
-	, ahh.HHAdultAge = coalesce((select 
-			--HHTypes 3 and 99 are excluded by the CASE statement
+	--CHANGE 11/28/2018 - (yet another) bug fix for HHAdultAge 
+	--Set HHAdultAge for active households based on HH member AgeGroup(s) 
+	, ahh.HHAdultAge = (select 
+			-- -1 (n/a) for HHType 99 (UN) and HHType 2 (AC) with member(s) of unknown age
 			case when max(n.AgeGroup) >= 98 then -1
-					when max(n.AgeGroup) <= 17 then -1
-					when min(n.AgeGroup) between 18 and 25 
-						and max(n.AgeGroup) between 25 and 55 then 25
-					when max(n.AgeGroup) = 21 then 18
-					when max(n.AgeGroup) = 24 then 24
-					when min(n.AgeGroup) between 64 and 65 then 55
-					else -1 end
+				-- -1 (n/a) for HHType 3
+				when max(n.AgeGroup) <= 17 then -1
+				-- AO and AC 18-21
+				when max(n.AgeGroup) = 21 then 18
+				-- AO and AC 22-24
+				when max(n.AgeGroup) = 24 then 24
+				-- AO 55+
+				when min(n.AgeGroup) between 64 and 65 then 55
+				-- all other households
+				else 25 end
 			from active_Enrollment n 
-			where n.HouseholdID = ahh.HouseholdID and n.HHType in (1,2)), -1)
+			where n.HouseholdID = ahh.HouseholdID)
 	, ahh.AC3Plus = (select case sum(case when n.AgeGroup <= 17 and hh.HHType = 2 then 1
 							else 0 end) 
 						when 0 then 0 
@@ -1698,17 +1702,41 @@ set HHChild = (select case when count(distinct n.PersonalID) >= 3 then 3
 			and hhid.HHType = hh.HHType and hhid.HoHID = hh.HoHID)
 from tmp_Household hh
 
---CHANGE 11/27/2018 bug fix for set of HHAdultAge
+--CHANGE 11/28/2018 (yet another) bug fix for set of tmp_Household.HHAdultAge
+update hh set hh.HHAdultAge = null from tmp_Household hh
+
 update hh
-set hh.HHAdultAge = coalesce ((select case 
-				when max(hhid.HHAdultAge) = -1 then -1
-				when min(hhid.HHAdultAge) in (18,24) 
-					then min(hhid.HHAdultAge)
-				when max(hhid.HHAdultAge) = 55 then 55
-				else 25 end
-			from active_Household hhid
-			where hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType), -1)
+set hh.HHAdultAge = hhid.HHAdultAge 
 from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 18
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 24 and hh.HHAdultAge is null
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 55 and hh.HHAdultAge is null
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 25 and hh.HHAdultAge is null
+
+update hh 
+set hh.HHAdultAge = -1 
+from tmp_Household hh
+where hh.HHAdultAge is null
 
 /*************************************************************************
 4.26 Set tmp_Household Project Group Status Indicators
