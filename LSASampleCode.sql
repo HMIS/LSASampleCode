@@ -1698,23 +1698,17 @@ set HHChild = (select case when count(distinct n.PersonalID) >= 3 then 3
 			and hhid.HHType = hh.HHType and hhid.HoHID = hh.HoHID)
 from tmp_Household hh
 
+--CHANGE 11/27/2018 bug fix for set of HHAdultAge
 update hh
 set hh.HHAdultAge = coalesce ((select case 
+				when max(hhid.HHAdultAge) = -1 then -1
 				when min(hhid.HHAdultAge) in (18,24) 
 					then min(hhid.HHAdultAge)
 				when max(hhid.HHAdultAge) = 55 then 55
 				else 25 end
 			from active_Household hhid
-			where hhid.HHAdultAge between 18 and 55
-				and hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType), -1)
+			where hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType), -1)
 from tmp_Household hh
-
---CHANGE 10/5/2018 - general cleanup for any HHAdultAge not set 
-update hh
-set hh.HHAdultAge = -1
-from tmp_Household hh
-where hh.HHAdultAge is null
-
 
 /*************************************************************************
 4.26 Set tmp_Household Project Group Status Indicators
