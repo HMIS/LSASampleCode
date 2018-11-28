@@ -1262,16 +1262,18 @@ where
 
 --Anyone who doesn't meet CH time criteria and is missing data in 3.917 
 --for an active enrollment should be identified as missing data.
+--CHANGE 11/28/2018 -- per specs, change 'active enrollment' to 
+-- 'enrollment in ch_Enrollment' 
 update lp 
-set CHTime = coalesce(lp.CHTime, 0)
-	, CHTimeStatus = 99
+set lp.CHTime = coalesce(lp.CHTime, 0)
+	, lp.CHTimeStatus = 99
 from tmp_Person lp
-inner join active_Enrollment an on an.PersonalID = lp.PersonalID
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
+inner join ch_Enrollment cn on cn.PersonalID = lp.PersonalID
+inner join hmis_Enrollment hn on hn.EnrollmentID = cn.EnrollmentID
 	and ((hn.DateToStreetESSH > hn.EntryDate)
 		or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 		or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
-		or (an.ProjectType in (1,8) and (hn.DateToStreetESSH is null)) 
+		or (cn.ProjectType in (1,8) and (hn.DateToStreetESSH is null)) 
 		or (hn.MonthsHomelessPastThreeYears in (8,9,99)) 
 		or (hn.MonthsHomelessPastThreeYears is null) 
 		or (hn.TimesHomelessPastThreeYears in (8,9,99))  
@@ -1287,8 +1289,8 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 --CHANGE 10/24/2018 - align WHERE clause to specs (no change in output)
 --CHANGE 11/9/2018 - correct typo (was:  CHTime in (1,270))
 --  This correction WILL change output.
-where (CHTime in (0,270) or CHTimeStatus = 3)
-	and HoHAdult > 0
+where (lp.CHTime in (0,270) or lp.CHTimeStatus = 3)
+	and lp.HoHAdult > 0
 
 update tmp_Person 
 set CHTime = 0, CHTimeStatus = -1
