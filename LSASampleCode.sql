@@ -4824,7 +4824,8 @@ update rpt
 	,	NotOneHoH1 = (select count(distinct ah.HouseholdID)
 			from active_Household ah
 			left outer join (select an.HouseholdID
-					, count(distinct hn.PersonalID) as hoh
+					--CHANGE 11/28/2018 count EnrollmentID vs PersonalID per specs
+					, count(distinct hn.EnrollmentID) as hoh
 				from active_Enrollment an 
 				inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 					and hn.RelationshipToHoH = 1
@@ -4889,6 +4890,8 @@ inner join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
 	where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 	group by hh.HouseholdID
 	) hhinfo on hhinfo.HouseholdID = n.HouseholdID
+--CHANGE 11/28/2018 add WHERE clause to limit to three years
+where x.ExitDate is null or x.ExitDate >= dateadd(yy, 3, rpt.ReportEnd)
 
 /**********************************************************************
 4.71 Set LSAReport Data Quality Values for Three Year Period
