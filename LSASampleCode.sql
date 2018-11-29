@@ -2205,70 +2205,78 @@ from tmp_Household lhh
 /*************************************************************************
 4.29.b Get EnrollmentID for Latest Exit in Two Years Prior to FirstEntry
 **********************************************************************/
+select hhid.HouseholdID
+  , case  
+  when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
+  when sum(hhid.AgeStatus/100) > 0 then 99
+  when sum(hhid.AgeStatus%10) > 0 then 3
+  when sum((hhid.AgeStatus/10)%100) > 0 then 1
+  else 99 end as HHType
+into #hh
+from 
+  --get AgeStatus for household members on previous enrollment
+  (select distinct hn.HouseholdID
+    , case when c.DOBDataQuality in (8,9) 
+      or c.DOB is null 
+      or c.DOB = '1/1/1900'
+      or c.DOB > hn.EntryDate
+      or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+      --age for non-active enrollments is always based on EntryDate
+      or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+      or c.DOBDataQuality is null
+      or c.DOBDataQuality not in (1,2) then 100
+    when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+    else 1 end as AgeStatus
+  from hmis_Enrollment hn
+  inner join hmis_Client c on c.PersonalID = hn.PersonalID
+  inner join --get project type and CoC info for prior enrollments
+      (select distinct hhinfo.HouseholdID
+      from hmis_Enrollment hhinfo
+      inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+      inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+      inner join hmis_EnrollmentCoC coc on 
+        coc.EnrollmentID = hhinfo.EnrollmentID
+        and coc.CoCCode = rpt.ReportCoC
+      where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
+          group by hhinfo.HouseholdID, coc.CoCCode
+          ) hoh on hoh.HouseholdID = hn.HouseholdID
+      group by hn.HouseholdID
+      , case when c.DOBDataQuality in (8,9) 
+          or c.DOB is null 
+          or c.DOB = '1/1/1900'
+          or c.DOB > hn.EntryDate
+          or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+          --age for non-active enrollments is always based on EntryDate
+          or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+          or c.DOBDataQuality is null
+          or c.DOBDataQuality not in (1,2) then 100
+        when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+        else 1 end
+      ) hhid
+    group by hhid.HouseholdID
+
+CREATE NONCLUSTERED INDEX ix_hh_household_id ON #hh (HouseholdID);
+CREATE NONCLUSTERED INDEX ix_hh_hhtype ON #hh (HHType);
+
 update lhh
 set lhh.StatEnrollmentID = 
-	(select top 1 prior.EnrollmentID
-	from hmis_Enrollment prior 
-	inner join hmis_Project p on p.ProjectID = prior.ProjectID
-	inner join hmis_Exit hx on hx.EnrollmentID = prior.EnrollmentID
-		and (hx.ExitDate > prior.EntryDate
-			--CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
-			-- under some circumstances (see note with 11/19 change in section 4.7).  
-			or (hx.ExitDate = prior.EntryDate and prior.MoveInDate is null and p.ProjectType in (3,13)))
-		and hx.ExitDate between dateadd(dd,-730,lhh.FirstEntry) and lhh.FirstEntry
-	inner join --Get enrollments for the same HoH and HHType prior to FirstEntry
-		(select hhid.HouseholdID
-			, case	
-			when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
-			when sum(hhid.AgeStatus/100) > 0 then 99
-			when sum(hhid.AgeStatus%10) > 0 then 3
-			when sum((hhid.AgeStatus/10)%100) > 0 then 1
-			else 99 end as HHType
-		from 
-			--get AgeStatus for household members on previous enrollment
-			(select distinct hn.HouseholdID
-				, case when c.DOBDataQuality in (8,9) 
-					or c.DOB is null 
-					or c.DOB = '1/1/1900'
-					or c.DOB > hn.EntryDate
-					or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-					--age for non-active enrollments is always based on EntryDate
-					or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-					or c.DOBDataQuality is null
-					or c.DOBDataQuality not in (1,2) then 100
-				when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-				else 1 end as AgeStatus
-			from hmis_Enrollment hn
-			inner join hmis_Client c on c.PersonalID = hn.PersonalID
-			inner join --get project type and CoC info for prior enrollments
-					(select distinct hhinfo.HouseholdID
-					from hmis_Enrollment hhinfo
-					inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-					inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-					inner join hmis_EnrollmentCoC coc on 
-						coc.EnrollmentID = hhinfo.EnrollmentID
-						and coc.CoCCode = rpt.ReportCoC
-					where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-							group by hhinfo.HouseholdID, coc.CoCCode
-							) hoh on hoh.HouseholdID = hn.HouseholdID
-					group by hn.HouseholdID
-					, case when c.DOBDataQuality in (8,9) 
-							or c.DOB is null 
-							or c.DOB = '1/1/1900'
-							or c.DOB > hn.EntryDate
-							or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-							--age for non-active enrollments is always based on EntryDate
-							or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-							or c.DOBDataQuality is null
-							or c.DOBDataQuality not in (1,2) then 100
-						when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-						else 1 end
-					) hhid
-				group by hhid.HouseholdID) hh on hh.HouseholdID = prior.HouseholdID
-		where prior.PersonalID = lhh.HoHID and prior.RelationshipToHoH = 1 
-				and hh.HHType = lhh.HHType 
-		order by hx.ExitDate desc)
+  (select top 1 prior.EnrollmentID
+  from hmis_Enrollment prior 
+  inner join hmis_Project p on p.ProjectID = prior.ProjectID
+  inner join hmis_Exit hx on hx.EnrollmentID = prior.EnrollmentID
+    and (hx.ExitDate > prior.EntryDate
+      --CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
+      -- under some circumstances (see note with 11/19 change in section 4.7).  
+      or (hx.ExitDate = prior.EntryDate and prior.MoveInDate is null and p.ProjectType in (3,13)))
+    and hx.ExitDate between dateadd(dd,-730,lhh.FirstEntry) and lhh.FirstEntry
+  inner join --Get enrollments for the same HoH and HHType prior to FirstEntry
+    #hh on #hh.HouseholdID = prior.HouseholdID
+    where prior.PersonalID = lhh.HoHID and prior.RelationshipToHoH = 1 
+        and #hh.HHType = lhh.HHType 
+    order by hx.ExitDate desc)
 from tmp_Household lhh
+
+drop table #hh
 
 /*************************************************************************
 4.29.c Set System Engagement Status for tmp_Household
@@ -2337,6 +2345,48 @@ group by an.PersonalID, an.HHType, cal.theDate
 NOTE 10/5/2018 - The INSERT includes both active and potentially relevant
      inactive enrollments.
 *****************************************************************/
+select hhid.HouseholdID, case 
+  --if at least 1 adult and 1 child, HHType = 2
+when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 
+  then 2
+--If not adult/child, any unknown age means HHType = 99
+when sum(hhid.AgeStatus/100) > 0 
+  then 99
+--child only HHType = 3
+when sum(hhid.AgeStatus%10) > 0 
+  then 3
+--adult only HHType = 1
+when sum((hhid.AgeStatus/10)%100) > 0
+  then 1
+else 99 end as HHType
+into #hh
+from (select distinct hn.HouseholdID
+  , case when c.DOBDataQuality in (8,9) 
+      or c.DOB is null 
+      or c.DOB = '1/1/1900'
+      or c.DOB > hn.EntryDate
+      or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+      or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+      or c.DOBDataQuality is null
+      or c.DOBDataQuality not in (1,2) then 100
+    when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+    else 1 end as AgeStatus
+  from hmis_Enrollment hn
+  inner join hmis_Client c on c.PersonalID = hn.PersonalID
+  inner join (select distinct hhinfo.HouseholdID
+      from hmis_Enrollment hhinfo
+      inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+      inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+      inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hhinfo.EnrollmentID
+        and coc.CoCCode = rpt.ReportCoC
+      where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
+      ) hoh on hoh.HouseholdID = hn.HouseholdID
+  ) hhid
+group by hhid.HouseholdID
+
+CREATE NONCLUSTERED INDEX ix_household_id_2 ON #hh (HouseholdID);
+CREATE NONCLUSTERED INDEX ix_hhtype_2 ON #hh (HHType);
+
 delete from sys_Enrollment
 
 insert into sys_Enrollment (HoHID, HHType, EnrollmentID, ProjectType
@@ -2361,87 +2411,60 @@ left outer join active_Enrollment an on an.EnrollmentID = hn.EnrollmentID
 left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd
 inner join hmis_Project p on p.ProjectID = hn.ProjectID
-inner join (select hhid.HouseholdID, case	
-	    --if at least 1 adult and 1 child, HHType = 2
-		when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 
-			then 2
-		--If not adult/child, any unknown age means HHType = 99
-		when sum(hhid.AgeStatus/100) > 0 
-			then 99
-		--child only HHType = 3
-		when sum(hhid.AgeStatus%10) > 0 
-			then 3
-		--adult only HHType = 1
-		when sum((hhid.AgeStatus/10)%100) > 0
-			then 1
-		else 99 end as HHType
-		from (select distinct hn.HouseholdID
-			, case when c.DOBDataQuality in (8,9) 
-					or c.DOB is null 
-					or c.DOB = '1/1/1900'
-					or c.DOB > hn.EntryDate
-					or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-					or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-					or c.DOBDataQuality is null
-					or c.DOBDataQuality not in (1,2) then 100
-				when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-				else 1 end as AgeStatus
-			from hmis_Enrollment hn
-			inner join hmis_Client c on c.PersonalID = hn.PersonalID
-			inner join (select distinct hhinfo.HouseholdID
-					from hmis_Enrollment hhinfo
-					inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-					inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-					inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hhinfo.EnrollmentID
-						and coc.CoCCode = rpt.ReportCoC
-					where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-					) hoh on hoh.HouseholdID = hn.HouseholdID
-			) hhid
-		group by hhid.HouseholdID
-		) hh on hh.HouseholdID = hn.HouseholdID
+inner join #hh on #hh.HouseholdID = hn.HouseholdID
 where 
 	an.EnrollmentID is not null --All active enrollments are relevant.
 	or (hx.ExitDate >= '10/1/2012'-- Inactive enrollments potentially relevant...
-	    	and hh.HHType = lhh.HHType -- if they occurred under the same HHType
+	    	and #hh.HHType = lhh.HHType -- if they occurred under the same HHType
 		and lhh.Stat = 5 --... and HH was 'continously engaged' at ReportStart...
 		and lhh.PSHMoveIn <> 2) --...and HH was not housed in PSH at ReportStart.
+
+drop table #hh;
 /*****************************************************************
 4.33 Get Last Inactive Date
 *****************************************************************/
+select distinct sn.HoHID as HoHID
+  , sn.HHType as HHType
+  , bn.DateProvided as StartDate
+  , case when bn.DateProvided < rpt.ReportStart
+    then dateadd(dd,6,bn.DateProvided)
+    else rpt.ReportEnd end as EndDate
+into #padded
+from sys_Enrollment sn
+inner join hmis_Services bn on bn.EnrollmentID = sn.EnrollmentID
+  and bn.RecordType = 200
+inner join lsa_Report rpt on rpt.ReportEnd >= bn.DateProvided
+where sn.EntryDate is null
+union select sn.HoHID, sn.HHType, sn.EntryDate
+  , case when sn.ExitDate < rpt.ReportStart
+    then dateadd(dd,6,sn.ExitDate)
+    else rpt.ReportEnd end
+from sys_Enrollment sn
+inner join lsa_Report rpt on rpt.ReportEnd >= sn.EntryDate
+where sn.ProjectType in (1,8,2) or sn.MoveInDate is null
+
+CREATE NONCLUSTERED INDEX ix_padded_HoHID ON #padded (HoHID);
+CREATE NONCLUSTERED INDEX ix_padded_HHType ON #padded (HHType);
+CREATE NONCLUSTERED INDEX ix_padded_StartDate ON #padded (StartDate);
+CREATE NONCLUSTERED INDEX ix_padded_EndDate ON #padded (EndDate);
+
 update lhh
 set lhh.LastInactive = coalesce(lastDay.inactive, '9/30/2012')
 from tmp_Household lhh
 left outer join (select lhh.HoHID, lhh.HHType, max(cal.theDate) as inactive
-	from tmp_Household lhh
-	inner join lsa_Report rpt on rpt.ReportID = lhh.ReportID
-	inner join ref_Calendar cal on cal.theDate <= rpt.ReportEnd
-		and cal.theDate >= '10/1/2012'
-	left outer join	
-		 (select distinct sn.HoHID as HoHID
-			, sn.HHType as HHType
-			, bn.DateProvided as StartDate
-			, case when bn.DateProvided < rpt.ReportStart	
-				then dateadd(dd,6,bn.DateProvided) 
-				else rpt.ReportEnd end as EndDate
-		from sys_Enrollment sn
-		inner join hmis_Services bn on bn.EnrollmentID = sn.EnrollmentID
-			and bn.RecordType = 200
-		inner join lsa_Report rpt on rpt.ReportEnd >= bn.DateProvided
-		where sn.EntryDate is null
-		union select sn.HoHID, sn.HHType, sn.EntryDate
-			, case when sn.ExitDate < rpt.ReportStart 
-				then dateadd(dd,6,sn.ExitDate)
-				else rpt.ReportEnd end
-		from sys_Enrollment sn 
-		inner join lsa_Report rpt on rpt.ReportEnd >= sn.EntryDate
-		where sn.ProjectType in (1,8,2) or sn.MoveInDate is null
-		) padded on padded.HoHID = lhh.HoHID and padded.HHType = lhh.HHType 
-			and cal.theDate between padded.StartDate and padded.EndDate
-	where padded.HoHID is null
-		and cal.theDate < lhh.FirstEntry
+  from tmp_Household lhh
+  inner join lsa_Report rpt on rpt.ReportID = lhh.ReportID
+  inner join ref_Calendar cal on cal.theDate <= rpt.ReportEnd
+    and cal.theDate >= '10/1/2012'
+  left outer join
+     #padded on #padded.HoHID = lhh.HoHID and #padded.HHType = lhh.HHType
+      and cal.theDate between #padded.StartDate and #padded.EndDate
+  where #padded.HoHID is null
+    and cal.theDate < lhh.FirstEntry
 group by lhh.HoHID, lhh.HHType
-	) lastDay on lastDay.HoHID = lhh.HoHID and lastDay.HHType = lhh.HHType
+  ) lastDay on lastDay.HoHID = lhh.HoHID and lastDay.HHType = lhh.HHType
 
+drop table #padded;
  
 /*****************************************************************
 4.34 Get Dates of Other System Use
@@ -2708,181 +2731,195 @@ from lsa_Report rpt
 /*****************************************************************
 4.40 Get Exit Cohort Members and Enrollments
 *****************************************************************/
+select hhid.HouseholdID, case
+      when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
+      when sum(hhid.AgeStatus/100) > 0 then 99
+      when sum(hhid.AgeStatus%10) > 0 then 3
+      when sum((hhid.AgeStatus/10)%100) > 0 then 1
+      else 99 end as HHType
+    into #hh
+    from (--hhid identifies age status (adult/child/unknown) for 
+        --members of households with exits in subquery hoh
+      select distinct hn.HouseholdID
+      , case when c.DOBDataQuality in (8,9) 
+          or c.DOB is null 
+          or c.DOB = '1/1/1900'
+          or c.DOB > hn.EntryDate
+          or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+          or ((hn.EntryDate >= cd.CohortStart 
+            and dateadd(yy, 105, c.DOB) <= hn.EntryDate) 
+              or (dateadd(yy, 105, c.DOB) <= cd.CohortStart))
+          or c.DOBDataQuality is null
+          or c.DOBDataQuality not in (1,2) then 100
+        --calculate age for qualifying exit as of 
+        --the later of CohortStart and EntryDate
+        when hn.EntryDate >= cd.CohortStart 
+          and dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+        when dateadd(yy, 18, c.DOB) <= cd.CohortStart then 10 
+        else 1 end as AgeStatus
+      from hmis_Enrollment hn
+      --CHANGE 11/9/2018 add join to hmis_Exit, correct join criteria for tmp_CohortDates
+      --to eliminate counting some individuals as both an adult and a child.
+      inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
+      inner join tmp_CohortDates cd on hx.ExitDate between cd.CohortStart and cd.CohortEnd 
+        and cd.Cohort <= 1
+      inner join hmis_Client c on c.PersonalID = hn.PersonalID
+      inner join 
+          --hoh identifies exits for heads of household
+          --from relevant projects in cohort periods
+          (select distinct hhinfo.HouseholdID
+          from hmis_Enrollment hhinfo
+          inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+          inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+          left outer join lsa_Project lp on lp.ProjectID = p.ProjectID  
+          inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hhinfo.EnrollmentID
+            and coc.CoCCode = rpt.ReportCoC
+          --Project type for qualifying exit MAY BE STREET OUTREACH
+          --in addition to ES/SH/TH/RRH/PSH when LSAScope = 1 (systemwide).         
+          --  When LSAScope = 2 (project-focused), the project must have a record 
+          --  in lsa_Project
+          where p.ProjectType in (1,2,3,4,8,13) and p.ContinuumProject = 1
+              and (rpt.LSAScope = 1 or lp.ProjectID is not NULL)
+          group by hhinfo.HouseholdID
+          ) hoh on hoh.HouseholdID = hn.HouseholdID
+      group by hn.HouseholdID
+      , case when c.DOBDataQuality in (8,9) 
+          or c.DOB is null 
+          or c.DOB = '1/1/1900'
+          or c.DOB > hn.EntryDate
+          or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+          or ((hn.EntryDate >= cd.CohortStart 
+            and dateadd(yy, 105, c.DOB) <= hn.EntryDate) 
+              or (dateadd(yy, 105, c.DOB) <= cd.CohortStart))
+          or c.DOBDataQuality is null
+          or c.DOBDataQuality not in (1,2) then 100
+        --calculate age for qualifying exit as of 
+        --the later of CohortStart and EntryDate
+        when hn.EntryDate >= cd.CohortStart 
+          and dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+        when dateadd(yy, 18, c.DOB) <= cd.CohortStart then 10 
+        else 1 end
+      ) hhid
+    group by hhid.HouseholdID
+
+CREATE NONCLUSTERED INDEX ix_household_id ON #hh (HouseholdID);
+
+select hn.PersonalID as HoHID, hh.HHType, hn.EntryDate, hx.ExitDate
+    into #b
+    from hmis_Enrollment hn
+    left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
+    inner join (select hhid.HouseholdID, case 
+          when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
+          when sum(hhid.AgeStatus/100) > 0 then 99
+          when sum(hhid.AgeStatus%10) > 0 then 3
+          when sum((hhid.AgeStatus/10)%100) > 0 then 1
+          else 99 end as HHType
+        from (select distinct hn.HouseholdID
+          , case when c.DOBDataQuality in (8,9) 
+              or c.DOB is null 
+              or c.DOB = '1/1/1900'
+              or c.DOB > hn.EntryDate
+              or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+              or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+              or c.DOBDataQuality is null
+              or c.DOBDataQuality not in (1,2) then 100
+            when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+            else 1 end as AgeStatus
+            from hmis_Enrollment hn
+            inner join hmis_Client c on c.PersonalID = hn.PersonalID
+            inner join (select distinct hhinfo.HouseholdID
+                from hmis_Enrollment hhinfo
+                inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+                inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+                inner join hmis_EnrollmentCoC coc on 
+                  coc.EnrollmentID = hhinfo.EnrollmentID
+                  and coc.CoCCode = rpt.ReportCoC
+                  --CHANGE 11/19/2018 location after ReportEnd is not relevant
+                  and coc.InformationDate <= rpt.ReportEnd
+                --only ES/SH/TH/RRH/PSH enrollments are relevant
+                where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
+                group by hhinfo.HouseholdID, coc.CoCCode
+                ) hoh on hoh.HouseholdID = hn.HouseholdID
+            group by hn.HouseholdID
+            , case when c.DOBDataQuality in (8,9) 
+                or c.DOB is null 
+                or c.DOB = '1/1/1900'
+                or c.DOB > hn.EntryDate
+                or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+                or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+                or c.DOBDataQuality is null
+                or c.DOBDataQuality not in (1,2) then 100
+              when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+              else 1 end
+            )  hhid
+          group by hhid.HouseholdID
+          ) hh on hh.HouseholdID = hn.HouseholdID
+        where hn.RelationshipToHoH = 1
+
+CREATE NONCLUSTERED INDEX ix_hoh_id_b ON #b (HoHID);
+CREATE NONCLUSTERED INDEX ix_hhtype_b ON #b (HHType);
+CREATE NONCLUSTERED INDEX ix_entry_date_b ON #b (EntryDate);
+CREATE NONCLUSTERED INDEX ix_exit_date_b ON #b (ExitDate);
+
 delete from ex_Enrollment 
 
 insert into ex_Enrollment (Cohort, HoHID, HHType, EnrollmentID, ProjectType
    , EntryDate, MoveInDate, ExitDate, ExitTo)
-select distinct cd.Cohort, hn.PersonalID, hh.HHType, hn.EnrollmentID, p.ProjectType 
+select distinct cd.Cohort, hn.PersonalID, #hh.HHType, hn.EnrollmentID, p.ProjectType 
    , hn.EntryDate, hn.MoveInDate, hx.ExitDate 
    , case when hx.Destination = 3 then 1 --PSH
-	 when hx.Destination = 31 then 2	--PH - rent/temp subsidy
-	 when hx.Destination in (19,20,21,26,28) then 3	--PH - rent/own with subsidy
-	 when hx.Destination in (10,11) then 4	--PH - rent/own no subsidy
-	 when hx.Destination = 22 then 5	--Family - perm
-	 when hx.Destination = 23 then 6	--Friends - perm
-	 when hx.Destination in (15,25) then 7	--Institutions - group/assisted
-	 when hx.Destination in (4,5,6) then 8	--Institutions - medical
-	 when hx.Destination = 7 then 9	--Institutions - incarceration
-	 when hx.Destination in (14,29) then 10	--Temporary - not homeless
-	 when hx.Destination in (1,2,18,27) then 11	--Homeless - ES/SH/TH
-	 when hx.Destination = 16 then 12	--Homeless - Street
-	 when hx.Destination = 12 then 13	--Family - temp
-	 when hx.Destination = 13 then 14	--Friends - temp
-	 when hx.Destination = 24 then 15	--Deceased
-	 else 99	end
+   when hx.Destination = 31 then 2  --PH - rent/temp subsidy
+   when hx.Destination in (19,20,21,26,28) then 3 --PH - rent/own with subsidy
+   when hx.Destination in (10,11) then 4  --PH - rent/own no subsidy
+   when hx.Destination = 22 then 5  --Family - perm
+   when hx.Destination = 23 then 6  --Friends - perm
+   when hx.Destination in (15,25) then 7  --Institutions - group/assisted
+   when hx.Destination in (4,5,6) then 8  --Institutions - medical
+   when hx.Destination = 7 then 9 --Institutions - incarceration
+   when hx.Destination in (14,29) then 10 --Temporary - not homeless
+   when hx.Destination in (1,2,18,27) then 11 --Homeless - ES/SH/TH
+   when hx.Destination = 16 then 12 --Homeless - Street
+   when hx.Destination = 12 then 13 --Family - temp
+   when hx.Destination = 13 then 14 --Friends - temp
+   when hx.Destination = 24 then 15 --Deceased
+   else 99  end
 from hmis_Enrollment hn
 inner join hmis_Project p on p.ProjectID = hn.ProjectID
 inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-	--CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
-	-- under some circumstances (see note with 11/19 change in section 4.7).  
-	and (hx.ExitDate > hn.EntryDate
-			or (hx.ExitDate = hn.EntryDate 
-				and (hn.MoveInDate is null and p.ProjectType in (3,13))
-					or p.ProjectType = 4))
+  --CHANGE 11/27/2018:  Include enrollments where ExitDate = EntryDate
+  -- under some circumstances (see note with 11/19 change in section 4.7).  
+  and (hx.ExitDate > hn.EntryDate
+      or (hx.ExitDate = hn.EntryDate 
+        and (hn.MoveInDate is null and p.ProjectType in (3,13))
+          or p.ProjectType = 4))
 inner join tmp_CohortDates cd on cd.CohortStart <= hx.ExitDate 
-	and cd.CohortEnd >= hx.ExitDate 
+  and cd.CohortEnd >= hx.ExitDate 
 --CHANGE 11/19/2018 add join to lsa_Report -- need ReportCoC in WHERE clause
 inner join lsa_Report rpt on rpt.ReportEnd >= cd.CohortEnd
 inner join 
-		--hh identifies household exits by HHType from relevant projects
-		(select hhid.HouseholdID, case
-			when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
-			when sum(hhid.AgeStatus/100) > 0 then 99
-			when sum(hhid.AgeStatus%10) > 0 then 3
-			when sum((hhid.AgeStatus/10)%100) > 0 then 1
-			else 99 end as HHType
-		from (--hhid identifies age status (adult/child/unknown) for 
-			  --members of households with exits in subquery hoh
-			select distinct hn.HouseholdID
-			, case when c.DOBDataQuality in (8,9) 
-					or c.DOB is null 
-					or c.DOB = '1/1/1900'
-					or c.DOB > hn.EntryDate
-					or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-					or ((hn.EntryDate >= cd.CohortStart 
-						and dateadd(yy, 105, c.DOB) <= hn.EntryDate) 
-							or (dateadd(yy, 105, c.DOB) <= cd.CohortStart))
-					or c.DOBDataQuality is null
-					or c.DOBDataQuality not in (1,2) then 100
-				--calculate age for qualifying exit as of 
-				--the later of CohortStart and EntryDate
-				when hn.EntryDate >= cd.CohortStart 
-					and dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-				when dateadd(yy, 18, c.DOB) <= cd.CohortStart then 10 
-				else 1 end as AgeStatus
-			from hmis_Enrollment hn
-			--CHANGE 11/9/2018 add join to hmis_Exit, correct join criteria for tmp_CohortDates
-			--to eliminate counting some individuals as both an adult and a child.
-			inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-			inner join tmp_CohortDates cd on hx.ExitDate between cd.CohortStart and cd.CohortEnd 
-				and cd.Cohort <= 1
-			inner join hmis_Client c on c.PersonalID = hn.PersonalID
-			inner join 
-					--hoh identifies exits for heads of household
-					--from relevant projects in cohort periods
-					(select distinct hhinfo.HouseholdID
-					from hmis_Enrollment hhinfo
-					inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-					inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-					left outer join lsa_Project lp on lp.ProjectID = p.ProjectID	
-					inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hhinfo.EnrollmentID
-						and coc.CoCCode = rpt.ReportCoC
-					--Project type for qualifying exit MAY BE STREET OUTREACH
-					--in addition to ES/SH/TH/RRH/PSH when LSAScope = 1 (systemwide).					
-					--  When LSAScope = 2 (project-focused), the project must have a record 
-					--  in lsa_Project
-					where p.ProjectType in (1,2,3,4,8,13) and p.ContinuumProject = 1
-							and (rpt.LSAScope = 1 or lp.ProjectID is not NULL)
-					group by hhinfo.HouseholdID
-					) hoh on hoh.HouseholdID = hn.HouseholdID
-			group by hn.HouseholdID
-			, case when c.DOBDataQuality in (8,9) 
-					or c.DOB is null 
-					or c.DOB = '1/1/1900'
-					or c.DOB > hn.EntryDate
-					or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-					or ((hn.EntryDate >= cd.CohortStart 
-						and dateadd(yy, 105, c.DOB) <= hn.EntryDate) 
-							or (dateadd(yy, 105, c.DOB) <= cd.CohortStart))
-					or c.DOBDataQuality is null
-					or c.DOBDataQuality not in (1,2) then 100
-				--calculate age for qualifying exit as of 
-				--the later of CohortStart and EntryDate
-				when hn.EntryDate >= cd.CohortStart 
-					and dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-				when dateadd(yy, 18, c.DOB) <= cd.CohortStart then 10 
-				else 1 end
-			) hhid
-		group by hhid.HouseholdID
-		) hh on hh.HouseholdID = hn.HouseholdID
+    --hh identifies household exits by HHType from relevant projects
+    #hh on #hh.HouseholdID = hn.HouseholdID
 left outer join 
-		--Subquery b identifies household enrollments by HHType in ES/SH/TH/RRH/PSH 
-		--  projects active in the cohort period; if these include any activity in the 
-		--  within 15 days of an exit identified in the hh subquery, the hh exit is 
-		--  excluded in the WHERE clause.
-		(select hn.PersonalID as HoHID, hh.HHType, hn.EntryDate, hx.ExitDate
-		from hmis_Enrollment hn
-		left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-		inner join (select hhid.HouseholdID, case	
-					when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
-					when sum(hhid.AgeStatus/100) > 0 then 99
-					when sum(hhid.AgeStatus%10) > 0 then 3
-					when sum((hhid.AgeStatus/10)%100) > 0 then 1
-					else 99 end as HHType
-				from (select distinct hn.HouseholdID
-					, case when c.DOBDataQuality in (8,9) 
-							or c.DOB is null 
-							or c.DOB = '1/1/1900'
-							or c.DOB > hn.EntryDate
-							or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-							or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-							or c.DOBDataQuality is null
-							or c.DOBDataQuality not in (1,2) then 100
-						when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-						else 1 end as AgeStatus
-						from hmis_Enrollment hn
-						inner join hmis_Client c on c.PersonalID = hn.PersonalID
-						inner join (select distinct hhinfo.HouseholdID
-								from hmis_Enrollment hhinfo
-								inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-								inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-								inner join hmis_EnrollmentCoC coc on 
-									coc.EnrollmentID = hhinfo.EnrollmentID
-									and coc.CoCCode = rpt.ReportCoC
-									--CHANGE 11/19/2018 location after ReportEnd is not relevant
-									and coc.InformationDate <= rpt.ReportEnd
-								--only ES/SH/TH/RRH/PSH enrollments are relevant
-								where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-								group by hhinfo.HouseholdID, coc.CoCCode
-								) hoh on hoh.HouseholdID = hn.HouseholdID
-						group by hn.HouseholdID
-						, case when c.DOBDataQuality in (8,9) 
-								or c.DOB is null 
-								or c.DOB = '1/1/1900'
-								or c.DOB > hn.EntryDate
-								or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-								or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-								or c.DOBDataQuality is null
-								or c.DOBDataQuality not in (1,2) then 100
-							when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-							else 1 end
-						)  hhid
-					group by hhid.HouseholdID
-					) hh on hh.HouseholdID = hn.HouseholdID
-				where hn.RelationshipToHoH = 1
-				) b on b.HoHID = hn.PersonalID and b.HHType = hh.HHType
-					and b.EntryDate < dateadd(dd, 15, hx.ExitDate) 
-					and (b.ExitDate is NULL or b.ExitDate > hx.ExitDate)
+    --Subquery b identifies household enrollments by HHType in ES/SH/TH/RRH/PSH 
+    --  projects active in the cohort period; if these include any activity in the 
+    --  within 15 days of an exit identified in the hh subquery, the hh exit is 
+    --  excluded in the WHERE clause.
+    #b on #b.HoHID = hn.PersonalID and #b.HHType = #hh.HHType
+          and #b.EntryDate < dateadd(dd, 15, hx.ExitDate) 
+          and (#b.ExitDate is NULL or #b.ExitDate > hx.ExitDate)
 --If there is at least one exit followed by 15 days of inactivity during a cohort period,
 --the HoHID/HHType is included in the relevant exit cohort.
-where hn.RelationshipToHoH = 1 and b.HoHID is null and cd.Cohort <= 0
-	--CHANGE 11/19/2018 - verify that household was in ReportCoC
-	--  as of most recent EnrollmentCoC record associated with 
-	--  the qualifying exit.
-	and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
-		from hmis_EnrollmentCoC mostrecent
-		where mostrecent.EnrollmentID = hn.EnrollmentID 
-		order by mostrecent.InformationDate desc)
+where hn.RelationshipToHoH = 1 and #b.HoHID is null and cd.Cohort <= 0
+  --CHANGE 11/19/2018 - verify that household was in ReportCoC
+  --  as of most recent EnrollmentCoC record associated with 
+  --  the qualifying exit.
+  and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
+    from hmis_EnrollmentCoC mostrecent
+    where mostrecent.EnrollmentID = hn.EnrollmentID 
+    order by mostrecent.InformationDate desc)
+
+drop table #hh;
+drop table #b;
 
 /*****************************************************************
 4.41 Get EnrollmentIDs for Exit Cohort Households
@@ -2926,68 +2963,75 @@ set ReportID = (select ReportID
 4.43 Set ReturnTime for Exit Cohort Households
 *****************************************************************/
 
+select hhid.HouseholdID, case 
+when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
+when sum(hhid.AgeStatus/100) > 0 then 99
+when sum(hhid.AgeStatus%10) > 0 then 3
+when sum((hhid.AgeStatus/10)%100) > 0 then 1
+else 99 end as HHType
+into #hh
+from (select distinct hn.HouseholdID
+  , case when c.DOBDataQuality in (8,9) 
+      or c.DOB is null 
+      or c.DOB = '1/1/1900'
+      or c.DOB > hn.EntryDate
+      or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+      --age for later enrollments is always based on EntryDate
+      or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+      or c.DOBDataQuality is null
+      or c.DOBDataQuality not in (1,2) then 100
+    when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+    else 1 end as AgeStatus
+  from hmis_Enrollment hn
+  inner join hmis_Client c on c.PersonalID = hn.PersonalID
+  inner join (select distinct hhinfo.HouseholdID
+      from hmis_Enrollment hhinfo
+      inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+      inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+      inner join hmis_EnrollmentCoC coc on 
+        coc.EnrollmentID = hhinfo.EnrollmentID
+        and coc.CoCCode = rpt.ReportCoC
+        --CHANGE 11/19/2018 per specs, household must be in ReportCoC at ENTRY 
+        -- to be considered a return 
+        and (coc.DataCollectionStage = 1 or coc.InformationDate = hhinfo.EntryDate)
+      --only later ES/SH/TH/RRH/PSH enrollments are relevant
+      where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
+      group by hhinfo.HouseholdID, coc.CoCCode
+      ) hoh on hoh.HouseholdID = hn.HouseholdID
+  group by hn.HouseholdID
+  , case when c.DOBDataQuality in (8,9) 
+      or c.DOB is null 
+      or c.DOB = '1/1/1900'
+      or c.DOB > hn.EntryDate
+      or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+      --age for later enrollments is always based on EntryDate
+      or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+      or c.DOBDataQuality is null
+      or c.DOBDataQuality not in (1,2) then 100
+    when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+    else 1 end 
+  ) hhid
+group by hhid.HouseholdID
+
+CREATE NONCLUSTERED INDEX ix_household_id ON #hh (HouseholdID);
+CREATE NONCLUSTERED INDEX ix_hhtype ON #hh (HHType);
+
 update ex
 set ex.ReturnDate = (select min(hn.EntryDate) 
-		from hmis_Enrollment hn
-		inner join (select hhid.HouseholdID, case	
-				when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
-				when sum(hhid.AgeStatus/100) > 0 then 99
-				when sum(hhid.AgeStatus%10) > 0 then 3
-				when sum((hhid.AgeStatus/10)%100) > 0 then 1
-				else 99 end as HHType
-				from (select distinct hn.HouseholdID
-					, case when c.DOBDataQuality in (8,9) 
-							or c.DOB is null 
-							or c.DOB = '1/1/1900'
-							or c.DOB > hn.EntryDate
-							or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-							--age for later enrollments is always based on EntryDate
-							or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-							or c.DOBDataQuality is null
-							or c.DOBDataQuality not in (1,2) then 100
-						when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-						else 1 end as AgeStatus
-					from hmis_Enrollment hn
-					inner join hmis_Client c on c.PersonalID = hn.PersonalID
-					inner join (select distinct hhinfo.HouseholdID
-							from hmis_Enrollment hhinfo
-							inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-							inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-							inner join hmis_EnrollmentCoC coc on 
-								coc.EnrollmentID = hhinfo.EnrollmentID
-								and coc.CoCCode = rpt.ReportCoC
-								--CHANGE 11/19/2018 per specs, household must be in ReportCoC at ENTRY 
-								-- to be considered a return 
-								and (coc.DataCollectionStage = 1 or coc.InformationDate = hhinfo.EntryDate)
-							--only later ES/SH/TH/RRH/PSH enrollments are relevant
-							where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-							group by hhinfo.HouseholdID, coc.CoCCode
-							) hoh on hoh.HouseholdID = hn.HouseholdID
-					group by hn.HouseholdID
-					, case when c.DOBDataQuality in (8,9) 
-							or c.DOB is null 
-							or c.DOB = '1/1/1900'
-							or c.DOB > hn.EntryDate
-							or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-							--age for later enrollments is always based on EntryDate
-							or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-							or c.DOBDataQuality is null
-							or c.DOBDataQuality not in (1,2) then 100
-						when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-						else 1 end 
-					) hhid
-				group by hhid.HouseholdID
-				) hh on hh.HouseholdID = hn.HouseholdID
-				where hn.RelationshipToHoH = 1 
-					and hn.PersonalID = ex.HoHID and hh.HHType = ex.HHType
-					and hn.EntryDate 
-						between dateadd(dd, 15, ex.ExitDate) and dateadd(dd, 730, ex.ExitDate))
+    from hmis_Enrollment hn
+    inner join #hh on #hh.HouseholdID = hn.HouseholdID
+        where hn.RelationshipToHoH = 1 
+          and hn.PersonalID = ex.HoHID and #hh.HHType = ex.HHType
+          and hn.EntryDate 
+            between dateadd(dd, 15, ex.ExitDate) and dateadd(dd, 730, ex.ExitDate))
 from tmp_Exit ex
+
+drop table #hh;
 
 update ex
 set ex.ReturnTime = 
-	case when ex.ReturnDate is null then -1
-		else datediff(dd, ex.ExitDate, ex.ReturnDate) end
+  case when ex.ReturnDate is null then -1
+    else datediff(dd, ex.ExitDate, ex.ReturnDate) end
 from tmp_Exit ex
 /*****************************************************************
 4.44 Set Population Identifiers for Exit Cohort Households
@@ -3123,73 +3167,81 @@ where ex.HHParent = 1 and ex.HHAdultAge not in (18,24)
 /*****************************************************************
 4.45 Set Stat for Exit Cohort Households
 *****************************************************************/
+
+select hhid.HouseholdID, case  
+  when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
+  when sum(hhid.AgeStatus/100) > 0 then 99
+  when sum(hhid.AgeStatus%10) > 0 then 3
+  when sum((hhid.AgeStatus/10)%100) > 0 then 1
+  else 99 end as HHType
+into #hh
+from 
+  --HouseholdIDs with age status for household members
+  (select distinct hn.HouseholdID
+  , case when c.DOBDataQuality in (8,9) 
+      or c.DOB is null 
+      or c.DOB = '1/1/1900'
+      or c.DOB > hn.EntryDate
+      or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
+      --age for prior enrollments is always based on EntryDate
+      or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
+      or c.DOBDataQuality is null
+      or c.DOBDataQuality not in (1,2) then 100
+    when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
+    else 1 end as AgeStatus
+  from hmis_Enrollment hn
+  inner join hmis_Client c on c.PersonalID = hn.PersonalID
+  inner join 
+      --HouseholdIDs
+      (select distinct hhinfo.HouseholdID
+      from hmis_Enrollment hhinfo
+      inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
+      inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
+      inner join hmis_EnrollmentCoC coc on 
+        coc.EnrollmentID = hhinfo.EnrollmentID
+        and coc.CoCCode = rpt.ReportCoC
+      where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
+      --CHANGE 11/19/2018 -- align criteria for CoC with business logic
+      --  defined by the specs for tmp_Household.Stat.  The specs fail to 
+      --  mention EnrollmentCoC at all in relation to Stat for exit
+      --  cohort households.  The join to hmis_EnrollmentCoC and the criteria 
+      --  below are, therefore, not required -- but they are consistent 
+      --  with the intent.  
+        and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
+          from hmis_EnrollmentCoC mostrecent
+          where mostrecent.EnrollmentID = hhinfo.EnrollmentID
+          order by mostrecent.InformationDate desc)
+      group by hhinfo.HouseholdID, coc.CoCCode
+          ) hoh on hoh.HouseholdID = hn.HouseholdID
+      ) hhid
+  group by hhid.HouseholdID
+      
+CREATE NONCLUSTERED INDEX ix_household_id ON #hh (HouseholdID);
+CREATE NONCLUSTERED INDEX ix_hhtype ON #hh (HHType);
+
 update ex
 set ex.StatEnrollmentID = (select top 1 previous.EnrollmentID
-	from hmis_Enrollment previous 
-	inner join hmis_Exit hx on hx.EnrollmentID = previous.EnrollmentID
-		and hx.ExitDate > previous.EntryDate 
-		and dateadd(dd,730,hx.ExitDate) >= ex.EntryDate
-		and hx.ExitDate < ex.ExitDate
-	inner join 
-		--HouseholdIDs with LSA household types
-		(select hhid.HouseholdID, case	
-			when sum(hhid.AgeStatus%10) > 0 and sum((hhid.AgeStatus/10)%100) > 0 then 2
-			when sum(hhid.AgeStatus/100) > 0 then 99
-			when sum(hhid.AgeStatus%10) > 0 then 3
-			when sum((hhid.AgeStatus/10)%100) > 0 then 1
-			else 99 end as HHType
-		from 
-			--HouseholdIDs with age status for household members
-			(select distinct hn.HouseholdID
-			, case when c.DOBDataQuality in (8,9) 
-					or c.DOB is null 
-					or c.DOB = '1/1/1900'
-					or c.DOB > hn.EntryDate
-					or c.DOB = hn.EntryDate and hn.RelationshipToHoH = 1
-					--age for prior enrollments is always based on EntryDate
-					or dateadd(yy, 105, c.DOB) <= hn.EntryDate 
-					or c.DOBDataQuality is null
-					or c.DOBDataQuality not in (1,2) then 100
-				when dateadd(yy, 18, c.DOB) <= hn.EntryDate then 10 
-				else 1 end as AgeStatus
-			from hmis_Enrollment hn
-			inner join hmis_Client c on c.PersonalID = hn.PersonalID
-			inner join 
-					--HouseholdIDs
-					(select distinct hhinfo.HouseholdID
-					from hmis_Enrollment hhinfo
-					inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
-					inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
-					inner join hmis_EnrollmentCoC coc on 
-						coc.EnrollmentID = hhinfo.EnrollmentID
-						and coc.CoCCode = rpt.ReportCoC
-					where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
-					--CHANGE 11/19/2018 -- align criteria for CoC with business logic
-					--  defined by the specs for tmp_Household.Stat.  The specs fail to 
-					--  mention EnrollmentCoC at all in relation to Stat for exit
-					--  cohort households.  The join to hmis_EnrollmentCoC and the criteria 
-					--  below are, therefore, not required -- but they are consistent 
-					--  with the intent.  
-						and rpt.ReportCoC = (select top 1 mostrecent.CoCCode
-							from hmis_EnrollmentCoC mostrecent
-							where mostrecent.EnrollmentID = hhinfo.EnrollmentID
-							order by mostrecent.InformationDate desc)
-					group by hhinfo.HouseholdID, coc.CoCCode
-							) hoh on hoh.HouseholdID = hn.HouseholdID
-					) hhid
-			group by hhid.HouseholdID
-			) hh on hh.HouseholdID = previous.HouseholdID
-			where previous.PersonalID = ex.HoHID and previous.RelationshipToHoH = 1 
-				and hh.HHType = ex.HHType 
-			order by hx.ExitDate desc)
+  from hmis_Enrollment previous 
+  inner join hmis_Exit hx on hx.EnrollmentID = previous.EnrollmentID
+    and hx.ExitDate > previous.EntryDate 
+    and dateadd(dd,730,hx.ExitDate) >= ex.EntryDate
+    and hx.ExitDate < ex.ExitDate
+  inner join 
+    --HouseholdIDs with LSA household types
+     #hh on #hh.HouseholdID = previous.HouseholdID
+      where previous.PersonalID = ex.HoHID and previous.RelationshipToHoH = 1 
+        and #hh.HHType = ex.HHType 
+      order by hx.ExitDate desc)
 from tmp_Exit ex
+
+drop table #hh;
 
 update ex
 set ex.Stat = case when ex.StatEnrollmentID is null then 1
-	when dateadd(dd, 15, hx.ExitDate) >= ex.EntryDate then 5 
-	when hx.Destination in (3,31,19,20,21,26,28,10,11,22,23) then 2
-	when hx.Destination in (15,25,4,5,6,7,14,29,1,2,18,27,16,12,13) then 3
-	else 4 end  
+  when dateadd(dd, 15, hx.ExitDate) >= ex.EntryDate then 5 
+  when hx.Destination in (3,31,19,20,21,26,28,10,11,22,23) then 2
+  when hx.Destination in (15,25,4,5,6,7,14,29,1,2,18,27,16,12,13) then 3
+  else 4 end  
 from tmp_Exit ex 
 left outer join hmis_Exit hx on hx.EnrollmentID = ex.StatEnrollmentID
 /*****************************************************************
