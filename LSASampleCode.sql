@@ -1262,16 +1262,18 @@ where
 
 --Anyone who doesn't meet CH time criteria and is missing data in 3.917 
 --for an active enrollment should be identified as missing data.
+--CHANGE 11/28/2018 -- per specs, change 'active enrollment' to 
+-- 'enrollment in ch_Enrollment' 
 update lp 
-set CHTime = coalesce(lp.CHTime, 0)
-	, CHTimeStatus = 99
+set lp.CHTime = coalesce(lp.CHTime, 0)
+	, lp.CHTimeStatus = 99
 from tmp_Person lp
-inner join active_Enrollment an on an.PersonalID = lp.PersonalID
-inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
+inner join ch_Enrollment cn on cn.PersonalID = lp.PersonalID
+inner join hmis_Enrollment hn on hn.EnrollmentID = cn.EnrollmentID
 	and ((hn.DateToStreetESSH > hn.EntryDate)
 		or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 		or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
-		or (an.ProjectType in (1,8) and (hn.DateToStreetESSH is null)) 
+		or (cn.ProjectType in (1,8) and (hn.DateToStreetESSH is null)) 
 		or (hn.MonthsHomelessPastThreeYears in (8,9,99)) 
 		or (hn.MonthsHomelessPastThreeYears is null) 
 		or (hn.TimesHomelessPastThreeYears in (8,9,99))  
@@ -1287,8 +1289,8 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 --CHANGE 10/24/2018 - align WHERE clause to specs (no change in output)
 --CHANGE 11/9/2018 - correct typo (was:  CHTime in (1,270))
 --  This correction WILL change output.
-where (CHTime in (0,270) or CHTimeStatus = 3)
-	and HoHAdult > 0
+where (lp.CHTime in (0,270) or lp.CHTimeStatus = 3)
+	and lp.HoHAdult > 0
 
 update tmp_Person 
 set CHTime = 0, CHTimeStatus = -1
@@ -1514,19 +1516,23 @@ set ahh.HHChronic = (select max(
 		inner join active_Enrollment n on n.PersonalID = lp.PersonalID
 		inner join active_Household hh on hh.HouseholdID = n.HouseholdID
 		where n.HouseholdID = ahh.HouseholdID)
-	--CHANGE 10/5/2018 - more corrections to HHAdultAge 
-	, ahh.HHAdultAge = coalesce((select 
-			--HHTypes 3 and 99 are excluded by the CASE statement
+	--CHANGE 11/28/2018 - (yet another) bug fix for HHAdultAge 
+	--Set HHAdultAge for active households based on HH member AgeGroup(s) 
+	, ahh.HHAdultAge = (select 
+			-- -1 (n/a) for HHType 99 (UN) and HHType 2 (AC) with member(s) of unknown age
 			case when max(n.AgeGroup) >= 98 then -1
-					when max(n.AgeGroup) <= 17 then -1
-					when min(n.AgeGroup) between 18 and 25 
-						and max(n.AgeGroup) between 25 and 55 then 25
-					when max(n.AgeGroup) = 21 then 18
-					when max(n.AgeGroup) = 24 then 24
-					when min(n.AgeGroup) between 64 and 65 then 55
-					else -1 end
+				-- -1 (n/a) for HHType 3
+				when max(n.AgeGroup) <= 17 then -1
+				-- AO and AC 18-21
+				when max(n.AgeGroup) = 21 then 18
+				-- AO and AC 22-24
+				when max(n.AgeGroup) = 24 then 24
+				-- AO 55+
+				when min(n.AgeGroup) between 64 and 65 then 55
+				-- all other households
+				else 25 end
 			from active_Enrollment n 
-			where n.HouseholdID = ahh.HouseholdID and n.HHType in (1,2)), -1)
+			where n.HouseholdID = ahh.HouseholdID)
 	, ahh.AC3Plus = (select case sum(case when n.AgeGroup <= 17 and hh.HHType = 2 then 1
 							else 0 end) 
 						when 0 then 0 
@@ -1698,17 +1704,41 @@ set HHChild = (select case when count(distinct n.PersonalID) >= 3 then 3
 			and hhid.HHType = hh.HHType and hhid.HoHID = hh.HoHID)
 from tmp_Household hh
 
---CHANGE 11/27/2018 bug fix for set of HHAdultAge
+--CHANGE 11/28/2018 (yet another) bug fix for set of tmp_Household.HHAdultAge
+update hh set hh.HHAdultAge = null from tmp_Household hh
+
 update hh
-set hh.HHAdultAge = coalesce ((select case 
-				when max(hhid.HHAdultAge) = -1 then -1
-				when min(hhid.HHAdultAge) in (18,24) 
-					then min(hhid.HHAdultAge)
-				when max(hhid.HHAdultAge) = 55 then 55
-				else 25 end
-			from active_Household hhid
-			where hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType), -1)
+set hh.HHAdultAge = hhid.HHAdultAge 
 from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 18
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 24 and hh.HHAdultAge is null
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 55 and hh.HHAdultAge is null
+
+update hh
+set hh.HHAdultAge = hhid.HHAdultAge 
+from tmp_Household hh
+inner join active_Household hhid
+	on hhid.HoHID = hh.HoHID and hhid.HHType = hh.HHType
+where hhid.HHAdultAge = 25 and hh.HHAdultAge is null
+
+update hh 
+set hh.HHAdultAge = -1 
+from tmp_Household hh
+where hh.HHAdultAge is null
 
 /*************************************************************************
 4.26 Set tmp_Household Project Group Status Indicators
@@ -3215,30 +3245,77 @@ set ex.Stat = case when ex.StatEnrollmentID is null then 1
 from tmp_Exit ex 
 left outer join hmis_Exit hx on hx.EnrollmentID = ex.StatEnrollmentID
 /*****************************************************************
-4.46 Get Other Enrollments Relevant to Exit Cohort System Path
+4.46 Set System Path for Exit Cohort Households
 *****************************************************************/
+update ex
+set ex.SystemPath = null
+from tmp_Exit ex
+
+--SystemPath is n/a for any household household in PSH by CohortStart
+update ex
+set ex.SystemPath = -1
+from tmp_Exit ex
+inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
+inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
+where ex.ExitFrom = 6 and hn.MoveInDate <= cd.CohortStart
+
+-- SystemPath n/a for any household exiting after 365+ days housed in RRH/PSH
+update ex
+set ex.SystemPath = -1
+from tmp_Exit ex
+inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
+where ex.ExitFrom in (5,6) and dateadd(dd,365, hn.MoveInDate) <= ex.ExitDate
+	and ex.SystemPath is null
+
+-- SystemPath can be set directly based on ExitFrom for
+-- -Any household exiting from street outreach (ExitFrom = 1)
+-- -Any first time homeless household (Stat = 1)
+-- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
+update ex
+set ex.SystemPath = case 
+	when ex.ExitFrom = 1 then 12
+	when ex.ExitFrom = 2 then 1
+	when ex.ExitFrom = 3 then 2
+	when ex.ExitFrom = 4 then 1
+	when ex.ExitFrom = 5 then 4
+	when ex.ExitFrom = 6 then 8
+	else 8 end
+from tmp_Exit ex 
+inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
+inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
+where ex.SystemPath is null
+	and (ex.Stat in (1,2,3,4) or ex.ExitFrom = 1)
+
+--Where SystemPath cannot be set directly, sys_Enrollment is used to 
+--  to build a service history and determine SystemPath. 
 delete from sys_Enrollment
+
+--The enrollment associated with the qualifying exit is always relevant
 insert into sys_Enrollment (HoHID, HHType, EnrollmentID, ProjectType
-	, EntryDate
-	, MoveInDate
-	, ExitDate
-	, Active)
+	, EntryDate, MoveInDate, ExitDate)
+select distinct ex.HoHID, ex.HHType, ex.EnrollmentID, p.ProjectType
+	, case when p.TrackingMethod = 3 then null else ex.EntryDate end
+	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
+	, case when p.TrackingMethod = 3 then null else ex.ExitDate end
+from tmp_Exit ex
+inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID 
+inner join hmis_Project p on p.ProjectID = hn.ProjectID
+where ex.SystemPath is null
+
+--Enrollments PRIOR to the qualifying exit are potentially relevant to 
+-- system path if they are part of a continuous period of service.  
+insert into sys_Enrollment (HoHID, HHType, EnrollmentID, ProjectType
+	, EntryDate, MoveInDate, ExitDate)
 select distinct hn.PersonalID
-	--CHANGE 10/22/2018 use HHType as already calculated for qualifying exit; 
-	-- otherwise, use HHType based on HH member age(s) at project entry.
-	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
+	, hh.HHType 
 	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
 	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
 	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
-	--CHANGE 10/15/2018 to use MAX - enrollments were being inserted multiple
-	--times
-	, max(case when hn.EnrollmentID = ex.EnrollmentID then 1 else 0 end)
 from tmp_Exit ex
 inner join hmis_Enrollment hn on hn.PersonalID = ex.HoHID
 	and hn.RelationshipToHoH = 1
 inner join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
-	--CHANGE 11/8/2018 move ExitDate criteria from join to WHERE clause (with changes to criteria) 
 inner join hmis_Project p on p.ProjectID = hn.ProjectID
 inner join 
 		--HouseholdIDs with LSA household types
@@ -3273,28 +3350,13 @@ inner join
 			) hhid
 		group by hhid.HouseholdID
 		) hh on hh.HouseholdID = hn.HouseholdID
---CHANGE 10/24/2018 - limit inserts to enrollments where the HHType as calculated by the subquery 
---  matches tmp_Exit HHType OR the enrollment is associated with the qualifying exit. (issue #28)
---CHANGE 11/8/2018 revise/expand and comment/explain WHERE criteria
-where (hh.HHType = ex.HHType or hn.EnrollmentID = ex.EnrollmentID)
+where ex.SystemPath is null 
+	-- do not insert enrollments already in sys_Enrollment
+	and hn.EnrollmentID not in (select EnrollmentID from sys_Enrollment)
+	and hh.HHType = ex.HHType
 	-- exclude enrollments not active on/after 10/1/2012 -- never relevant
+	--  and after the qualifying exit
 	and hx.ExitDate between '10/1/2012' and ex.ExitDate
-	--The enrollment for the qualifying exit is always relevant 	
-	and ((hn.EnrollmentID = ex.EnrollmentID)
-		 --Enrollments prior to ES/SH/TH (homeless) qualifying exits are potentially relevant 
-		 or (p.ProjectType in (1,2,8))
-		 --Enrollments prior to RRH/PSH qualifying exits without MoveInDate (homeless) 
-		 --  are potentially relevant
-		 or (p.ProjectType in (3,13) and hn.MoveInDate is null)
-		 --Enrollments prior to RRH/PSH qualifying exits w/MoveInDates are only potentially relevant 
-		 --  if the stay in PH was less than seven days 
-		 or (p.ProjectType in (3,13) and datediff(dd, hn.MoveInDate, hx.ExitDate) < 7))
-group by hn.PersonalID
-	, case when ex.EnrollmentID = hn.EnrollmentID then ex.HHType else hh.HHType end
-	, hn.EnrollmentID, p.ProjectType
-	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
-	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
-	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
 
 update ex
 set ex.LastInactive = lastDay.inactive
@@ -3329,39 +3391,6 @@ inner join (select ex.Cohort, ex.HoHID, ex.HHType, max(cal.theDate) as inactive
 	group by ex.HoHID, ex.HHType, ex.Cohort
 	) lastDay on lastDay.HoHID = ex.HoHID and lastDay.HHType = ex.HHType
 		and lastDay.Cohort = ex.Cohort
-/*****************************************************************
-4.46 Set SystemPath for Exit Cohort Households
-*****************************************************************/
--- SystemPath n/a for:
--- - Any household exiting after 365+ days housed in RRH/PSH
--- - Any household housed in PSH before CohortStart
-update ex
-set ex.SystemPath = -1 
-from tmp_Exit ex 
-inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
-inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
-where (dateadd(dd, 365, hn.MoveInDate) <= ex.ExitDate
-		and ex.ExitFrom in (5,6))
-	 or (ex.ExitFrom = 6 and hn.MoveInDate < cd.CohortStart)
-
--- SystemPath can be set directly based on ExitFrom for
--- -Any household exiting from street outreach (ExitFrom = 1)
--- -Any first time homeless household (Stat = 1)
--- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
-update ex
-set ex.SystemPath = case 
-	when ex.ExitFrom = 1 then 12
-	when ex.ExitFrom = 2 then 1
-	when ex.ExitFrom = 3 then 2
-	when ex.ExitFrom = 4 then 1
-	when ex.ExitFrom = 5 then 4
-	when ex.ExitFrom = 6 then 8
-	else 8 end
-from tmp_Exit ex 
-inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
-inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
-where ex.SystemPath is null
-	and ex.Stat in (1,2,3,4) or ex.ExitFrom = 1
 
 update ex
 set ex.SystemPath = case ptype.summary
@@ -4847,7 +4876,8 @@ update rpt
 	,	NotOneHoH1 = (select count(distinct ah.HouseholdID)
 			from active_Household ah
 			left outer join (select an.HouseholdID
-					, count(distinct hn.PersonalID) as hoh
+					--CHANGE 11/28/2018 count EnrollmentID vs PersonalID per specs
+					, count(distinct hn.EnrollmentID) as hoh
 				from active_Enrollment an 
 				inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 					and hn.RelationshipToHoH = 1
@@ -4912,6 +4942,8 @@ inner join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
 	where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 	group by hh.HouseholdID
 	) hhinfo on hhinfo.HouseholdID = n.HouseholdID
+--CHANGE 11/28/2018 add WHERE clause to limit to three years
+where x.ExitDate is null or x.ExitDate >= dateadd(yy, 3, rpt.ReportEnd)
 
 /**********************************************************************
 4.71 Set LSAReport Data Quality Values for Three Year Period
