@@ -2437,7 +2437,13 @@ select distinct hn.PersonalID
 	, case when an.EnrollmentID is not null then an.HHType else #hhsys.HHType end
 	, hn.EnrollmentID, p.ProjectType
 	, case when p.TrackingMethod = 3 then null else hn.EntryDate end
-	, case when p.ProjectType in (3,13) then hn.MoveInDate else null end
+	--CHANGE 12/4/2018 only use MoveInDate if valid for the enrollment -- i.e. falls
+	-- between entry and exit dates -- and relevant to the report period (<= ReportEnd)
+	, case when p.ProjectType not in (3,13) then null
+		when hn.MoveInDate < hn.EntryDate then null
+		when hn.MoveInDate > hx.ExitDate then null
+		when hn.MoveInDate > rpt.ReportEnd then null
+		else hn.MoveInDate end
 	, case when p.TrackingMethod = 3 then null else hx.ExitDate end
 	, case when an.EnrollmentID is not null then 1 else 0 end
 from tmp_Household lhh
@@ -2543,10 +2549,13 @@ inner join hmis_Services bn on bn.EnrollmentID = sn.EnrollmentID
 	and bn.RecordType = 200
 inner join tmp_Household lhh on lhh.HoHID = sn.HoHID and lhh.HHType = sn.HHType
 inner join lsa_Report rpt on rpt.ReportEnd >= bn.DateProvided 
+left outer join hmis_Exit hx on hx.EnrollmentID = sn.EnrollmentID
+	and hx.ExitDate <= rpt.ReportEnd
 inner join ref_Calendar cal on cal.theDate = bn.DateProvided
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
-where (cal.theDate > lhh.LastInactive)
+--CHANGE 12/4/2018 verify that bed night is valid for the enrollment/not on or after exit
+where (cal.theDate > lhh.LastInactive) and cal.theDate < coalesce (x.ExitDate, rpt.ReportEnd)
 	and other.sysDate is null and sn.ProjectType = 1
 
 --Homeless (Time prior to Move-In) in PSH or RRH (sys_Time.sysStatus = 5 or 6)
