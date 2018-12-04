@@ -1937,8 +1937,6 @@ where an.ProjectType = 3 and an.MoveInDate is null
 /*************************************************************************
 4.28.b Set tmp_Household Geography for Each Project Group 
 **********************************************************************/
-update tmp_Household set ESTGeography = null
-
 --CHANGE 11/27/2018 - incorporate identification of most recent
 -- active enrollment for use in setting EST/RRH/PSHGeography into 
 -- each UPDATE statement rather than using active_Enrollment.MostRecent.
@@ -3036,6 +3034,12 @@ from (select distinct hn.HouseholdID
   inner join hmis_Client c on c.PersonalID = hn.PersonalID
   inner join (select distinct hhinfo.HouseholdID
       from hmis_Enrollment hhinfo
+	  --CHANGE 12/4/2018 add join to tmp_Exit to limit insert to enrollments 
+	  --  relevant for a reportable HoH / timeframe
+      --  only later ES/SH/TH/RRH/PSH enrollments are relevant
+	    inner join tmp_Exit ex on ex.HoHID = hhinfo.PersonalID
+		and hhinfo.EntryDate between dateadd(dd, 15, ex.ExitDate) 
+		and dateadd(dd, 730, ex.ExitDate)
       inner join lsa_Report rpt on hhinfo.EntryDate <= rpt.ReportEnd
       inner join hmis_Project p on p.ProjectID = hhinfo.ProjectID
       inner join hmis_EnrollmentCoC coc on 
@@ -3044,7 +3048,6 @@ from (select distinct hn.HouseholdID
         --CHANGE 11/19/2018 per specs, household must be in ReportCoC at ENTRY 
         -- to be considered a return 
         and (coc.DataCollectionStage = 1 or coc.InformationDate = hhinfo.EntryDate)
-      --only later ES/SH/TH/RRH/PSH enrollments are relevant
       where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
       group by hhinfo.HouseholdID, coc.CoCCode
       ) hoh on hoh.HouseholdID = hn.HouseholdID
