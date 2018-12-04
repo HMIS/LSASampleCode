@@ -4964,7 +4964,6 @@ from lsa_Report rpt
 delete from dq_Enrollment
 insert into dq_Enrollment (EnrollmentID, PersonalID, HouseholdID, RelationshipToHoH
 	, ProjectType, EntryDate, MoveInDate, ExitDate, Adult, SSNValid)
-
 select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 	, p.ProjectType, n.EntryDate, hhinfo.MoveInDate, ExitDate
 	, case when c.DOBDataQuality in (8,9) 
@@ -4993,9 +4992,11 @@ from lsa_report	rpt
 inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
 inner join hmis_Project p on p.ProjectID = n.ProjectID
 inner join hmis_Client c on c.PersonalID = n.PersonalID
+--CHANGE 12/4/2018 / correction to 11/28 change:
+--  Remove criteria other than EnrollmentID from join to hmis_Exit
+--  so that WHERE clause can exclude enrollments that ended prior to relevant period
+--  (ExitDates prior to (ReportEnd - 3 years) were previously omitted in join.)
 left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
-	--CHANGE 11/8/2018 ExitDate >= ReportEnd (not ReportStart) - 3 years
-	and x.ExitDate >= dateadd(yy, -3, rpt.ReportEnd)
 inner join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
 	from hmis_Enrollment hh
 	inner join lsa_Report rpt on hh.EntryDate <= rpt.ReportEnd
@@ -5005,8 +5006,10 @@ inner join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
 	where p.ProjectType in (1,2,3,8,13) and p.ContinuumProject = 1
 	group by hh.HouseholdID
 	) hhinfo on hhinfo.HouseholdID = n.HouseholdID
---CHANGE 11/28/2018 add WHERE clause to limit to three years
-where x.ExitDate is null or x.ExitDate >= dateadd(yy, 3, rpt.ReportEnd)
+--CHANGE 12/4/2018 to fix change from 11/28 - x.ExitDate must be either: 
+--  NULL or 
+--  Greater than or equal to  ReportEnd MINUS 3 years (was PLUS 3 years)  
+where x.ExitDate is null or x.ExitDate >= dateadd(yy, -3, rpt.ReportEnd)
 
 /**********************************************************************
 4.71 Set LSAReport Data Quality Values for Three Year Period
