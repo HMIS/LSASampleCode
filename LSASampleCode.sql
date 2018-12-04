@@ -1942,8 +1942,8 @@ update tmp_Household set ESTGeography = null
 --CHANGE 11/27/2018 - incorporate identification of most recent
 -- active enrollment for use in setting EST/RRH/PSHGeography into 
 -- each UPDATE statement rather than using active_Enrollment.MostRecent.
--- This follows the steps described in the specs more closely; it shouldn't 
--- alter output but may improve performance.
+-- This follows the steps described in the specs more closely.
+-- 12/4/2018 - per specs, exclude geography records dated after LastActive
 
 update lhh
 set ESTGeography = -1 
@@ -1955,7 +1955,8 @@ set ESTGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
 	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
-	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
+	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID 
+		and lg.InformationDate <= lhh.LastActive
 	where an.ProjectType in (1,2,8)
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
@@ -1974,7 +1975,8 @@ set RRHGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
 	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
-	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
+	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID 
+		and lg.InformationDate <= lhh.LastActive
 	where an.ProjectType = 13
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
@@ -1993,7 +1995,8 @@ set PSHGeography = coalesce(
 	(select top 1 lg.GeographyType
 	from active_Enrollment an 
 	inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate
-	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID
+	inner join lsa_Geography lg on lg.ProjectID = an.ProjectID 
+		and lg.InformationDate <= lhh.LastActive
 	where an.ProjectType = 3
 		and an.RelationshipToHoH = 1 and an.PersonalID = lhh.HoHID
 		and an.HHType = lhh.HHType
@@ -2555,7 +2558,7 @@ inner join ref_Calendar cal on cal.theDate = bn.DateProvided
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
 --CHANGE 12/4/2018 verify that bed night is valid for the enrollment/not on or after exit
-where (cal.theDate > lhh.LastInactive) and cal.theDate < coalesce (x.ExitDate, rpt.ReportEnd)
+where (cal.theDate > lhh.LastInactive) and cal.theDate < coalesce (hx.ExitDate, rpt.ReportEnd)
 	and other.sysDate is null and sn.ProjectType = 1
 
 --Homeless (Time prior to Move-In) in PSH or RRH (sys_Time.sysStatus = 5 or 6)
