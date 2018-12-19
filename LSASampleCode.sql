@@ -2558,7 +2558,9 @@ inner join ref_Calendar cal on cal.theDate = bn.DateProvided
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
 --CHANGE 12/4/2018 verify that bed night is valid for the enrollment/not on or after exit
-where (cal.theDate > lhh.LastInactive) and cal.theDate < coalesce (hx.ExitDate, rpt.ReportEnd)
+where (cal.theDate > lhh.LastInactive) 
+	--CHANGE 12/19/2018 - the date must be before ExitDate but may = ReportEnd
+	and (cal.theDate < hx.ExitDate or (hx.ExitDate is null and cal.theDate <= rpt.ReportEnd))
 	and other.sysDate is null and sn.ProjectType = 1
 
 --Homeless (Time prior to Move-In) in PSH or RRH (sys_Time.sysStatus = 5 or 6)
