@@ -3448,9 +3448,10 @@ inner join (select ex.Cohort, ex.HoHID, ex.HHType, max(cal.theDate) as inactive
 			, dateadd(dd,6,bn.DateProvided) as EndDate
 		from sys_Enrollment sn
 		inner join tmp_Exit x on x.HHType = sn.HHType and x.HoHID = sn.HoHID
-			and x.ExitDate >= sn.ExitDate
+		--CHANGE 12/19/2018 remove x to sn join criteria for ExitDate (which is null in sn for 
+		-- night-by-night) and add requirement for bn.DateProvided <= qualifying exit
 		inner join hmis_Services bn on bn.EnrollmentID = sn.EnrollmentID
-			and bn.RecordType = 200
+			and bn.RecordType = 200 and bn.DateProvided <= x.ExitDate
 		where sn.EntryDate is null
 		union 
 		--time in ES/SH/TH or in RRH/PSH but not housed
@@ -3466,6 +3467,9 @@ inner join (select ex.Cohort, ex.HoHID, ex.HHType, max(cal.theDate) as inactive
 	group by ex.HoHID, ex.HHType, ex.Cohort
 	) lastDay on lastDay.HoHID = ex.HoHID and lastDay.HHType = ex.HHType
 		and lastDay.Cohort = ex.Cohort
+--CHANGE 12/19/2018 - add WHERE clause (no change to output, but no need to set 
+--  LastInactive unless SystemPath is null).
+where ex.SystemPath is null
 
 update ex
 set ex.SystemPath = case ptype.summary
