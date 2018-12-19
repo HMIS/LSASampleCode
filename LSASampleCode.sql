@@ -3230,7 +3230,9 @@ where ex.HHAdultAge is null
 update ex
 set ex.HHParent = 0 
 from tmp_Exit ex
-where ex.HHParent = 1 and ex.HHAdultAge not in (18,24)
+--CHANGE 12/19/2018 HHAdultAge should be 18 or 24 IF HHType = AC (2)
+-- it is irrelevant for HHType = CO (3)
+where ex.HHParent = 1 and ex.HHType = 2 and ex.HHAdultAge not in (18,24)
 
 /*****************************************************************
 4.45 Set Stat for Exit Cohort Households
