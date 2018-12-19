@@ -3296,6 +3296,9 @@ set ex.StatEnrollmentID = (select top 1 previous.EnrollmentID
     and hx.ExitDate > previous.EntryDate 
     and dateadd(dd,730,hx.ExitDate) >= ex.EntryDate
     and hx.ExitDate < ex.ExitDate
+	--CHANGE 12/19/2018 previous EntryDate must be prior to the EntryDate
+	-- for the qualifying exit (or it isn't previous)
+	and previous.EntryDate < ex.EntryDate 
   inner join 
     --HouseholdIDs with LSA household types
      #hhxstat on #hhxstat.HouseholdID = previous.HouseholdID
