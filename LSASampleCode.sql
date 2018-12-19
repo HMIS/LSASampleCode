@@ -1268,12 +1268,14 @@ set CHTime = case
 		when ep.episodeDays between 270 and 364 then 270
 		else 0 end
 	, CHTimeStatus = case
+		--UPDATE 12/19/2018 CHTimeStatus shd be -1 when CHTime <> 365
+		when ep.episodeDays < 365 then -1 
 		when ep.episodes >= 4 then 2
 		else 3 end
 from tmp_Person lp
 inner join (select chep.PersonalID
 	, sum(chep.episodeDays) as episodeDays, count(distinct chep.episodeStart) as episodes
-	from ch_Episodes chep 
+	from ch_Episodes chep
 	group by chep.PersonalID) ep on ep.PersonalID = lp.PersonalID
 where HoHAdult > 0 and CHTime is null
 /*************************************************************************
