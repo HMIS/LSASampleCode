@@ -3342,25 +3342,6 @@ inner join hmis_Enrollment hn on hn.EnrollmentID = ex.EnrollmentID
 where ex.ExitFrom in (5,6) and dateadd(dd,365, hn.MoveInDate) <= ex.ExitDate
 	and ex.SystemPath is null
 
--- SystemPath can be set directly based on ExitFrom for
--- -Any household exiting from street outreach (ExitFrom = 1)
--- -Any first time homeless household (Stat = 1)
--- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
-update ex
-set ex.SystemPath = case 
-	when ex.ExitFrom = 1 then 12
-	when ex.ExitFrom = 2 then 1
-	when ex.ExitFrom = 3 then 2
-	when ex.ExitFrom = 4 then 1
-	when ex.ExitFrom = 5 then 4
-	when ex.ExitFrom = 6 then 8
-	else 8 end
-from tmp_Exit ex 
-inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
-inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
-where ex.SystemPath is null
-	and (ex.Stat in (1,2,3,4) or ex.ExitFrom = 1)
-
 --Where SystemPath cannot be set directly, sys_Enrollment is used to 
 --  to build a service history and determine SystemPath. 
 delete from sys_Enrollment
@@ -3470,6 +3451,25 @@ inner join (select ex.Cohort, ex.HoHID, ex.HHType, max(cal.theDate) as inactive
 --CHANGE 12/19/2018 - add WHERE clause (no change to output, but no need to set 
 --  LastInactive unless SystemPath is null).
 where ex.SystemPath is null
+
+-- SystemPath can be set directly based on ExitFrom for
+-- -Any household exiting from street outreach (ExitFrom = 1)
+-- -Any first time homeless household (Stat = 1)
+-- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
+update ex
+set ex.SystemPath = case 
+	when ex.ExitFrom = 1 then 12
+	when ex.ExitFrom = 2 then 1
+	when ex.ExitFrom = 3 then 2
+	when ex.ExitFrom = 4 then 1
+	when ex.ExitFrom = 5 then 4
+	when ex.ExitFrom = 6 then 8
+	else 8 end
+from tmp_Exit ex 
+inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
+inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
+where ex.SystemPath is null
+	and (ex.Stat in (1,2,3,4) or ex.ExitFrom = 1)
 
 update ex
 set ex.SystemPath = case ptype.summary
