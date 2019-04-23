@@ -818,9 +818,15 @@ select distinct hn.HouseholdID
 			from hmis_Enrollment 
 			where HouseholdID = hn.HouseholdID))
 	, case when p.ProjectType in (3,13) then 
-			(select min(MoveInDate) 
-			from hmis_Enrollment 
-			where HouseholdID = hn.HouseholdID) else null end
+	-- CHANGE 4/23/2019 DO NOT INCLUDE MOVE-IN DATES AFTER REPORT END 
+	-- AND DO NOT INCLUDE INVALID MOVE-IN DATES (i.e. before EntryDate or after ExitDate)
+			(select min(movein.MoveInDate) 
+			from hmis_Enrollment movein
+			where movein.HouseholdID = hn.HouseholdID
+				and movein.MoveInDate <= rpt.ReportEnd 
+				and movein.MoveInDate >= hn.EntryDate 
+				and (x.ExitDate is null or movein.MoveInDate <= x.ExitDate))
+		else null end
 	, p.ProjectID, p.ProjectType, p.TrackingMethod
 from lsa_Report rpt
 inner join hmis_Enrollment hn on hn.EntryDate <= rpt.ReportEnd
@@ -1873,6 +1879,7 @@ set PSHStatus = PSHStatus + (select
 		and an.ProjectType = 3)
 from tmp_Household hh
 where PSHStatus > 0
+		       
 /*************************************************************************
 4.27 Set tmp_Household RRH and PSH Move-In Status Indicators
 **********************************************************************/
@@ -1893,7 +1900,9 @@ from tmp_Household hh
 inner join active_Enrollment an on an.PersonalID = hh.HoHID
 	and an.HHType = hh.HHType 
 inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
-where an.ProjectType = 13 and an.MoveInDate >= rpt.ReportStart
+where an.ProjectType = 13 
+	--  CHANGE 4/23/2019 disregard any MoveInDate after ReportEnd
+	and an.MoveInDate between rpt.ReportStart and rpt.ReportEnd
 	and hh.RRHMoveIn is null 
 
 update hh
@@ -1911,7 +1920,9 @@ from tmp_Household hh
 inner join active_Enrollment an on an.PersonalID = hh.HoHID
 	and an.HHType = hh.HHType 
 inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
-where an.ProjectType = 13 and an.MoveInDate is null
+where an.ProjectType = 13 
+	-- CHANGE 4/23/2019 MoveInDate after ReportEnd is the equivalent of NULL
+	and (an.MoveInDate is null or an.MoveInDate > rpt.ReportEnd)
 	and hh.RRHMoveIn is null 
 
 update hh
@@ -1925,7 +1936,9 @@ from tmp_Household hh
 inner join active_Enrollment an on an.PersonalID = hh.HoHID
 	and an.HHType = hh.HHType 
 inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
-where an.ProjectType = 3 and an.MoveInDate >= rpt.ReportStart
+where an.ProjectType = 3 
+	--  CHANGE 4/23/2019 disregard any MoveInDate after ReportEnd
+	and an.MoveInDate between rpt.ReportStart and rpt.ReportEnd
 	and hh.PSHMoveIn is null 
 
 update hh
@@ -1943,9 +1956,11 @@ from tmp_Household hh
 inner join active_Enrollment an on an.PersonalID = hh.HoHID
 	and an.HHType = hh.HHType 
 inner join lsa_Report rpt on rpt.ReportEnd >= an.EntryDate 
-where an.ProjectType = 3 and an.MoveInDate is null
+where an.ProjectType = 3 
+-- CHANGE 4/23/2019 MoveInDate after ReportEnd is the equivalent of NULL
+	and (an.MoveInDate is null or an.MoveInDate > rpt.ReportEnd)
 	and hh.PSHMoveIn is null 
-
+		       
 /*************************************************************************
 4.28.a Get Most Recent Enrollment in Each ProjectGroup for HoH 
 
