@@ -3664,7 +3664,8 @@ inner join ref_Populations pop on
 	and (lh.SystemPath = pop.SystemPath or pop.SystemPath is null)
 where lh.RRHPSHPreMoveInDays > 0 
 	and pop.LOTH = 1
-	and (lh.SystemPath in (4,5,6,7,10,11,12) or pop.SystemPath is null)
+	-- CHANGE 4/23/2019 include SystemPath 8 and 9 (PSH only and ES/SH + PSH)
+	and (lh.SystemPath in (4,5,6,7,8,9,10,11,12) or pop.SystemPath is null)
 group by pop.PopID
 	, pop.HHType
 	, pop.SystemPath
@@ -3697,7 +3698,8 @@ inner join ref_Populations pop on
 	and (lh.SystemPath = pop.SystemPath or pop.SystemPath is null)
 where lh.SystemHomelessDays > 0 
 	and pop.LOTH = 1
-	and (lh.SystemPath in (5,6,7,10,11,12) or pop.SystemPath is null)
+	-- 4/23/2019 include SystemPath 8 & 9  (PSH only and ES/SH + PSH)
+	and (lh.SystemPath in (5,6,7,8,9,10,11,12) or pop.SystemPath is null)
 group by pop.PopID
 	, pop.HHType
 	, pop.SystemPath
@@ -3831,7 +3833,8 @@ inner join ref_Populations pop on
 	and (lh.SystemPath = pop.SystemPath or pop.SystemPath is null)
 where lh.SystemDaysNotPSHHoused > 0 
 	and pop.LOTH = 1
-	and (lh.SystemPath in (4,5,6,7,10,11,12) or pop.SystemPath is null)
+	-- 4/23/2019 add SystemPath 8 and 9 (PSH only and ES/SH + PSH)
+	and (lh.SystemPath in (4,5,6,7,8,9,10,11,12) or pop.SystemPath is null)
 group by pop.PopID
 	, pop.HHType
 	, pop.SystemPath
