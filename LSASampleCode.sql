@@ -4802,8 +4802,11 @@ update rpt
 			where lp.ReportID = rpt.ReportID)
 	,	UnduplicatedAdult1 = (select count(distinct lp.PersonalID)
 			from tmp_Person lp
+			-- 4/23/2019 use an.AgeGroup vs. lp.Age so that people served 
+			--  at both 17 and 18 are counted 
+			inner join active_Enrollment an on an.PersonalID = lp.PersonalID
 			where lp.ReportID = rpt.ReportID
-				and lp.Age between 18 and 65)
+				and an.AgeGroup between 18 and 65)
 	,	AdultHoHEntry1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
