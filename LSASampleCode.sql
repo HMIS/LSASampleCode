@@ -2620,12 +2620,15 @@ set lhh.Other3917Days = (select datediff (dd,
 			and hn.DateToStreetESSH <= lhh.LastInactive 
 			and hn.DateToStreetESSH < hn.EntryDate
 		order by hn.DateToStreetESSH asc)
-	, lhh.LastInactive)) 
+	-- 4/23/2019 add 1 day (the LastInactive date) to count of Other3917Days
+	, lhh.LastInactive)) + 1
 from tmp_Household lhh
 
 insert into sys_Time (HoHID, HHType, sysDate, sysStatus)
 select distinct sn.HoHID, sn.HHType, cal.theDate, 7
 from sys_Enrollment sn
+-- 4/23/2019 add join to tmp_Household to get LastInactive
+inner join tmp_Household lhh on lhh.HoHID = sn.HoHID and lhh.HHType = sn.HHType
 inner join hmis_Enrollment hn on hn.EnrollmentID = sn.EnrollmentID 
 inner join sys_Time contiguous on contiguous.sysDate = hn.EntryDate
 	and contiguous.HoHID = sn.HoHID and contiguous.HHType = sn.HHType
@@ -2634,6 +2637,9 @@ inner join ref_Calendar cal on cal.theDate >= hn.DateToStreetESSH
 left outer join sys_Time st on st.HoHID = sn.HoHID and st.HHType = sn.HHType
 	and st.sysDate = cal.theDate
 where st.sysDate is null
+	-- 4/23/2019 add only dates after LastInactive (dates on or before LastInactive  
+	--   are counted in the previous step)
+	and cal.theDate > lhh.LastInactive
 	and (sn.ProjectType in (1,8)
 	or hn.LivingSituation in (1,18,16)
 	or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)
