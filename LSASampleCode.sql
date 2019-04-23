@@ -4179,9 +4179,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID, pop.HHType
 
@@ -4228,9 +4230,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID 
 		, p.ProjectType 
@@ -4268,9 +4272,12 @@ inner join lsa_Project p on p.ProjectID = an.ProjectID
 where cd.Cohort > 0 
 	and pop.PopID between 0 and 10 and pop.PopType = 1
 	and pop.SystemPath is null
-	and ((p.TrackingMethod = 3 
+	--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+	and (
+		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID 
 		, p.ExportID
@@ -4314,9 +4321,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID
 	, pop.HHType
@@ -4365,9 +4374,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, case p.ProjectType 
 		when 1 then 11 
@@ -4409,9 +4420,11 @@ where cd.Cohort > 0
 	and pop.PopID between 0 and 10 and pop.PopType = 1 and pop.SystemPath is null
 	and pop.SystemPath is null
 	and (--for night-by-night ES, count only people with bednights in period
-		(p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ExportID
 	, pop.HHType 
@@ -4457,9 +4470,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID
 	, pop.HHType
@@ -4514,9 +4529,11 @@ where cd.Cohort > 0
 		 --for RRH and PSH, count only people who are housed in period
 		(p.ProjectType in (3,13) and an.MoveInDate <= cd.CohortEnd) 
 		--for night-by-night ES, count only people with bednights in period
-		or (p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectType, p.ExportID
 	, pop.HHType
@@ -4560,9 +4577,11 @@ where cd.Cohort > 0
 	and pop.PopType = 3 and pop.PopID <> 100
 	and (
 		--for night-by-night ES, count only people with bednights in period
-		(p.TrackingMethod = 3 
+		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
+		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod <> 3 and p.ProjectType in (1,2,8))
+		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ExportID
 	, pop.HHType
