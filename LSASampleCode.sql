@@ -1425,7 +1425,7 @@ left outer join --Level 2 - combine HHTypes into a single value
 update tmp_Person 
 set HoHEST = null, HoHRRH = null, HoHPSH = null
 
---set EST HHType 
+--set EST HoH identifiers 
 update lp
 set lp.HoHEST = 
 	case when hh.HHTypeCombined is null then -1
@@ -1447,11 +1447,13 @@ left outer join --Level 2 - combine HHTypes into a single value
 				else 0 end as HHTypeEach
 			from active_Enrollment an 
 			inner join active_Household hhid on hhid.HoHID = an.PersonalID
+			 	--4/23/2019 add HouseholdID to join
+			 	and hhid.HouseholdID = an.HouseholdID
 			where an.ProjectType in (1,2,8)) HHTypes  
 		group by HHTypes.PersonalID
 		) hh on hh.PersonalID = lp.PersonalID
 
---set RRH HHType 
+--set RRH HoH identifiers 
 update lp
 set lp.HoHRRH = 
 	case when hh.HHTypeCombined is null then -1
@@ -1472,13 +1474,15 @@ left outer join --Level 2 - combine HHTypes into a single value
 				when an.HHType = 2 then 20
 				when an.HHType = 3 then 3 
 				else 0 end as HHTypeEach
-			from active_Enrollment an 
+			from active_Enrollment an
 			inner join active_Household hhid on hhid.HoHID = an.PersonalID
+			 	--4/23/2019 add HouseholdID to join
+			 	and hhid.HouseholdID = an.HouseholdID
 			where an.ProjectType = 13) HHTypes  
 		group by HHTypes.PersonalID
 		) hh on hh.PersonalID = lp.PersonalID
 
---set PSH HHType 
+--set PSH HoH identifiers 
 update lp
 set lp.HoHPSH = 
 	case when hh.HHTypeCombined is null then -1
@@ -1500,6 +1504,8 @@ left outer join --Level 2 - combine HHTypes into a single value
 				else 0 end as HHTypeEach
 			from active_Enrollment an 
 			inner join active_Household hhid on hhid.HoHID = an.PersonalID
+			 	--4/23/2019 add HouseholdID to join
+			 	and hhid.HouseholdID = an.HouseholdID
 			where an.ProjectType = 3) HHTypes  
 		group by HHTypes.PersonalID
 		) hh on hh.PersonalID = lp.PersonalID
