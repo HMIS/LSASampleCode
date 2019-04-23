@@ -871,7 +871,16 @@ select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 	, case when hn.EntryDate >= rpt.ReportStart then hn.EntryDate
 		else rpt.ReportStart end
 	, hn.EntryDate
-	, hhid.MoveInDate
+	-- CHANGE 4/23/2019 MoveInDate from active_Household as is IF it occurs between HH member's Entry/ExitDates.  Otherwise:
+	--  If HoH is housed prior to HH member EntryDate, HH member MoveInDate is their own EntryDate;
+	--  If HH member exits prior to HoH MoveInDate, HH member MoveInDate is NULL.
+	, case 
+		when hhid.MoveInDate >= hn.EntryDate 
+			and (hhid.MoveInDate <= x.ExitDate or x.ExitDate is null) then hhid.MoveInDate
+		when hhid.MoveInDate < hn.EntryDate 
+			and (hhid.MoveInDate <= x.ExitDate or x.ExitDate is null) 
+			and hhid.HoHID <> hn.PersonalID then hn.EntryDate
+		else null end
 	, x.ExitDate
 	, hhid.ProjectID, hhid.ProjectType, hhid.TrackingMethod
 from lsa_Report rpt
