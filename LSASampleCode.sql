@@ -796,6 +796,8 @@ inner join lsa_Report rpt on hg.InformationDate <= rpt.ReportEnd and hg.CoCCode 
 inner join lsa_Project lp on lp.ProjectID = hg.ProjectID
 left outer join hmis_Geography later on later.ProjectID = hg.ProjectID
 	and later.DateDeleted is null 
+	-- 4/23/2019 - add CoCCode to join - later record for a different CoC not relevant
+	and later.CoCCode = hg.CoCCode	   
 	and (later.InformationDate > hg.InformationDate 
 		or (later.InformationDate = hg.InformationDate 
 			and later.DateUpdated > hg.DateUpdated))
