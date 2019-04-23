@@ -2683,7 +2683,10 @@ set ESDays = (select count(distinct st.sysDate)
 		from sys_Time st 
 		where st.sysStatus = 7
 		and st.HoHID = lhh.HoHID and st.HHType = lhh.HHType)
-	, TotalHomelessDays = (select count(distinct st.sysDate)
+	--CHANGE 4/23/2019 - include Other3917Days from 4.35 in TotalHomelessDays
+	, TotalHomelessDays = case 
+			when Other3917Days is null then 0 
+			else Other3917Days end + (select count(distinct st.sysDate)
 		from sys_Time st 
 		where st.sysStatus in (3,4,5,6,7)
 		and st.HoHID = lhh.HoHID and st.HHType = lhh.HHType)
