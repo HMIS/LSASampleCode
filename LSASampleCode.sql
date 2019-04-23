@@ -3333,7 +3333,7 @@ update ex
 set ex.SystemPath = null
 from tmp_Exit ex
 
---SystemPath is n/a for any household household in PSH by CohortStart
+--SystemPath is n/a for any household housed in PSH as of CohortStart
 update ex
 set ex.SystemPath = -1
 from tmp_Exit ex
@@ -3363,8 +3363,9 @@ set ex.SystemPath = case
 	when ex.ExitFrom = 6 then 8
 	else 8 end
 from tmp_Exit ex 
-inner join sys_Enrollment sn on sn.EnrollmentID = ex.EnrollmentID
-inner join tmp_CohortDates cd on cd.Cohort = ex.Cohort
+--4/23/2019 deleted joins to sys_Enrollment and tmp_CohortDates -- 
+-- they are irrelevant to logic and caused errors setting SystemPath
+						 
 where ex.SystemPath is null
 	and (ex.Stat in (1,2,3,4) or ex.ExitFrom = 1)
 
