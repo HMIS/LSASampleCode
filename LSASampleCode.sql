@@ -865,8 +865,9 @@ insert into active_Enrollment
 select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 	, case when hn.PersonalID = hhid.HoHID then 1
 		when hn.RelationshipToHoH = 1 and hn.PersonalID <> hhid.HoHID then 99
-		when hn.RelationshipToHoH not in (1,2,3,4,5) then 99
-		else hn.RelationshipToHoH end
+		-- set any non-valid RelationshipToHoH value (including NULL) to 99    
+		when hn.RelationshipToHoH in (1,2,3,4,5) then hn.RelationshipToHoH
+		else 99 end
 	, case when hn.EntryDate >= rpt.ReportStart then hn.EntryDate
 		else rpt.ReportStart end
 	, hn.EntryDate
@@ -4840,13 +4841,16 @@ update rpt
 			inner join hmis_Client c on c.PersonalID = lp.PersonalID
 			where lp.ReportID = rpt.ReportID
 				and (c.VeteranStatus not in (0,1) or c.VeteranStatus is null))
-	,	RelationshipToHoH1 = (select count(distinct n.EnrollmentID)
+	,	RelationshipToHoH1 = (select count(distinct hn.EnrollmentID)
 			from tmp_Person lp
-			inner join active_Enrollment n on n.PersonalID = lp.PersonalID
+			inner join active_Enrollment an on an.PersonalID = lp.PersonalID
+			-- 4/23/20109 join to hmis_Enrollment to check RelationshipToHoH -- values in 
+			--  active_Enrollment may have been adjusted to compensate for missing HoH
+			inner join hmis_Enrollment hn on hn.EnrollmentID = an.EnrollmentID
 			where lp.ReportID = rpt.ReportID
 				--CHANGE 9/28/2018 add parentheses 
-				and (n.RelationshipToHoH not in (1,2,3,4,5) 
-					or n.RelationshipToHoH is null))
+				and (hn.RelationshipToHoH not in (1,2,3,4,5) 
+					or hn.RelationshipToHoH is null))
 	,	DisablingCond1 = (select count(distinct an.EnrollmentID)
 			from tmp_Person lp
 			inner join active_Enrollment an on an.PersonalID = lp.PersonalID
