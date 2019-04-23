@@ -350,7 +350,8 @@ CREATE TABLE dbo.lsa_Geography(
 	GeographyID varchar(32) NOT NULL,
 	ProjectID varchar(32) NOT NULL,
 	CoCCode varchar(6) NOT NULL,
-	InformationDate datetime NOT NULL,
+	--4/23/2019 InformationDate datatype is date (was datetime)
+	InformationDate date NOT NULL,
 	Geocode varchar(6) NOT NULL,
 	GeographyType int NOT NULL,
 	Address1 varchar(50) NULL,
