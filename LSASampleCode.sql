@@ -1158,11 +1158,11 @@ inner join lsa_Report rpt on rpt.ReportID = lp.ReportID
 inner join hmis_Enrollment hn on hn.PersonalID = lp.PersonalID	
 	and hn.EntryDate <= lp.LastActive
 	--4/23/2019 do not use deleted data in reporting
-	and hn.DateDeleted is not null
+	and hn.DateDeleted is null --4/25/2019 -- correct 'is not null' to 'is null'
 left outer join hmis_Exit x on x.EnrollmentID = hn.EnrollmentID 
 	and x.ExitDate <= lp.LastActive 
-		--4/23/2019 do not use deleted data in reporting
-	and x.DateDeleted is not null
+		--4/23/2019 do not use deleted data in reporting			 
+	and x.DateDeleted is null --4/25/2019 -- correct 'is not null' to 'is null'
 inner join (select hhinfo.HouseholdID, min(hhinfo.MoveInDate) as MoveInDate
 			, coc.CoCCode
 		from hmis_Enrollment hhinfo
