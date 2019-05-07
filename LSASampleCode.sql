@@ -4324,7 +4324,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID, pop.HHType
@@ -4377,7 +4377,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID 
@@ -4422,7 +4422,7 @@ where cd.Cohort > 0
 	and (
 		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID 
@@ -4472,7 +4472,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID
@@ -4527,7 +4527,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, case p.ProjectType 
@@ -4575,7 +4575,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ExportID
@@ -4627,7 +4627,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID
@@ -4688,7 +4688,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		or (p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ProjectType, p.ExportID
@@ -4738,7 +4738,7 @@ where cd.Cohort > 0
 		--  4/23/2019 correct ProjectType/TrackingMethod combinations for ES/SH/TH
 		(p.TrackingMethod = 3 and p.ProjectType = 1
 			and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
-		or (p.TrackingMethod = 1 and p.ProjectType = 1)
+		or (p.TrackingMethod = 0 and p.ProjectType = 1)
 		or (p.ProjectType in (2,8))
 		)
 group by cd.Cohort, pop.PopID, p.ExportID
