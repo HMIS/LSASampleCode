@@ -5221,6 +5221,11 @@ select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 		or c.DOBDataQuality is null
 		or c.DOBDataQuality not in (1,2) then 99
 	when dateadd(yy, 18, c.DOB) <= n.EntryDate then 1 
+	-- 5/7/2019 Counting clients who turned 18 between EntryDate and [ReportStart-2 years] as adults.  
+	--  The is not explicit in the specs -- section 4.70 is fuzzy -- but adding the final WHEN below 
+	--  will clear some false positives in the QC reports.
+	when n.EntryDate < dateadd(yy, -2, rpt.ReportStart) and 
+		dateadd(yy, 18, c.DOB) <= dateadd(yy, -2, rpt.ReportStart) then 1
 	else 0 end
 , case when c.SSNDataQuality in (8,9) then null
 		when SUBSTRING(c.SSN,1,3) in ('000','666')
