@@ -4607,7 +4607,8 @@ inner join ref_Populations pop on
 		 or pop.CHTime is null)
 	and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
 	and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	and (an.AgeGroup = pop.Age or pop.Age is null)
+	--CHANGE 4/23/2019 use lp.Age vs an.AgeGroup per specs section 4.49
+	and (lp.Age = pop.Age or pop.Age is null)
 inner join tmp_CohortDates cd on cd.CohortEnd >= an.EntryDate
 	  --The date criteria for these counts differs from the general LSA 
 	  --criteria for 'active', which includes those who exited on the start date.
@@ -4666,7 +4667,8 @@ inner join ref_Populations pop on
 	and (ahh.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
 	and (ahh.HHParent = pop.HHParent or pop.HHParent is null)
 	and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	and (an.AgeGroup = pop.Age or pop.Age is null)
+	--CHANGE 4/23/2019 use lp.Age vs an.AgeGroup per specs section 4.49
+	and (lp.Age = pop.Age or pop.Age is null)
 	and (lp.Gender = pop.Gender or pop.Gender is null)
 	and (lp.Race = pop.Race or pop.Race is null)
 	and (lp.Ethnicity = pop.Ethnicity or pop.Ethnicity is null)
@@ -4718,7 +4720,8 @@ inner join ref_Populations pop on
 	and (ahh.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
 	and (ahh.HHParent = pop.HHParent or pop.HHParent is null)
 	and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	and (an.AgeGroup = pop.Age or pop.Age is null)
+	--CHANGE 4/23/2019 use lp.Age vs an.AgeGroup per specs section 4.49
+	and (lp.Age = pop.Age or pop.Age is null)
 	and (lp.Gender = pop.Gender or pop.Gender is null)
 	and (lp.Race = pop.Race or pop.Race is null)
 	and (lp.Ethnicity = pop.Ethnicity or pop.Ethnicity is null)
