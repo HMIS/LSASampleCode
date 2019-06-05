@@ -2614,7 +2614,9 @@ inner join lsa_Report rpt on rpt.ReportEnd >= sn.EntryDate
 inner join ref_Calendar cal on 
 	cal.theDate >= sn.EntryDate
 	and cal.theDate > lhh.LastInactive
-	and cal.theDate < coalesce(sn.ExitDate, rpt.ReportEnd)
+	-- 6/5/2019 correct join criteria to include the last day of the report period 
+	--   (it was being excluded) for enrollments still active at ReportEnd
+	and cal.theDate <= coalesce(dateadd(dd, -1, sn.ExitDate), rpt.ReportEnd)
 left outer join sys_Time housed on housed.HoHID = sn.HoHID and housed.HHType = sn.HHType
 	and housed.sysDate = cal.theDate
 where housed.sysDate is null and sn.ProjectType = 2
@@ -2627,7 +2629,9 @@ inner join tmp_Household lhh on lhh.HoHID = sn.HoHID and lhh.HHType = sn.HHType
 inner join lsa_Report rpt on rpt.ReportEnd >= sn.EntryDate
 inner join ref_Calendar cal on 
 	cal.theDate >= sn.EntryDate
-	and cal.theDate < coalesce(sn.ExitDate, rpt.ReportEnd)
+	-- 6/5/2019 correct join criteria to include the last day of the report period 
+	--   (it was being excluded) for enrollments still active at ReportEnd
+	and cal.theDate <= coalesce(dateadd(dd, -1, sn.ExitDate), rpt.ReportEnd)
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
 where (cal.theDate > lhh.LastInactive)
@@ -2665,7 +2669,9 @@ inner join tmp_Household lhh on lhh.HoHID = sn.HoHID and lhh.HHType = sn.HHType
 inner join lsa_Report rpt on rpt.ReportEnd >= sn.EntryDate
 inner join ref_Calendar cal on 
 	cal.theDate >= sn.EntryDate
-	and cal.theDate < coalesce(sn.MoveInDate, sn.ExitDate, rpt.ReportEnd)
+	-- 6/5/2019 correct join criteria to include the last day of the report period 
+	--   (it was being excluded) for enrollments still active and not housed at ReportEnd
+	and cal.theDate <= coalesce(dateadd(dd, -1, sn.MoveInDate), dateadd(dd, -1, sn.ExitDate), rpt.ReportEnd)
 left outer join sys_Time other on other.HoHID = sn.HoHID and other.HHType = sn.HHType
 	and other.sysDate = cal.theDate
 where cal.theDate > lhh.LastInactive
