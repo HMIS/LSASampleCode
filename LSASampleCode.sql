@@ -4432,7 +4432,7 @@ group by cd.Cohort, pop.PopID
 insert into lsa_Calculated
 	(Value, Cohort, Universe, HHType
 	, Population, SystemPath, ReportRow, ProjectID, ReportID)
-select count (distinct ahh.HoHID + cast(ahh.HHType as nvarchar))
+select count (distinct cast(ahh.HoHID as nvarchar) + cast(ahh.HHType as nvarchar))
 	, cd.Cohort, 10 
 	, coalesce(pop.HHType, 0)
 	, pop.PopID, -1, 54
@@ -4482,7 +4482,7 @@ group by cd.Cohort, pop.PopID, p.ProjectID, p.ExportID
 insert into lsa_Calculated
 	(Value, Cohort, Universe, HHType
 	, Population, SystemPath, ReportRow, ReportID)
-select count (distinct ahh.HoHID + cast(ahh.HHType as nvarchar))
+select count (distinct cast(ahh.HoHID as nvarchar) + cast(ahh.HHType as nvarchar))
 	, cd.Cohort, case p.ProjectType 
 		when 1 then 11 
 		when 8 then 12	
@@ -4538,7 +4538,7 @@ group by cd.Cohort, pop.PopID, case p.ProjectType
 insert into lsa_Calculated
 	(Value, Cohort, Universe, HHType
 	, Population, SystemPath, ReportRow, ReportID)
-select count (distinct ahh.HoHID + cast(ahh.HHType as nvarchar))
+select count (distinct cast(ahh.HoHID as nvarchar) + cast(ahh.HHType as nvarchar))
 	, cd.Cohort, 16 as Universe
 	, coalesce(pop.HHType, 0) as HHType
 	, pop.PopID, -1, 54
