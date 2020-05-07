@@ -290,7 +290,8 @@ create table lsa_Person (
 	AC3PlusPSH int not NULL,
 	AHARPSH int not NULL,
 	AHARHoHPSH int not NULL,
-	ReportID int not NULL
+	ReportID int not NULL,
+	Step nvarchar(10)
 	)
 
 /*
@@ -364,7 +365,8 @@ create table lsa_Household(
 	ESTAHAR int not NULL,
 	RRHAHAR int not NULL,
 	PSHAHAR int not NULL,
-	ReportID int not NULL
+	ReportID int not NULL,
+	Step nvarchar(10)
 	)
 
 /*
@@ -391,7 +393,8 @@ create table lsa_Exit(
 	HHParent int not NULL,
 	AC3Plus int not NULL,
 	SystemPath int not NULL,
-	ReportID int not NULL
+	ReportID int not NULL,
+	Step nvarchar(10)
 	)
 
 /*
@@ -409,6 +412,7 @@ create table lsa_Calculated(
 	SystemPath int not NULL,
 	ProjectID nvarchar(32),
 	ReportRow int not NULL,
-	ReportID int not NULL
+	ReportID int not NULL,
+	Step nvarchar(10)
 	)
 

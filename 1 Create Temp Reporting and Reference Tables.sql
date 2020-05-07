@@ -75,6 +75,7 @@ create table tlsa_HHID (
 	, HHAdultAge int
 	, HHParent int
 	, AC3Plus int
+	, Step nvarchar(10)
 	, constraint pk_tlsa_HHID primary key clustered (HouseholdID)
 	)
 
@@ -102,6 +103,7 @@ create table tlsa_Enrollment (
 --	, ExitCohort int
 	, DQ1Adult int
 	, DQ3Adult int
+	, Step nvarchar(10)
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)
 
@@ -167,7 +169,8 @@ create table tlsa_Person (
 	AC3PlusPSH int,
 	AHARPSH int,
 	AHARHoHPSH int,
-	ReportID int
+	ReportID int,
+	Step nvarchar(10),
 	constraint pk_tlsa_Person primary key clustered (PersonalID) 
 	)
 	;
@@ -273,7 +276,8 @@ create table tlsa_Household(
 	ESTAHAR int,
 	RRHAHAR int,
 	PSHAHAR int,
-	ReportID int
+	ReportID int,
+	Step nvarchar(10),
 	constraint pk_tlsa_Household primary key clustered (HoHID, HHType)
 	)
 	;
@@ -315,7 +319,8 @@ create table tlsa_Household(
 	, Status1 int
 	, Status3 int
 	, SSNValid int
-    primary key (EnrollmentID) 
+	, Step nvarchar(10)
+  ,  primary key (EnrollmentID) 
 	)
 	;
 		
@@ -342,6 +347,7 @@ create table tlsa_Household(
 		AC3Plus int,
 		SystemPath int,
 		ReportID int not NULL,
+		Step nvarchar(10),
 		constraint pk_tlsa_Exit primary key (Cohort, HoHID, HHType)
 		)
 		;

@@ -68,7 +68,8 @@ insert into tlsa_HHID (
 	, EntryDate
 	, MoveInDate
 	, ExitDate
-	, LastBedNight)
+	, LastBedNight
+	, Step)
 select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 	, hoh.ProjectID, p.ProjectType, p.TrackingMethod
 	, hoh.EntryDate 
@@ -86,7 +87,8 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 			and dateadd(dd, 90, bn.LastBednight) <= rpt.ReportEnd then dateadd(dd, 1, bn.LastBednight) 
 		when p.OperatingEndDate <= rpt.ReportEnd and hx.ExitDate is null then p.OperatingEndDate
 		else hx.ExitDate end
-	, bn.LastBednight
+	, bn.LastBednight,
+	'3.3'
 from hmis_Enrollment hoh
 inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate
 inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID 
@@ -161,7 +163,8 @@ where hoh.RelationshipToHoH = 1
 		, ProjectID, ProjectType, TrackingMethod
 		, EntryDate, MoveInDate, ExitDate
 		, EntryAge
-		, DisabilityStatus, DVStatus)
+		, DisabilityStatus, DVStatus
+		, Step)
 	select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 		, hn.RelationshipToHoH
 		, hhid.ProjectID, hhid.ProjectType, hhid.TrackingMethod
@@ -195,7 +198,8 @@ where hoh.RelationshipToHoH = 1
 			else 0 end 	
 		, case when hn.DisablingCondition in (0,1) then hn.DisablingCondition 
 			else null end
-		, dvstat.DVStatus 
+		, dvstat.DVStatus,
+		'3.4'
 	from tlsa_HHID hhid
 	inner join hmis_Enrollment hn on hn.HouseholdID = hhid.HouseholdID
 	inner join hmis_Client c on c.PersonalID = hn.PersonalID 
@@ -238,7 +242,8 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 6, c.DOB) <= rpt.ReportStart then 17
 			when DATEADD(yy, 3, c.DOB) <= rpt.ReportStart then 5
 			when DATEADD(yy, 1, c.DOB) <= rpt.ReportStart then 2
-			else 0 end 				
+			else 0 end,
+			n.Step = '3.5'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd 
 		and (n.ExitDate is null or n.ExitDate >= rpt.ReportStart)
@@ -263,7 +268,8 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 6, c.DOB) <= cd.CohortStart then 17
 			when DATEADD(yy, 3, c.DOB) <= cd.CohortStart then 5
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
-			else 0 end 				
+			else 0 end,
+		n.Step = '3.5.1'
 	from tlsa_CohortDates cd
 	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
 		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
@@ -289,7 +295,8 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 6, c.DOB) <= cd.CohortStart then 17
 			when DATEADD(yy, 3, c.DOB) <= cd.CohortStart then 5
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
-			else 0 end 				
+			else 0 end,
+			n.Step = '3.5.2'
 	from tlsa_CohortDates cd
 	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
 		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
@@ -309,8 +316,9 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null then 2
 			when adult.EnrollmentID is null 
 				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
+				and noDOB.EnrollmentID is null then 3 
+			else 99 end,
+			hhid.Step = '3.6'
 	from tlsa_HHID hhid 
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
 		and adult.EntryAge between 18 and 65
@@ -330,8 +338,9 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null then 2
 			when adult.EnrollmentID is null 
 				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
+				and noDOB.EnrollmentID is null then 3 
+			else 99 end,
+			hhid.Step = '3.6.1'
 	from tlsa_HHID hhid 
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate 
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
@@ -355,8 +364,9 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null then 2
 			when adult.EnrollmentID is null 
 				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
+				and noDOB.EnrollmentID is null then 3 
+			else 99 end,
+			hhid.Step = '3.6.2'
 	from tlsa_HHID hhid
 	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -1
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
@@ -377,8 +387,9 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null then 2
 			when adult.EnrollmentID is null 
 				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
+				and noDOB.EnrollmentID is null then 3 
+			else 99 end,
+			hhid.Step = '3.6.3'
 	from tlsa_HHID hhid
 	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -2
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
