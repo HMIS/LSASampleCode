@@ -6,6 +6,8 @@ Date:	4/2/2020 -- original
 					 - 4_1 Get Project Records for Export.sql
 				     - 4_2 to 4_6 Other PDDEs for Export.sql
 				  -- correct all date formatting from yyyy-mm-dd to yyyy-MM-dd
+		5/14/2020 -- section 4.3 - include OtherFunder column
+				  -- section 4.5 - include 'future' inventory records
 
 	4.2 Get Organization Records for Export
 		Export organization records for all projects selected in 4.2.
@@ -39,10 +41,10 @@ Date:	4/2/2020 -- original
 	delete from lsa_Funder
 
 	insert into lsa_Funder	
-		 (FunderID, ProjectID, Funder
+		 (FunderID, ProjectID, Funder, OtherFunder
 		, StartDate, EndDate
 		, DateCreated, DateUpdated, ExportID)
-	select distinct hf.FunderID, hf.ProjectID, hf.Funder
+	select distinct hf.FunderID, hf.ProjectID, hf.Funder, hf.OtherFunder
 		, format(hf.StartDate, 'yyyy-MM-dd')
 		, case when hf.EndDate is not null then format(hf.EndDate, 'yyyy-MM-dd') else null end
 		, format(hf.DateCreated, 'yyyy-MM-dd hh:mm:ss')
@@ -119,7 +121,6 @@ Date:	4/2/2020 -- original
 	inner join lsa_Report rpt on cast(lp.ExportID as int) = rpt.ReportID
 	where hi.DateDeleted is null 
 		and hi.CoCCode = rpt.ReportCoC
-		and hi.InventoryStartDate <= rpt.ReportEnd
 		and (hi.InventoryEndDate is null 
 			or (hi.InventoryEndDate >= rpt.ReportStart
 				and hi.InventoryEndDate > hi.InventoryStartDate)
