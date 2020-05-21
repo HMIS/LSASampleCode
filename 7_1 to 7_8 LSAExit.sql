@@ -6,12 +6,14 @@ Name:  7_1 to 7_8 LSAExit.sql  (File 7 of 10)
 Date:  4/20/2020   
 	   5/14/2020 - section 7.1 - remove extraneous join to hmis_Exit
 			     - section 7.6 - correct "DateDeleted = 0" to "DateDeleted is null"
-	   		 
+	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements		
+	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
 
 	update hhid
 	set hhid.ExitCohort = cd.Cohort
+		, hhid.Step = '7.1'
 	from tlsa_HHID hhid
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join tlsa_CohortDates cd on hhid.ExitDate between cd.CohortStart and cd.CohortEnd
@@ -45,7 +47,7 @@ Date:  4/20/2020
 	delete from tlsa_Exit
 
 	insert into tlsa_Exit (Cohort, HoHID, HHType, QualifyingExitHHID
-		, ExitFrom, ExitTo, ReportID)
+		, ExitFrom, ExitTo, ReportID, Step)
 	select distinct hhid.ExitCohort, hhid.HoHID
 		, case hhid.ExitCohort when -2 then hhid.Exit2HHType
 			when -1 then hhid.Exit1HHType
@@ -61,6 +63,7 @@ Date:  4/20/2020
               else 8 end
 		, hhid.ExitDest
 		, rpt.ReportID
+		, '7.2'
 	from tlsa_HHID hhid
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	where hhid.ExitCohort is not null and hhid.EnrollmentID in 
@@ -87,6 +90,7 @@ Date:  4/20/2020
 	set ex.ReturnTime = 
 		case when later.HoHID is null then -1
 			else datediff(dd, qx.ExitDate, later.EntryDate) end
+		, ex.Step = '7.3'
 	from tlsa_Exit ex 
 	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	inner join lsa_Report rpt on rpt.ReportEnd >= qx.EntryDate
@@ -111,7 +115,7 @@ Date:  4/20/2020
 */
 
 	update ex
-	set select  HHVet = case when vet.PersonalID is not null then 1 else 0 end
+	set HHVet = case when vet.PersonalID is not null then 1 else 0 end
 		, HHDisability = case when disability.PersonalID is not null then 1 else 0 end
 		, HHFleeingDV = case when dv.PersonalID is not null then 1 else 0 end
 		, HoHRace =  case 
@@ -130,6 +134,7 @@ Date:  4/20/2020
 			when hoh.Ethnicity in (0,1) then hoh.Ethnicity
 			else 99 end 
 		, HHParent = case when parent.PersonalID is not null then 1 else 0 end
+		, ex.Step = '7.4.1'
 	from tlsa_Exit ex 
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID 
 	inner join hmis_Client hoh on hoh.PersonalID = ex.HoHID
@@ -160,6 +165,7 @@ set ex.HHAdultAge = case when ages.MaxAge not between 18 and 65 then -1
 	when ages.MaxAge = 24 then 24
 	when ages.MinAge between 55 and 65 then 55
 	else 25 end
+	, ex.Step = '7.4.2'
 from tlsa_Exit ex
 inner join (select hhid.HoHID, case hhid.ExitCohort 
 			when 0 then hhid.ActiveHHType
@@ -197,6 +203,7 @@ set ex.AC3Plus =
 			when -1 then hhid.Exit1HHType
 			when -2 then hhid.Exit2HHType end = 2
 		 and hhid.HouseholdID = ex.QualifyingExitHHID)
+		, ex.Step = '7.4.3'
 from tlsa_Exit ex
 
 /*
@@ -210,6 +217,7 @@ from tlsa_Exit ex
 			when prior.ExitDest between 1 and 6 then 2
 			when prior.ExitDest between 7 and 14 then 3
 			else 4 end 
+		, ex.Step = '7.5'
 	from tlsa_Exit ex 
 	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	left outer join tlsa_HHID prior on prior.HoHID = ex.HoHID 
@@ -231,6 +239,7 @@ from tlsa_Exit ex
 	--  active in the six days prior to the qualifying exit EntryDate. 
 	update ex
 	set ex.LastInactive = dateadd(dd, -1, hhid.EntryDate)
+		, ex.Step = '7.6.1'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
 	where ex.Stat <> 5 
@@ -244,11 +253,12 @@ from tlsa_Exit ex
 
 	delete from sys_TimePadded
 
-	insert into sys_TimePadded (HoHID, HHType, Cohort, StartDate, EndDate)
+	insert into sys_TimePadded (HoHID, HHType, Cohort, StartDate, EndDate, Step)
 	select distinct ex.HoHID, ex.HHType, 1
 		, hhid.EntryDate	
 		, case when hhid.ExitDate is null then cd.CohortEnd 
 			else dateadd(dd, 6, hhid.ExitDate) end
+		, '7.6.2.a'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
 	inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
@@ -263,6 +273,7 @@ from tlsa_Exit ex
 	select distinct ex.HoHID, ex.HHType, 1
 		, bn.DateProvided	
 		, dateadd(dd, 6, bn.DateProvided) 
+		, '7.6.2.b'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
 	inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
@@ -280,6 +291,7 @@ from tlsa_Exit ex
 		
 	update ex
 	set ex.LastInactive = coalesce(lastDay.inactive, '9/30/2012')
+		, ex.Step = '7.6.3'
 	from tlsa_Exit ex
 	left outer join 
 		(select ex.HoHID, ex.HHType, max(cal.theDate) as inactive
@@ -306,6 +318,7 @@ from tlsa_Exit ex
 -- or any household housed for at least a year in RRH/PSH prior to exit
 update ex
 set ex.SystemPath = -1
+	, ex.Step = '7.7.1'
 from tlsa_Exit ex
 inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
@@ -324,6 +337,7 @@ set ex.SystemPath = case ex.ExitFrom
 	when 5 then 4
 	when 6 then 8
 	else 8 end
+	, ex.Step = '7.7.2'
 from tlsa_Exit ex 
 inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 where ex.SystemPath is null
@@ -343,6 +357,7 @@ set ex.SystemPath = case ptype.summary
 	when 1101 then 10
 	when 1100 then 11
 	else 12 end 
+	, ex.Step = '7.7.3'
 from tlsa_Exit ex
 inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
@@ -383,6 +398,7 @@ set ex.SystemPath = case ptype.summary
 	when 1101 then 10
 	when 1100 then 11
 	else 12 end 
+	, ex.Step = '7.7.4'
 from tlsa_Exit ex
 inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
@@ -423,6 +439,7 @@ set ex.SystemPath = case ptype.summary
 	when 1101 then 10
 	when 1100 then 11
 	else 12 end 
+	, ex.Step = '7.7.5'
 from tlsa_Exit ex
 inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
