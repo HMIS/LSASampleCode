@@ -9,6 +9,8 @@ Date:	4/16/2020 -- original
 				     - 3_2 to 3_6 HMIS Households and Enrollments.sql
 		5/14/2020 -- 3.3 - HoH enrollment EntryDate must be prior to project OperatingEndDate
 					     - Exit destination must be 99 when effective exit date differs from HMIS
+		5/21/2020 -- set value for Step columns in sections 3.3-3.6
+
 	3.2 Cohort Dates 
 */
 	delete from tlsa_CohortDates
@@ -69,7 +71,8 @@ insert into tlsa_HHID (
 	, EntryDate
 	, MoveInDate
 	, ExitDate
-	, LastBedNight)
+	, LastBedNight
+	, Step)
 select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 	, hoh.ProjectID, p.ProjectType, p.TrackingMethod
 	, hoh.EntryDate 
@@ -88,6 +91,7 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 		when p.OperatingEndDate <= rpt.ReportEnd and hx.ExitDate is null then p.OperatingEndDate
 		else hx.ExitDate end
 	, bn.LastBednight
+	, '3.3.1'
 from hmis_Enrollment hoh
 inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate
 inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID 
@@ -131,24 +135,25 @@ where hoh.RelationshipToHoH = 1
 
 		update hhid
 		set hhid.ExitDest = case	
-			-- 5/14/2020 exit destination must be 99 when the effective exit date differs from HMIS
-			when hx.ExitDate is null or hx.ExitDate <> hhid.ExitDate then 99
-			when hx.Destination = 3 then 1 --PSH
-			when hx.Destination = 31 then 2	--PH - rent/temp subsidy
-			when hx.Destination in (19,20,21,26,28,33,34) then 3	--PH - rent/own with subsidy
-			when hx.Destination in (10,11) then 4	--PH - rent/own no subsidy
-			when hx.Destination = 22 then 5	--Family - perm
-			when hx.Destination = 23 then 6	--Friends - perm
-			when hx.Destination in (15,25) then 7	--Institutions - group/assisted
-			when hx.Destination in (4,5,6) then 8	--Institutions - medical
-			when hx.Destination = 7 then 9	--Institutions - incarceration
-			when hx.Destination in (14,29,32) then 10	--Temporary - not homeless
-			when hx.Destination in (1,2,18,27) then 11	--Homeless - ES/SH/TH
-			when hx.Destination = 16 then 12	--Homeless - Street
-			when hx.Destination = 12 then 13	--Family - temp
-			when hx.Destination = 13 then 14	--Friends - temp
-			when hx.Destination = 24 then 15	--Deceased
-			else 99	end
+				-- 5/14/2020 exit destination must be 99 when the effective exit date differs from HMIS
+				when hx.ExitDate is null or hx.ExitDate <> hhid.ExitDate then 99
+				when hx.Destination = 3 then 1 --PSH
+				when hx.Destination = 31 then 2	--PH - rent/temp subsidy
+				when hx.Destination in (19,20,21,26,28,33,34) then 3	--PH - rent/own with subsidy
+				when hx.Destination in (10,11) then 4	--PH - rent/own no subsidy
+				when hx.Destination = 22 then 5	--Family - perm
+				when hx.Destination = 23 then 6	--Friends - perm
+				when hx.Destination in (15,25) then 7	--Institutions - group/assisted
+				when hx.Destination in (4,5,6) then 8	--Institutions - medical
+				when hx.Destination = 7 then 9	--Institutions - incarceration
+				when hx.Destination in (14,29,32) then 10	--Temporary - not homeless
+				when hx.Destination in (1,2,18,27) then 11	--Homeless - ES/SH/TH
+				when hx.Destination = 16 then 12	--Homeless - Street
+				when hx.Destination = 12 then 13	--Family - temp
+				when hx.Destination = 13 then 14	--Friends - temp
+				when hx.Destination = 24 then 15	--Deceased
+				else 99	end
+			, hhid.Step = '3.3.2'
 		from tlsa_HHID hhid
 		left outer join hmis_Exit hx on hx.EnrollmentID = hhid.EnrollmentID
 			and hx.ExitDate = hhid.ExitDate 
@@ -166,7 +171,8 @@ where hoh.RelationshipToHoH = 1
 		, ProjectID, ProjectType, TrackingMethod
 		, EntryDate, MoveInDate, ExitDate
 		, EntryAge
-		, DisabilityStatus, DVStatus)
+		, DisabilityStatus, DVStatus
+		, Step)
 	select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 		, hn.RelationshipToHoH
 		, hhid.ProjectID, hhid.ProjectType, hhid.TrackingMethod
@@ -201,6 +207,7 @@ where hoh.RelationshipToHoH = 1
 		, case when hn.DisablingCondition in (0,1) then hn.DisablingCondition 
 			else null end
 		, dvstat.DVStatus 
+		, '3.4'
 	from tlsa_HHID hhid
 	inner join hmis_Enrollment hn on hn.HouseholdID = hhid.HouseholdID
 	inner join hmis_Client c on c.PersonalID = hn.PersonalID 
@@ -243,7 +250,8 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 6, c.DOB) <= rpt.ReportStart then 17
 			when DATEADD(yy, 3, c.DOB) <= rpt.ReportStart then 5
 			when DATEADD(yy, 1, c.DOB) <= rpt.ReportStart then 2
-			else 0 end 				
+			else 0 end 		
+		, n.Step = '3.5.1'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd 
 		and (n.ExitDate is null or n.ExitDate >= rpt.ReportStart)
@@ -269,6 +277,7 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 3, c.DOB) <= cd.CohortStart then 5
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
 			else 0 end 				
+		, n.Step = '3.5.2'
 	from tlsa_CohortDates cd
 	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
 		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
@@ -295,6 +304,7 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 3, c.DOB) <= cd.CohortStart then 5
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
 			else 0 end 				
+		, n.Step = '3.5.3'
 	from tlsa_CohortDates cd
 	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
 		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
@@ -316,6 +326,7 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null
 				and noDOB.EnrollmentID is null then 3	
 			else 99 end
+		, hhid.Step = '3.6.1'
 	from tlsa_HHID hhid 
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
 		and adult.EntryAge between 18 and 65
@@ -337,6 +348,7 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null
 				and noDOB.EnrollmentID is null then 3	
 			else 99 end
+		, hhid.Step = '3.6.2'
 	from tlsa_HHID hhid 
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate 
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
@@ -362,6 +374,7 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null
 				and noDOB.EnrollmentID is null then 3	
 			else 99 end
+		, hhid.Step = '3.6.3'
 	from tlsa_HHID hhid
 	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -1
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
@@ -384,6 +397,7 @@ where hoh.RelationshipToHoH = 1
 				and child.EnrollmentID is not null
 				and noDOB.EnrollmentID is null then 3	
 			else 99 end
+		, hhid.Step = '3.6.4'
 	from tlsa_HHID hhid
 	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -2
 	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
