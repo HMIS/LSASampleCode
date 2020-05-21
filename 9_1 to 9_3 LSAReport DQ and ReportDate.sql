@@ -5,13 +5,16 @@ Name: 9_1 to 9_3 LSAReport dq and ReportDate (File 10 of 10)
 Date:  4/7/2020   
 	   5/14/2020 - section 9.1 - change check of leftmost character in SSN from ">= '9'" to "= '9'"
 							   - add parentheses to WHERE clause 
+	   5/21/2020 - section 9.1 - add set of Step to INSERT statement
+				   section 9.2 - correct 24 (deceased) to 25 (LTC/nursing home) in list of institutional 
+								 living situations for HomelessDate1/3, TimesHomeless1/3, MonthsHomeless1/3
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
 
 delete from dq_Enrollment
 insert into dq_Enrollment (EnrollmentID, PersonalID, HouseholdID, RelationshipToHoH
-	, ProjectType, EntryDate, MoveInDate, ExitDate, Status1, Status3, SSNValid)
+	, ProjectType, EntryDate, MoveInDate, ExitDate, Status1, Status3, SSNValid, Step)
 select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 	, p.ProjectType, n.EntryDate, hhinfo.MoveInDate, ExitDate
 	, case when x.ExitDate < cd1.CohortStart then null
@@ -50,6 +53,7 @@ select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 				or c.SSN in ('123456789','111111111','222222222','333333333','444444444'
 						,'555555555','777777777','888888888')
 			then 0 else 1 end 
+		, '9.1'
 from hmis_Enrollment n 
 inner join tlsa_CohortDates cd1 on cd1.Cohort = 1
 	and n.EntryDate <= cd1.CohortEnd
@@ -270,7 +274,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))
+							and hn.LivingSituation in (4,5,6,7,15,25))
 					))))
 	,	HomelessDate3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
@@ -287,7 +291,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))
+							and hn.LivingSituation in (4,5,6,7,15,25))
 					))
 	,	TimesHomeless1 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
@@ -306,7 +310,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))
+							and hn.LivingSituation in (4,5,6,7,15,25))
 					))
 	,	TimesHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
@@ -324,7 +328,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))
+							and hn.LivingSituation in (4,5,6,7,15,25))
 					))
 	,	MonthsHomeless1 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
@@ -343,7 +347,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))	
+							and hn.LivingSituation in (4,5,6,7,15,25))	
 					))
 	,	MonthsHomeless3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
@@ -361,7 +365,7 @@ update rpt
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
 							-- and PreviousStreetESSH = 1 
 						or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-							and hn.LivingSituation in (4,5,6,7,15,24))	
+							and hn.LivingSituation in (4,5,6,7,15,25))	
 					))
 	,	DV1 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
