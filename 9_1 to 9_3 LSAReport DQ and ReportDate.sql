@@ -8,7 +8,7 @@ Date:  4/7/2020
 	   5/21/2020 - section 9.1 - add set of Step to INSERT statement
 				   section 9.2 - correct 24 (deceased) to 25 (LTC/nursing home) in list of institutional 
 								 living situations for HomelessDate1/3, TimesHomeless1/3, MonthsHomeless1/3
-
+	   5/28/2020 - section 9.2 - add missing PH destinations (HMIS values 33,34) to HoHPermToPH1/3
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
 
@@ -125,14 +125,14 @@ update rpt
 				and x.DateDeleted is null 
 			where n.Status1 is not null and n.RelationshipToHoH = 1
 				and n.ProjectType in (3,13)
-				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23))
+				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34))
 	,	HoHPermToPH3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
 			where n.RelationshipToHoH = 1
 				and n.ProjectType in (3,13)
-				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23))
+				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34))
 	,   NoCoC = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			left outer join hmis_EnrollmentCoC coc on 
