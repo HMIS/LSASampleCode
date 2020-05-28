@@ -3,13 +3,14 @@ LSA FY2019 Sample Code
 
 Name:  6_1 to 6_19 LSAHousehold.sql  (File 6 of 10)
 Date:  4/20/2020
-	   5/14/2022 -  section 6.12 - correct "DateDeleted = 0" to "DateDeleted is null"
+	   5/14/2020 -  section 6.12 - correct "DateDeleted = 0" to "DateDeleted is null"
 	   				section 6.14 - correct 24 (deceased) to 25 (LTC/nursing home) 
 								   in list of institutional living situations
-	   5/21/2022 -  section 6.12.2.a and b - add parentheses to join to tlsa_HHID
+	   5/21/2020 -  section 6.12.2.a and b - add parentheses to join to tlsa_HHID
 				    section 6.14 - correct second instance of 24 (deceased) to 25 (LTC/nursing home) 
 								   in list of institutional living situations
 					Sections 6.1-6.18 - add set of Step column to all insert and update statements
+	   5/28/2020 -  section 6.5 - add host home (HMIS value = 32) to living situation case statements
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -252,7 +253,7 @@ Date:  4/20/2020
 			when hn.LivingSituation = 16 then 1 --Homeless - Street
 			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation = 2 then 4	--Homeless - TH
+			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
 			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
 			when hn.LivingSituation = 29 then 6	--Residential project
 			when hn.LivingSituation = 35 then 7	--Family		
@@ -284,7 +285,7 @@ Date:  4/20/2020
 			when hn.LivingSituation = 16 then 1 --Homeless - Street
 			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation = 2 then 4	--Homeless - TH
+			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
 			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
 			when hn.LivingSituation = 29 then 6	--Residential project
 			when hn.LivingSituation = 35 then 7	--Family		
@@ -316,7 +317,7 @@ Date:  4/20/2020
 			when hn.LivingSituation = 16 then 1 --Homeless - Street
 			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
 			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation = 2 then 4	--Homeless - TH
+			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
 			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
 			when hn.LivingSituation = 29 then 6	--Residential project
 			when hn.LivingSituation = 35 then 7	--Family		
