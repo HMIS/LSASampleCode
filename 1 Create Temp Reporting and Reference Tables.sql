@@ -7,6 +7,7 @@ Date:  4/17/2020
 					This is set in the sample code with every INSERT and UPDATE statement to the section number in
 					which the step occurs.  For sections with multiple INSERT and/or UPDATE statements, the section
 					number is followed by a statement number -- e.g., '3.6.1' and '3.6.2', etc.
+	   5/28/2020 -- remove extraneous DQ1Adult and DQ3Adult columns from CREATE tlsa_Enrollment
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -106,9 +107,6 @@ create table tlsa_Enrollment (
 	, DVStatus int
 	, Active bit
 	, CH bit
---	, ExitCohort int
-	, DQ1Adult int
-	, DQ3Adult int
 	, Step nvarchar(10) not NULL
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)
