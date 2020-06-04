@@ -6,7 +6,8 @@ Name:  7_1 to 7_8 LSAExit.sql  (File 7 of 10)
 Date:  4/20/2020   
 	   5/14/2020 - section 7.1 - remove extraneous join to hmis_Exit
 			     - section 7.6 - correct "DateDeleted = 0" to "DateDeleted is null"
-	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements		
+	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements	
+	   6/4/2020  - 7.4.1 - corrections to UPDATE statement for HHVet, HHDisability, HHFleeingDV, and HHParent
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -115,9 +116,15 @@ Date:  4/20/2020
 */
 
 	update ex
-	set HHVet = case when vet.PersonalID is not null then 1 else 0 end
-		, HHDisability = case when disability.PersonalID is not null then 1 else 0 end
-		, HHFleeingDV = case when dv.PersonalID is not null then 1 else 0 end
+	set HHVet = (select max(case when c.VeteranStatus = 1 then 1 else 0 end)
+			from hmis_Client c
+			where c.PersonalID = hh.PersonalID)
+		, HHDisability = (select max(case when disability.DisabilityStatus = 1 then 1 else 0 end)
+			from tlsa_Enrollment disability
+			where disability.EnrollmentID = hh.EnrollmentID)
+		, HHFleeingDV = (select max(case when dv.DVStatus = 1 then 1 else 0 end)
+			from tlsa_Enrollment dv
+			where dv.EnrollmentID = hh.EnrollmentID)
 		, HoHRace =  case 
 			when hoh.RaceNone in (8,9) then 98
 			when hoh.AmIndAkNative + hoh.Asian + hoh.BlackAfAmerican + 
@@ -133,7 +140,9 @@ Date:  4/20/2020
 			when hoh.Ethnicity in (8,9) then 98
 			when hoh.Ethnicity in (0,1) then hoh.Ethnicity
 			else 99 end 
-		, HHParent = case when parent.PersonalID is not null then 1 else 0 end
+		, HHParent = (select max(case when parent.RelationshipToHoH = 2 then 1 else 0 end)
+			from tlsa_Enrollment parent
+			where parent.EnrollmentID = hh.EnrollmentID)
 		, ex.Step = '7.4.1'
 	from tlsa_Exit ex 
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID 
@@ -147,16 +156,6 @@ Date:  4/20/2020
 			, n.RelationshipToHoH
 		from tlsa_Enrollment n
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID) hh on hh.HouseholdID = ex.QualifyingExitHHID and hh.ExitCohort = ex.Cohort
-	left outer join hmis_Client vet on vet.PersonalID = hh.PersonalID 
-		and hh.Age between 18 and 65 and vet.VeteranStatus = 1	
-	left outer join tlsa_Enrollment disability on disability.EnrollmentID = hh.EnrollmentID
-		and (hh.Age between 18 and 65 or disability.PersonalID = ex.HoHID)
-		and disability.DisabilityStatus = 1
-	left outer join tlsa_Enrollment dv on dv.EnrollmentID = hh.EnrollmentID
-		and (hh.Age between 18 and 65 or dv.PersonalID = ex.HoHID)
-		and dv.DVStatus = 1
-	left outer join tlsa_Enrollment parent on parent.EnrollmentID = hh.EnrollmentID
-		and parent.RelationshipToHoH = 2 
 
 
 update ex
