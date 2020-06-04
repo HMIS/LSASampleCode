@@ -8,6 +8,7 @@ Date:  4/17/2020
 					which the step occurs.  For sections with multiple INSERT and/or UPDATE statements, the section
 					number is followed by a statement number -- e.g., '3.6.1' and '3.6.2', etc.
 	   5/28/2020 -- remove extraneous DQ1Adult and DQ3Adult columns from CREATE tlsa_Enrollment
+	   6/4/2020  -- change ch_Include.chDate column name to ESSHStreetDate per specs
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -194,9 +195,9 @@ if object_id ('ch_Include') is not NULL drop table ch_Include
 	
 	create table ch_Include(
 	PersonalID varchar(32) not NULL,
-	chDate date not NULL,
+	ESSHStreetDate date not NULL,
 	Step nvarchar(10) not NULL,
-	constraint pk_ch_Include primary key clustered (PersonalID, chDate)
+	constraint pk_ch_Include primary key clustered (PersonalID, ESSHStreetDate)
 	)
 	;
 	
