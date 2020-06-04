@@ -5,7 +5,14 @@ Name:  5_1 to 5_19 LSAPerson.sql
 Date:  4/7/2020   
 	   5/14/2020 - Section 5.10 - removed extraneous update statements 
 	   5/21/2020 - Sections 5.1-5.18 - add set of Step column to all insert and update statements
-
+	   6/4/2020  - 5.8.1-5.9.1 - change ch_Include.chDate column name to ESSHStreetDate per specs
+				   5.8.3 - correct WHERE criteria / use all DateToStreetESSH records dated after CHStart 
+						   instead of just the earliest one
+				   5.9.3 -> 5.10.1 - change UPDATE statement for CHTime/CHTimeStatus for non-HoH children 
+						   from 5.9.3 to 5.10.1 and renumber other 5.10 statements accordingly.
+				   5.10.2 and 5.10.4 - use 1 year instead of x days in DATEADD functions for consistency with specs.
+				   5.15.1 - use AHAREST instead of HHTypeEST in case statement setting AdultEST.
+				   5.16.3 - use HoHPSH instead of HoHAdult in case statement setting AHARHoHPSH.
 
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -186,7 +193,7 @@ Date:  4/7/2020
 	delete from ch_Include
 
 	--Dates enrolled in ES entry/exit or SH
-	insert into ch_Include (PersonalID, chDate, Step)
+	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.1'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
@@ -200,7 +207,7 @@ Date:  4/7/2020
 		and chx.excludeDate is null
 
 	--ES nbn bed nights
-	insert into ch_Include (PersonalID, chDate, Step)
+	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.2'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
@@ -214,14 +221,14 @@ Date:  4/7/2020
 			and cal.theDate between lp.CHStart and lp.LastActive
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
-		left outer join ch_Include chi on chi.chDate = cal.theDate 
+		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
 			and chi.PersonalID = chn.PersonalID
 	where chn.ProjectType = 1 and chn.TrackingMethod = 3 and chx.excludeDate is null
-		and chi.chDate is null
+		and chi.ESSHStreetDate is null
 
 	--ES/SH/Street dates from 3.917 DateToStreetESSH to the day prior to 
 	--  EntryDates > CHStart.
-	insert into ch_Include (PersonalID, chDate, Step)
+	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.3'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID
@@ -233,15 +240,10 @@ Date:  4/7/2020
 			and cal.theDate < hn.EntryDate
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
-		left outer join ch_Include chi on chi.chDate = cal.theDate 
+		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
 			and chi.PersonalID = chn.PersonalID
-	where hn.EnrollmentID in 
-			(select top 1 earliest.EnrollmentID
-			 from hmis_Enrollment earliest
-			 where earliest.EnrollmentID = chn.EnrollmentID 
-			 order by earliest.DateToStreetESSH asc)
-		and	chx.excludeDate is null
-		and chi.chDate is null
+	where chx.excludeDate is null
+		and chi.ESSHStreetDate is null
 			and (chn.ProjectType in (1,8)
 				or hn.LivingSituation in (1,18,16)		
 				or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
@@ -251,7 +253,7 @@ Date:  4/7/2020
 
 	--	For RRH/PSH, dates from entry to the earlier of move-in or exit are counted
 	--   when LivingSituation at entry is ES/SH/Street.
-	insert into ch_Include (PersonalID, chDate, Step)
+	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.4'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
@@ -261,28 +263,28 @@ Date:  4/7/2020
 		and cal.theDate < coalesce(chn.MoveInDate, chn.ExitDate, lp.LastActive)
 	left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 		and chx.PersonalID = chn.PersonalID
-	left outer join ch_Include chi on chi.chDate = cal.theDate 
+	left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
 		and chi.PersonalID = chn.PersonalID
 	where chx.excludeDate is null
-		and chi.chDate is null
+		and chi.ESSHStreetDate is null
 			and hn.LivingSituation in (1,18,16)		
 
 	--Gaps of less than 7 nights between two ESSHStreet dates are counted
-	insert into ch_Include (PersonalID, chDate, Step)
+	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select gap.PersonalID, cal.theDate, '5.8.5'
-	from (select distinct s.PersonalID, s.chDate as StartDate, min(e.chDate) as EndDate
+	from (select distinct s.PersonalID, s.ESSHStreetDate as StartDate, min(e.ESSHStreetDate) as EndDate
 			from ch_Include s 
-				inner join ch_Include e on e.PersonalID = s.PersonalID and e.chDate > s.chDate 
-					and dateadd(dd, -7, e.chDate) <= s.chDate
+				inner join ch_Include e on e.PersonalID = s.PersonalID and e.ESSHStreetDate > s.ESSHStreetDate 
+					and dateadd(dd, -7, e.ESSHStreetDate) <= s.ESSHStreetDate
 			where s.PersonalID not in 
 				(select PersonalID 
 				from ch_Include 
-				where chDate = dateadd(dd, 1, s.chDate))
-			group by s.PersonalID, s.chDate) gap
+				where ESSHStreetDate = dateadd(dd, 1, s.ESSHStreetDate))
+			group by s.PersonalID, s.ESSHStreetDate) gap
 		inner join ref_Calendar cal on cal.theDate between gap.StartDate and gap.EndDate
 		left outer join ch_Include chi on chi.PersonalID = gap.PersonalID 
-			and chi.chDate = cal.theDate
-	where chi.chDate is null
+			and chi.ESSHStreetDate = cal.theDate
+	where chi.ESSHStreetDate is null
 
 /*
 	5.9 Get ES/SH/Street Episodes
@@ -290,31 +292,27 @@ Date:  4/7/2020
 	delete from ch_Episodes
 
 	-- For any given PersonalID:
-	-- Any chDate in ch_Include without a record for the day before is the start of an episode (episodeStart).
+	-- Any ESSHStreetDate in ch_Include without a record for the day before is the start of an episode (episodeStart).
 	-- Any cdDate in ch_Include without a record for the day after is the end of an episode (episodeEnd).
 	-- Each episodeStart combined with the next earliest episodeEnd represents one episode.
 	-- The length of the episode is the difference in days between episodeStart and episodeEnd + 1 day.
 
 	insert into ch_Episodes (PersonalID, episodeStart, episodeEnd, Step)
-	select distinct s.PersonalID, s.chDate, min(e.chDate), '5.9.1'
+	select distinct s.PersonalID, s.ESSHStreetDate, min(e.ESSHStreetDate), '5.9.1'
 	from ch_Include s 
-	inner join ch_Include e on e.PersonalID = s.PersonalID  and e.chDate >= s.chDate
+	inner join ch_Include e on e.PersonalID = s.PersonalID  and e.ESSHStreetDate >= s.ESSHStreetDate
 	--any date in ch_Include without a record for the day before is the start of an episode
-	where s.PersonalID not in (select PersonalID from ch_Include where chDate = dateadd(dd, -1, s.chDate))
+	where s.PersonalID not in (select PersonalID from ch_Include where ESSHStreetDate = dateadd(dd, -1, s.ESSHStreetDate))
 	--any date in ch_Include without a record for the day after is the end of an episode
-		and e.PersonalID not in (select PersonalID from ch_Include where chDate = dateadd(dd, 1, e.chDate))
-	group by s.PersonalID, s.chDate
+		and e.PersonalID not in (select PersonalID from ch_Include where ESSHStreetDate = dateadd(dd, 1, e.ESSHStreetDate))
+	group by s.PersonalID, s.ESSHStreetDate
 
 	update chep 
 	set episodeDays = datediff(dd, chep.episodeStart, chep.episodeEnd) + 1
 		, Step = '5.9.2'
 	from ch_Episodes chep
 
-	update lp 
-	set lp.CHTime = case when lp.HoHAdult = 0 then -1 else 0 end
-		, lp.CHTimeStatus = -1
-		, lp.Step = '5.9.3'
-	from tlsa_Person lp
+
 
 /*
 	5.10 Set CHTime and CHTimeStatus 
@@ -323,11 +321,17 @@ Date:  4/7/2020
 	--Any client with a 365+ day episode that overlaps with their
 	--last year of activity meets the time criteria for CH
 	update lp 
-	set CHTime = 365, CHTimeStatus = 1, lp.Step = '5.10.1'
+	set lp.CHTime = case when lp.HoHAdult = 0 then -1 else 0 end
+		, lp.CHTimeStatus = -1
+		, lp.Step = '5.10.1'
+	from tlsa_Person lp	
+	
+	update lp 
+	set CHTime = 365, CHTimeStatus = 1, lp.Step = '5.10.2'
 	from tlsa_Person lp
 		inner join ch_Episodes chep on chep.PersonalID = lp.PersonalID
 			and chep.episodeDays >= 365
-			and dateadd(dd, 365, chep.episodeEnd) >= lp.LastActive
+			and chep.episodeEnd > dateadd(yyyy, -1, lp.LastActive)
 	where CHTime = 0
 
 	--Clients with a total of 365+ days in the three year period and at least four episodes 
@@ -341,7 +345,7 @@ Date:  4/7/2020
 			when ep.episodeDays < 365 then -1 
 			when ep.episodes >= 4 then 2
 			else 3 end
-		, lp.Step = '5.10.2'
+		, lp.Step = '5.10.3'
 	from tlsa_Person lp
 	inner join (select chep.PersonalID
 		, sum(chep.episodeDays) as episodeDays, count(distinct chep.episodeStart) as episodes
@@ -354,13 +358,13 @@ Date:  4/7/2020
 	update lp 
 	set lp.CHTime = 400
 		, lp.CHTimeStatus = 2
-		, lp.Step = '5.10.3'
+		, lp.Step = '5.10.4'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
 			and hn.MonthsHomelessPastThreeYears in (112,113) 
 			and hn.TimesHomelessPastThreeYears = 4
-			and hn.EntryDate >= dateadd(dd, -364, lp.LastActive)
+			and hn.EntryDate > dateadd(yyyy, -1, lp.LastActive)
 	where 
 		lp.CHTime not in (-1,365) or lp.CHTimeStatus = 3
 
@@ -369,7 +373,7 @@ Date:  4/7/2020
 		
 	update lp 
 	set lp.CHTimeStatus = 99
-		, lp.Step = '5.10.4'
+		, lp.Step = '5.10.5'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
@@ -677,7 +681,7 @@ Date:  4/7/2020
 	--set AdultEST
 	update lp
 	set lp.AdultEST = 
-		case when lp.HoHAdult not in (1,3) or lp.HHTypeEST = -1 then -1
+		case when lp.HoHAdult not in (1,3) or lp.AHAREST = -1 then -1
 			else isnull
 				(
 					(select cast(replace(cast(sum(HHTypes.HHTypeEach) as nvarchar), '0', '') as int)
@@ -793,7 +797,7 @@ Date:  4/7/2020
 	--set PSH HHType 
 	update lp
 	set lp.AHARHoHPSH = 
-		case when lp.HoHAdult not in (1,3) or lp.AHARPSH = -1 then -1
+		case when lp.HoHPSH = -1 or lp.AHARPSH = -1 then -1
 			else isnull
 				(
 					(select cast(replace(cast(sum(HHTypes.HHTypeEach) as nvarchar), '0', '') as int)
