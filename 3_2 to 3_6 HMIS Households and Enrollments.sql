@@ -21,6 +21,11 @@ Date:	4/16/2020 -- original
 									to ensure records are dated prior to ExitDate (actual or effective) if it exists
 				  -- 3.5.2 and 3.5.3 - add missing parentheses to CASE
 				  -- 3.6.2 - corrected table aliases in joins for adult/child/noDOB ExitDate
+		6/4/2020 -- 3.5.1/2/3 -- corrections to FROM joins so that ActiveAge, Exit1Age, and Exit2Age are calculated for all enrollments
+						and not just for those active during the relevant cohort period.
+					3.5.2/3 -- simplified CASE statement/removed redundancies - no change to output
+					3.3.1 - correction so that all enrollments located in ReportCoC at any time are included in tlsa_HHID 
+							instead of limiting it to enrollment in ReportCoC as of the most recent EnrollmentCoC record.
 
 	3.2 Cohort Dates 
 */
@@ -106,6 +111,9 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 	, '3.3.1'
 from hmis_Enrollment hoh
 inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate
+inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID 
+	and coc.CoCCode = rpt.ReportCoC and coc.InformationDate <= rpt.ReportEnd
+	and coc.DateDeleted is null
 inner join hmis_Project p on p.ProjectID = hoh.ProjectID
 	and p.DateDeleted is null
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
@@ -130,12 +138,6 @@ left outer join (select distinct svc.EnrollmentID, max(svc.DateProvided) as Last
 		) bn on bn.EnrollmentID = hoh.EnrollmentID
 where hoh.RelationshipToHoH = 1
 	and hohCheck.EnrollmentID is null 
-	and rpt.ReportCoC = (select top 1 coc.CoCCode 
-			from hmis_EnrollmentCoC coc
-			where coc.EnrollmentID = hoh.EnrollmentID and coc.InformationDate <= rpt.ReportEnd
-				and coc.DateDeleted is null
-			order by coc.InformationDate desc)
-	and p.ContinuumProject = 1 
 	and (p.OperatingEndDate is null 
 		-- 5/14/2020 EntryDate must be prior to OperatingEndDate
 		or (hoh.EntryDate < p.OperatingEndDate and p.OperatingEndDate >= '10/1/2012'))
@@ -271,14 +273,11 @@ where hoh.RelationshipToHoH = 1
 		, n.Step = '3.5.1'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd 
-		and (n.ExitDate is null or n.ExitDate >= rpt.ReportStart)
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
 	update n
 	set n.Exit1Age = case when n.ExitDate < cd.CohortStart
-				or n.EntryDate > cd.CohortEnd
-				or (n.EntryDate between cd.CohortStart and cd.CohortEnd 
-					and n.ExitDate between cd.CohortStart and cd.CohortEnd)
+				or n.EntryDate >= cd.CohortStart
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
 			--		or entry is in cohort period, use EntryAge; 
@@ -295,17 +294,13 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
 			else 0 end 				
 		, n.Step = '3.5.2'
-	from tlsa_CohortDates cd
-	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
-		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
+	from  tlsa_Enrollment n
+	inner join tlsa_CohortDates cd on cd.Cohort = -1 
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
-	where cd.Cohort = -1
 
 	update n
 	set n.Exit2Age = case when n.ExitDate < cd.CohortStart
-				or n.EntryDate > cd.CohortEnd
-				or (n.EntryDate between cd.CohortStart and cd.CohortEnd 
-					and n.ExitDate between cd.CohortStart and cd.CohortEnd)
+				or n.EntryDate >= cd.CohortStart
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
 			--		or entry is in cohort period, use EntryAge; 
@@ -322,11 +317,9 @@ where hoh.RelationshipToHoH = 1
 			when DATEADD(yy, 1, c.DOB) <= cd.CohortStart then 2
 			else 0 end 				
 		, n.Step = '3.5.3'
-	from tlsa_CohortDates cd
-	inner join tlsa_Enrollment n on n.EntryDate <= cd.CohortEnd 
-		and (n.ExitDate is null or n.ExitDate >= cd.CohortStart)
+	from  tlsa_Enrollment n
+	inner join tlsa_CohortDates cd on cd.Cohort = -2 
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
-	where cd.Cohort = -2
 
 /*
 	3.6 Household Types
