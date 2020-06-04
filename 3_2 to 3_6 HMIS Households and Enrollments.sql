@@ -280,7 +280,7 @@ where hoh.RelationshipToHoH = 1
 				or n.EntryDate >= cd.CohortStart
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
-			--		or entry is in cohort period, use EntryAge; 
+			--		or entry is in or after cohort period, use EntryAge; 
 			--  Otherwise, recalculate age as of CohortStart 
 			when DATEADD(yy, 65, c.DOB) <= cd.CohortStart then 65
 			when DATEADD(yy, 55, c.DOB) <= cd.CohortStart then 64
@@ -303,7 +303,7 @@ where hoh.RelationshipToHoH = 1
 				or n.EntryDate >= cd.CohortStart
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
-			--		or entry is in cohort period, use EntryAge; 
+			--		or entry is in or after cohort period, use EntryAge; 
 			--  Otherwise, recalculate age as of CohortStart 
 			when DATEADD(yy, 65, c.DOB) <= cd.CohortStart then 65
 			when DATEADD(yy, 55, c.DOB) <= cd.CohortStart then 64
@@ -324,7 +324,10 @@ where hoh.RelationshipToHoH = 1
 /*
 	3.6 Household Types
 */
-	
+
+-- Note:  Code here and elsewhere uses 'between 18 and 65' instead of 'between 21 and 65' because the output
+--        is the same (there are no values of 18, 19, or 20) and it is easier to understand without consulting 
+--		  the LSA Dictionary.
 	update hhid
 	set hhid.EntryHHType = case 
 			when adult.EnrollmentID is not null 
