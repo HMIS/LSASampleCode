@@ -11,6 +11,7 @@ Date:	4/2/2020 -- original
 		6/11/2020 -- sections 4.2-4.5 - correct time format for DateCreated and DateUpdated to 24-hour 
 						(HH:mm:ss instead of hh:mm:ss)
 				  -- section 4.5 - format InventoryStartDate and InventoryEndDate
+		6/18/2020 -- section 4.5 - cast InventoryEndDate as datetime (required to use ISDATE() function).					    
 
 	4.2 Get Organization Records for Export
 		Export organization records for all projects selected in 4.2.
@@ -116,7 +117,7 @@ Date:	4/2/2020 -- original
 		, hi.CHBedInventory, hi.OtherBedInventory
 		, case when lp.ProjectType = 1 then hi.ESBedType else null end
 		, format(hi.InventoryStartDate, 'yyyy-MM-dd')
-		, case when isdate(hi.InventoryEndDate) = 1 then format(hi.InventoryEndDate, 'yyyy-MM-dd') else null end
+		, case when isdate(cast(hi.InventoryEndDate as datetime)) = 1 then format(hi.InventoryEndDate, 'yyyy-MM-dd') else null end
 		, format(hi.DateCreated, 'yyyy-MM-dd HH:mm:ss')
 		, format(hi.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
 		, lp.ExportID	
