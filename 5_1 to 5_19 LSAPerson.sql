@@ -13,6 +13,9 @@ Date:  4/7/2020
 				   5.10.2 and 5.10.4 - use 1 year instead of x days in DATEADD functions for consistency with specs.
 				   5.15.1 - use AHAREST instead of HHTypeEST in case statement setting AdultEST.
 				   5.16.3 - use HoHPSH instead of HoHAdult in case statement setting AHARHoHPSH.
+		6/11/2020 - 5.10.5 - add parentheses in 2 places to isolate 'or' conditions
+					5.14.2, 5.15.2, and 5.16.2 - update to include people in households whose ExitDate 
+						and MoveInDate are on ReportStart for AHARRRH, AdultRRH, AHARHoHRRH.
 
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -377,27 +380,27 @@ Date:  4/7/2020
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
-	where lp.CHTime in (0,270) or lp.CHTimeStatus = 3
+	where (lp.CHTime in (0,270) or lp.CHTimeStatus = 3)
 		and (hn.DateToStreetESSH > hn.EntryDate 
 				or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
 				or (chn.ProjectType not in (1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 						and hn.LengthOfStay in (2,3)
-						and hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1))
+						and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
 				or (chn.ProjectType not in (1,8) and hn.LengthOfStay in (10,11) 
-							and hn.PreviousStreetESSH = 1)
+							and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
 				or ((chn.ProjectType in (1,8)
 					  or hn.LivingSituation in (1,16,18)
-					  or (hn.LivingSituation in (4,5,6,7,15,25) 
+					  or (chn.ProjectType not in (1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 							and hn.LengthOfStay in (2,3)
 							and hn.PreviousStreetESSH = 1)
-					  or (hn.LengthOfStay in (10,11) 
+					  or (chn.ProjectType not in (1,8) and hn.LengthOfStay in (10,11) 
 							and hn.PreviousStreetESSH = 1)
 					)
 					and (
-						hn.MonthsHomelessPastThreeYears in (8,9) 
+						hn.MonthsHomelessPastThreeYears in (8,9,99) 
 							or hn.MonthsHomelessPastThreeYears is null
-							or hn.TimesHomelessPastThreeYears in (8,9)
+							or hn.TimesHomelessPastThreeYears in (8,9,99)
 							or hn.TimesHomelessPastThreeYears is null
 							or hn.DateToStreetESSH is null
 						)
@@ -644,11 +647,15 @@ Date:  4/7/2020
 							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
+						inner join lsa_Report rpt on n.Active = 1
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-						where n.Active = 1 and n.ProjectType = 13 and n.MoveInDate is not null 
-							and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report))) HHTypes  
+						where n.ProjectType = 13
+							and 
+							(n.ExitDate is null 
+							 or n.ExitDate > rpt.ReportStart
+							 or (n.MoveInDate = n.ExitDate and n.MoveInDate = rpt.ReportStart))) HHTypes  
 					where HHTypes.PersonalID = lp.PersonalID)
-				, -1) end	
+				, -1) end		
 		, lp.Step = '5.14.2'
 	from tlsa_Person lp
 
@@ -714,10 +721,15 @@ Date:  4/7/2020
 							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
+						inner join lsa_Report rpt on n.Active = 1
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-						where n.Active = 1 and n.ProjectType = 13 and n.MoveInDate is not null 
-							and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report))
-							and n.ActiveAge between 18 and 65) HHTypes  
+						where n.ProjectType = 13
+							and n.ActiveAge between 18 and 65
+							and 
+							(n.ExitDate is null 
+							 or n.ExitDate > rpt.ReportStart
+							 or (n.MoveInDate = n.ExitDate and n.MoveInDate = rpt.ReportStart
+							 ))) HHTypes  
 					where HHTypes.PersonalID = lp.PersonalID)
 				, -1) end	
 		, lp.Step = '5.15.2'
@@ -785,10 +797,15 @@ Date:  4/7/2020
 							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
+						inner join lsa_Report rpt on n.Active = 1
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-						where n.Active = 1 and n.ProjectType = 13 and n.MoveInDate is not null 
-							and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report))
-							and n.RelationshipToHoH = 1) HHTypes  
+						where n.ProjectType = 13
+							and n.RelationshipToHoH = 1
+							and 
+							(n.ExitDate is null 
+							 or n.ExitDate > rpt.ReportStart
+							 or (n.MoveInDate = n.ExitDate and n.MoveInDate = rpt.ReportStart
+							 ))) HHTypes  
 					where HHTypes.PersonalID = lp.PersonalID)
 				, -1) end	
 		, lp.Step = '5.16.2'
