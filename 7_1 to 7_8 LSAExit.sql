@@ -8,6 +8,7 @@ Date:  4/20/2020
 			     - section 7.6 - correct "DateDeleted = 0" to "DateDeleted is null"
 	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements	
 	   6/4/2020  - 7.4.1 - corrections to UPDATE statement for HHVet, HHDisability, HHFleeingDV, and HHParent
+	   6/18/2020 - 7.4.1 - join on HouseholdID vs. EnrollmentID for HHDisability, HHFleeingDV, and HHParent
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -121,10 +122,10 @@ Date:  4/20/2020
 			where c.PersonalID = hh.PersonalID)
 		, HHDisability = (select max(case when disability.DisabilityStatus = 1 then 1 else 0 end)
 			from tlsa_Enrollment disability
-			where disability.EnrollmentID = hh.EnrollmentID)
+			where disability.HouseholdID = hh.HouseholdID)
 		, HHFleeingDV = (select max(case when dv.DVStatus = 1 then 1 else 0 end)
 			from tlsa_Enrollment dv
-			where dv.EnrollmentID = hh.EnrollmentID)
+			where dv.HouseholdID = hh.HouseholdID)
 		, HoHRace =  case 
 			when hoh.RaceNone in (8,9) then 98
 			when hoh.AmIndAkNative + hoh.Asian + hoh.BlackAfAmerican + 
@@ -142,7 +143,7 @@ Date:  4/20/2020
 			else 99 end 
 		, HHParent = (select max(case when parent.RelationshipToHoH = 2 then 1 else 0 end)
 			from tlsa_Enrollment parent
-			where parent.EnrollmentID = hh.EnrollmentID)
+			where parent.HouseholdID = hh.HouseholdID)
 		, ex.Step = '7.4.1'
 	from tlsa_Exit ex 
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID 
