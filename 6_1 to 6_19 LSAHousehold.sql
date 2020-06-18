@@ -11,6 +11,7 @@ Date:  4/20/2020
 								   in list of institutional living situations
 					Sections 6.1-6.18 - add set of Step column to all insert and update statements
 	   5/28/2020 -  section 6.5 - add host home (HMIS value = 32) to living situation case statements
+	   6/18/2020 - 6.4.1 and 6.4.2 -- correct RRH/PSHMoveIn values from 10 and 20 to 1 and 2
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -169,7 +170,7 @@ Date:  4/20/2020
 	from tlsa_Household hh
 	left outer join 
 		(select hhid.HoHID, hhid.ActiveHHType as HHType
-			, min(case when hhid.MoveInDate >= rpt.ReportStart then 10 else 20 end) as MoveInStat
+			, min(case when hhid.MoveInDate >= rpt.ReportStart then 1 else 2 end) as MoveInStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
 		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.ProjectType = 13
@@ -184,7 +185,7 @@ Date:  4/20/2020
 	from tlsa_Household hh
 	left outer join 
 		(select hhid.HoHID, hhid.ActiveHHType as HHType
-			, min(case when hhid.MoveInDate >= rpt.ReportStart then 10 else 20 end) as MoveInStat
+			, min(case when hhid.MoveInDate >= rpt.ReportStart then 1 else 2 end) as MoveInStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
 		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.ProjectType = 3
