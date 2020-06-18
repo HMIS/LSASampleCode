@@ -16,6 +16,8 @@ Date:  4/7/2020
 		6/11/2020 - 5.10.5 - add parentheses in 2 places to isolate 'or' conditions
 					5.14.2, 5.15.2, and 5.16.2 - update to include people in households whose ExitDate 
 						and MoveInDate are on ReportStart for AHARRRH, AdultRRH, AHARHoHRRH.
+		6/18/2020 - 5.17.2 - correct step number (was 5.17.1)
+					5.18.8 - correct to set values for AC3PlusEST/RRH/PSH to 0 or 1 (was -1 or 1)
 
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -907,7 +909,7 @@ Date:  4/7/2020
 				else 0 end)
 		from tlsa_Enrollment n 
 		where n.Active = 1 and n.HouseholdID = hhid.HouseholdID)
-		, hhid.Step = '5.17.1'
+		, hhid.Step = '5.17.2'
 	from tlsa_HHID hhid
 	where hhid.Active = 1
 
@@ -1237,17 +1239,17 @@ Date:  4/7/2020
 				from tlsa_HHID hhid
 					inner join tlsa_Enrollment n on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID
-					and n.ProjectType in (1,2,8) and n.Active = 1), -1)
+					and n.ProjectType in (1,2,8) and n.Active = 1), 0)
 		, lp.AC3PlusRRH = coalesce((select max(hhid.AC3Plus) 
 				from tlsa_HHID hhid
 					inner join tlsa_Enrollment n on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID
-					and n.ProjectType = 13 and n.Active = 1), -1)		
+					and n.ProjectType = 13 and n.Active = 1), 0)		
 		, lp.AC3PlusPSH = coalesce((select max(hhid.AC3Plus) 
 				from tlsa_HHID hhid
 					inner join tlsa_Enrollment n on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID
-					and n.ProjectType = 3 and n.Active = 1), -1)
+					and n.ProjectType = 3 and n.Active = 1), 0)
 		, lp.Step = '5.18.8'
 	from tlsa_Person lp
 
