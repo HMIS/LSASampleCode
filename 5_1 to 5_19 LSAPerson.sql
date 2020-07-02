@@ -18,7 +18,10 @@ Date:  4/7/2020
 						and MoveInDate are on ReportStart for AHARRRH, AdultRRH, AHARHoHRRH.
 		6/18/2020 - 5.17.2 - correct step number (was 5.17.1)
 					5.18.8 - correct to set values for AC3PlusEST/RRH/PSH to 0 or 1 (was -1 or 1)
-
+		7/2/2020 -  5.14.2, 5.15.2, 5.16.2 -- add requirement that MoveInDate is not null in order to count
+						RRH households for AHAR
+				 -  5.15.1-5.15.3 - remove extraneous check for CO HHType when setting AHAR Adult identifiers
+				
 	5.1 Get Active HMIS HouseholdIDs
 */
 
@@ -652,6 +655,7 @@ Date:  4/7/2020
 						inner join lsa_Report rpt on n.Active = 1
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 						where n.ProjectType = 13
+							and n.MoveInDate is not null
 							and 
 							(n.ExitDate is null 
 							 or n.ExitDate > rpt.ReportStart
@@ -698,7 +702,6 @@ Date:  4/7/2020
 					 (select distinct n.PersonalID
 						, case when hhid.ActiveHHType = 1 then 1000
 							when hhid.ActiveHHType = 2 then 200
-							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
@@ -720,12 +723,12 @@ Date:  4/7/2020
 					 (select distinct n.PersonalID
 						, case when hhid.ActiveHHType = 1 then 1000
 							when hhid.ActiveHHType = 2 then 200
-							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
 						inner join lsa_Report rpt on n.Active = 1
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 						where n.ProjectType = 13
+							and n.MoveInDate is not null
 							and n.ActiveAge between 18 and 65
 							and 
 							(n.ExitDate is null 
@@ -748,7 +751,6 @@ Date:  4/7/2020
 					 (select distinct n.PersonalID
 						, case when hhid.ActiveHHType = 1 then 1000
 							when hhid.ActiveHHType = 2 then 200
-							when hhid.ActiveHHType = 3 then 30
 							else 9 end as HHTypeEach
 						from tlsa_Enrollment n
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
@@ -803,6 +805,7 @@ Date:  4/7/2020
 						inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 						where n.ProjectType = 13
 							and n.RelationshipToHoH = 1
+							and n.MoveInDate is not null
 							and 
 							(n.ExitDate is null 
 							 or n.ExitDate > rpt.ReportStart
