@@ -18,6 +18,7 @@ Date:  4/20/2020
 				          stopping at ExitDate - 1 day
 				   6.18 - remove 2 extraneous < signs (was <= 0, but < 0 is impossible)
 						  correct SystemPath 4 criteria from RRHStatus >= 2 to RRHStatus >= 11
+	   7/9/2020 -  6.12.1 - Set LastInactive to 9/30/2012 if the calculated date is earlier
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -654,7 +655,9 @@ Date:  4/20/2020
 	--  and for any household where Stat = 5 but there is no enrollment for the HoHID/HHType
 	--  active in the six days prior to First Entry. 
 	update hh
-	set hh.LastInactive = dateadd(dd, -1, hh.FirstEntry)
+	set hh.LastInactive = case 
+			when dateadd(dd, -1, hh.FirstEntry) < '9/30/2012' then '9/30/2012'
+			else dateadd(dd, -1, hh.FirstEntry) end
 		, hh.Step = '6.12.1'
 	from tlsa_Household hh 
 	where hh.Stat <> 5 
