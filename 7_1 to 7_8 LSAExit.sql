@@ -9,7 +9,8 @@ Date:  4/20/2020
 	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements	
 	   6/4/2020  - 7.4.1 - corrections to UPDATE statement for HHVet, HHDisability, HHFleeingDV, and HHParent
 	   6/18/2020 - 7.4.1 - join on HouseholdID vs. EnrollmentID for HHDisability, HHFleeingDV, and HHParent
-	   7/9/2020 - 7.4.3 - correct set of AC3Plus  
+	   7/9/2020 - 7.1 = correct disqualify.EntryDate <= dateadd(dd, 14, hhid.ExitDate) to remove = sign 
+					7.4.3 - correct set of AC3Plus  
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -28,7 +29,7 @@ Date:  4/20/2020
 				or (cd.Cohort = 0 and disqualify.ActiveHHType = hhid.ActiveHHType)
 			)
 		and	disqualify.EnrollmentID <> hhid.EnrollmentID 
-		and disqualify.EntryDate <= dateadd(dd, 14, hhid.ExitDate)
+		and disqualify.EntryDate < dateadd(dd, 14, hhid.ExitDate)
 		and (disqualify.ExitDate is null or disqualify.ExitDate > hhid.ExitDate)
 		and (select top 1 CoCCode 
 			 from hmis_EnrollmentCoC 
