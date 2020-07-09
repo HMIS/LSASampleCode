@@ -11,6 +11,7 @@ Date:  4/20/2020
 	   6/18/2020 - 7.4.1 - join on HouseholdID vs. EnrollmentID for HHDisability, HHFleeingDV, and HHParent
 	   7/9/2020 - 7.1 = correct disqualify.EntryDate <= dateadd(dd, 14, hhid.ExitDate) to remove = sign 
 					7.4.3 - correct set of AC3Plus  
+					7.7.1-7.7.3 - align criteria for identifying PSH in SystemPath with specs
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -369,7 +370,7 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
 				+ case when th.HoHID is not null then 10 else 0 end
 				+ case when es.HoHID is not null then 1 else 0 end
-				+ case when pshpre.HoHID is not null then 1000 else 0 end
+				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
@@ -382,10 +383,9 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate and rrh.ExitDate > ex.LastInactive
 			and (rrh.ActiveHHType = ex.HHType)
-		left outer join tlsa_HHID pshpre on pshpre.ProjectType = 3
-			and pshpre.EntryDate <= qx.ExitDate and pshpre.HoHID = ex.HoHID 
-			and (pshpre.ActiveHHType = ex.HHType)
-				and coalesce(pshpre.MoveInDate, pshpre.ExitDate) > ex.LastInactive 
+		left outer join tlsa_HHID psh on psh.ProjectType = 3
+			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate and psh.ExitDate > ex.LastInactive
+			and (psh.ActiveHHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.Cohort = 0 and ex.SystemPath is null
@@ -423,10 +423,9 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate and rrh.ExitDate > ex.LastInactive
 			and (rrh.Exit1HHType = ex.HHType)
-		left outer join tlsa_HHID pshpre on pshpre.ProjectType = 3
-			and pshpre.EntryDate <= qx.ExitDate and pshpre.HoHID = ex.HoHID 
-			and (pshpre.Exit1HHType = ex.HHType)
-				and coalesce(pshpre.MoveInDate, pshpre.ExitDate) > ex.LastInactive 
+		left outer join tlsa_HHID psh on psh.ProjectType = 3
+			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate and psh.ExitDate > ex.LastInactive
+			and (psh.ActiveHHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.Cohort = -1 and ex.SystemPath is null
@@ -464,10 +463,9 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate and rrh.ExitDate > ex.LastInactive
 			and (rrh.Exit2HHType = ex.HHType)
-		left outer join tlsa_HHID pshpre on pshpre.ProjectType = 3
-			and pshpre.EntryDate <= qx.ExitDate and pshpre.HoHID = ex.HoHID 
-			and (pshpre.Exit2HHType = ex.HHType)
-				and coalesce(pshpre.MoveInDate, pshpre.ExitDate) > ex.LastInactive 
+		left outer join tlsa_HHID psh on psh.ProjectType = 3
+			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate and psh.ExitDate > ex.LastInactive
+			and (psh.ActiveHHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.Cohort = -2 and ex.SystemPath is null
