@@ -9,6 +9,7 @@ Date:  4/20/2020
 	   5/21/2020 - Sections 7.1 - 7.7 - add set of Step column to all INSERT and UPDATE statements	
 	   6/4/2020  - 7.4.1 - corrections to UPDATE statement for HHVet, HHDisability, HHFleeingDV, and HHParent
 	   6/18/2020 - 7.4.1 - join on HouseholdID vs. EnrollmentID for HHDisability, HHFleeingDV, and HHParent
+	   7/9/2020 - 7.4.3 - correct set of AC3Plus  
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -191,7 +192,11 @@ inner join (select hhid.HoHID, case hhid.ExitCohort
 
 update ex 
 set ex.AC3Plus = 
-		(select count(distinct n.EnrollmentID)
+		(select case count(distinct n.PersonalID)
+			when 0 then 0
+			when 1 then 0
+			when 2 then 0 
+			else 1 end
 		from tlsa_HHID hhid
 		inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID 
 		where case hhid.ExitCohort 
