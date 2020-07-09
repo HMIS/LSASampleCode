@@ -13,6 +13,7 @@ Date:  4/20/2020
 					7.3 - calculate ReturnTime using the *earliest* EntryDate for a return enrollment 
 					7.4.2 - correct set of HHAdultAge 
 					7.4.3 - correct set of AC3Plus  
+					7.5 - correction to Entry/ExitDate join criteria fcr prior activity
 					7.7.1-7.7.3 - align criteria for identifying PSH in SystemPath with specs
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
@@ -238,7 +239,8 @@ from tlsa_Exit ex
 					= case qx.ExitCohort when -2 then qx.Exit2HHType
 					when -1 then qx.Exit1HHType
 					else qx.ActiveHHType end
-		and prior.ExitDate > dateadd(dd, -730, qx.EntryDate) 
+		and prior.EntryDate < qx.EntryDate
+		and prior.ExitDate between dateadd(dd, -730, qx.EntryDate) and qx.ExitDate
 
 
 /*
