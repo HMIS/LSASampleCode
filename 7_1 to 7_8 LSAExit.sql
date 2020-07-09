@@ -10,6 +10,7 @@ Date:  4/20/2020
 	   6/4/2020  - 7.4.1 - corrections to UPDATE statement for HHVet, HHDisability, HHFleeingDV, and HHParent
 	   6/18/2020 - 7.4.1 - join on HouseholdID vs. EnrollmentID for HHDisability, HHFleeingDV, and HHParent
 	   7/9/2020 - 7.1 = correct disqualify.EntryDate <= dateadd(dd, 14, hhid.ExitDate) to remove = sign 
+					7.3 - calculate ReturnTime using the *earliest* EntryDate for a return enrollment 
 					7.4.2 - correct set of HHAdultAge 
 					7.4.3 - correct set of AC3Plus  
 					7.7.1-7.7.3 - align criteria for identifying PSH in SystemPath with specs
@@ -100,13 +101,14 @@ Date:  4/20/2020
 	from tlsa_Exit ex 
 	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	inner join lsa_Report rpt on rpt.ReportEnd >= qx.EntryDate
-	left outer join (select rn.HoHID, rn.EntryDate
+	left outer join (select rn.HoHID, min(rn.EntryDate) as EntryDate
 				, rn.ActiveHHType, rn.Exit1HHType, rn.Exit2HHType
 			from tlsa_HHID rn 
 			inner join lsa_Report rpt on rpt.ReportEnd >= rn.EntryDate
 			inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = rn.EnrollmentID 
 				and coc.InformationDate = rn.EntryDate 
 				and coc.CoCCode = rpt.ReportCoC
+			group by rn.HoHID, rn.ActiveHHType, rn.Exit1HHType, rn.Exit2HHType
 			) later on later.HoHID = qx.HoHID and 
 				case qx.ExitCohort 
 					when -2 then later.Exit2HHType
@@ -114,6 +116,7 @@ Date:  4/20/2020
 					else later.ActiveHHType end
 					= ex.HHType
 				and later.EntryDate between dateadd(dd, 15, qx.ExitDate) and dateadd(dd, 730, qx.ExitDate) 
+
 
 
 /*
