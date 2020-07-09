@@ -19,6 +19,8 @@ Date:  4/20/2020
 				   6.18 - remove 2 extraneous < signs (was <= 0, but < 0 is impossible)
 						  correct SystemPath 4 criteria from RRHStatus >= 2 to RRHStatus >= 11
 	   7/9/2020 -  6.12.1 - Set LastInactive to 9/30/2012 if the calculated date is earlier
+				   6.12.2.b - Only use bednights that are valid (fall during the period of the enrollment)
+						  and relevant to LastInactive (>= 10/1/2012)
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -690,7 +692,9 @@ Date:  4/20/2020
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and (hhid.Active = 1 or hhid.ExitDate < rpt.ReportStart) 
 	inner join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID 
-		and bn.DateProvided <= rpt.ReportEnd
+		and bn.DateProvided between '10/1/2012' and rpt.ReportEnd
+		and bn.DateProvided >= hhid.EntryDate
+		and (bn.DateProvided < hhid.ExitDate or hhid.ExitDate is null)
 		-- 5/14/2020 correct "DateDeleted = 0" to "DateDeleted is null"
 		and bn.RecordType = 200 and bn.DateDeleted is null
 	where hh.LastInactive is null 
