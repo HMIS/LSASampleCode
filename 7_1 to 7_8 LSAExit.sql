@@ -15,6 +15,9 @@ Date:  4/20/2020
 					7.4.3 - correct set of AC3Plus  
 					7.5 - correction to Entry/ExitDate join criteria fcr prior activity
 					7.7.1-7.7.3 - align criteria for identifying PSH in SystemPath with specs
+					7.7.2 - Clarification of rationale for additional step not defined by specs
+	   7/23/2020 - 7.5 - correction to use most recent exit prior to the qualifying exit where the most 
+					recent EnrollmentCoC = ReportCoC (neither were limited to most recent) to determine Stat 
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -158,10 +161,6 @@ Date:  4/20/2020
 	inner join hmis_Client hoh on hoh.PersonalID = ex.HoHID
 	inner join (
 		select n.HouseholdID, n.PersonalID, n.EnrollmentID, hhid.ExitCohort
-			, case hhid.ExitCohort
-				when -2 then n.Exit2Age
-				when -1 then n.Exit1Age
-				else n.ActiveAge end as Age
 			, n.RelationshipToHoH
 		from tlsa_Enrollment n
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID) hh on hh.HouseholdID = ex.QualifyingExitHHID and hh.ExitCohort = ex.Cohort
@@ -233,15 +232,25 @@ from tlsa_Exit ex
 	from tlsa_Exit ex 
 	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	left outer join tlsa_HHID prior on prior.HoHID = ex.HoHID 
-		and case qx.ExitCohort when -2 then prior.Exit2HHType
-					when -1 then prior.Exit1HHType
-					else prior.ActiveHHType end
-					= case qx.ExitCohort when -2 then qx.Exit2HHType
-					when -1 then qx.Exit1HHType
-					else qx.ActiveHHType end
-		and prior.EntryDate < qx.EntryDate
-		and prior.ExitDate between dateadd(dd, -730, qx.EntryDate) and qx.ExitDate
-
+		and (select top 1 last.EnrollmentID 
+			from tlsa_HHID last 
+			where last.ExitCohort = qx.ExitCohort and last.HoHID = qx.HoHID
+				and case last.ExitCohort when -2 then qx.Exit2HHType
+					when -1 then last.Exit1HHType
+					else last.ActiveHHType end
+					= case last.ExitCohort when -2 then last.Exit2HHType
+					when -1 then last.Exit1HHType
+					else last.ActiveHHType end
+				and last.EntryDate < qx.EntryDate
+				and prior.ExitDate between dateadd(dd, -730, qx.EntryDate) and qx.ExitDate
+			order by last.ExitDate desc
+			) = prior.EnrollmentID
+		and (select top 1 coc.CoCCode
+			from hmis_EnrollmentCoC coc
+			where coc.EnrollmentID = prior.EnrollmentID
+				and coc.InformationDate <= (select rpt.ReportEnd from lsa_Report rpt)
+				and coc.DateDeleted is null
+			order by coc.InformationDate desc) = (select rpt.ReportCoC from lsa_Report rpt)
 
 /*
 	7.6  Last Inactive Date for Exit Cohorts
@@ -335,13 +344,16 @@ set ex.SystemPath = -1
 from tlsa_Exit ex
 inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
-where (ex.ExitTo = 6 and qx.MoveInDate < cd.CohortStart) 
-	or (ex.ExitTo in (5,6) and dateadd(dd, 365, qx.MoveInDate) <= qx.ExitDate)
+where (ex.ExitFrom = 6 and qx.MoveInDate < cd.CohortStart) 
+	or (ex.ExitFrom in (5,6) and dateadd(dd, 365, qx.MoveInDate) <= qx.ExitDate)
 
+--  This step is not mandatory and is therefore not defined in the specs -- the same result would be 
+--  achieved by skipping it -- but it saves a lot of unnecessary processing in 7.7.3-7.7.5.
 -- SystemPath can be set directly based on ExitFrom for
 -- -Any first time homeless household (Stat = 1)
 -- -Any household returning/re-engaging after 15-730 days (Stat in (2,3,4))
 -- and any household whose LastInactive date is the day before the EntryDate for the qualifying exit. 
+
 update ex
 set ex.SystemPath = case ex.ExitFrom
 	when 2 then 1
@@ -416,7 +428,7 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
 				+ case when th.HoHID is not null then 10 else 0 end
 				+ case when es.HoHID is not null then 1 else 0 end
-				+ case when pshpre.HoHID is not null then 1000 else 0 end
+				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
