@@ -4,6 +4,7 @@ LSA FY2019 Sample Code
 Name:  8_1 to 8_8 lsa_Calculated averages from LSAHousehold and LSAExit (File 8 of 10)
 Date:  4/7/2020   
 	   5/21/2020 - Add set of Step column to all INSERT statements
+	   7/23/2020 - Correct set of Step to '8.1/8.2' (was '8.1/2.1')
 
 
 	8.1 and 8.2 Average Days for Length of Time Homeless 
@@ -19,7 +20,7 @@ Date:  4/7/2020
 		, coalesce(pop.SystemPath, -1)
 		, 1 as ReportRow
 		, lh.ReportID
-		, '8.1/2.1'
+		, '8.1/8.2'
 	from tlsa_Household lh
 	inner join ref_Populations pop on
 		(lh.HHType = pop.HHType or pop.HHType is null)
