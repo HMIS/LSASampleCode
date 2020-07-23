@@ -478,10 +478,10 @@ Date:  4/7/2020
 			when lx.ExitTo between 7 and 14 then 3 else 4 end as Universe
 		, coalesce(pop.HHType, 0) 
 		, pop.PopID as Population
-		, coalesce(pop.SystemPath, -1)
+		, pop.SystemPath
 		, coalesce(pop.SystemPath, 0) + 23 as ReportRow
 		, lx.ReportID
-		, '8.5-8.6'
+		, '8.6-8.7'
 	from tlsa_Exit lx
 	inner join ref_Populations pop on
 		(lx.HHType = pop.HHType or pop.HHType is null)
@@ -496,6 +496,7 @@ Date:  4/7/2020
 		and (lx.HoHEthnicity = pop.HoHEthnicity or pop.HoHEthnicity is null)
 		and (lx.SystemPath = pop.SystemPath or pop.SystemPath is null)
 	where lx.ReturnTime > 0 
+	and lx.SystemPath <> -1 --290
 		and pop.ReturnSummary = 1
 	group by pop.PopID, lx.ReportID
 		, lx.Cohort
