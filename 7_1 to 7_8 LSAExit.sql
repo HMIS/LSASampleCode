@@ -18,6 +18,7 @@ Date:  4/20/2020
 					7.7.2 - Clarification of rationale for additional step not defined by specs
 	   7/23/2020 - 7.5 - correction to use most recent exit prior to the qualifying exit where the most 
 					recent EnrollmentCoC = ReportCoC (neither were limited to most recent) to determine Stat 
+				   7.8 - modify case statement for Return time to match specs 
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -505,7 +506,7 @@ select count (distinct HoHID + cast(HHType as nvarchar))
 		when ReturnTime between 91 and 180 then 180
 		when ReturnTime between 181 and 365 then 365
 		when ReturnTime between 366 and 547 then 547
-		when ReturnTime >= 548 then 730
+		when ReturnTime between 548 and 730 then 730
 		else ReturnTime end
 	, HHType, HHVet, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
 	, HHAdultAge, HHParent, AC3Plus, SystemPath, ReportID
