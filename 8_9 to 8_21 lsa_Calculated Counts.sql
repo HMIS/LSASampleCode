@@ -8,6 +8,9 @@ Date:  4/15/2020
 				Corrections to 8.9-8.18 to consistently reflect that a bednight is counted for RRH when 
 					the MoveInDate occurs on the ExitDate.
 				Corrections to 8.10.2, 8.12.2, 8.14.2 to remove RRH/PSH criteria to counts for ES/SH/TH combined
+		7/30/2020 - Update to use tlsa_Bednights in 8.9-8.19.  This MIGHT change counts if:
+					--There are ES/nbn projects that serve households with >1 person AND
+					--Bed nights are recorded only for the HoH with the assumption that they apply to all HH members
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -27,9 +30,7 @@ Date:  4/15/2020
 		, n.ProjectID		
 		, cd.ReportID, '8.9'
 	from tlsa_Enrollment n 
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -49,8 +50,7 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
@@ -60,6 +60,7 @@ Date:  4/15/2020
 	8.10 Get Counts of People by Project Type and Household Characteristics
 */
 	--Unduplicated count of people in households for each project type
+
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
@@ -74,9 +75,7 @@ Date:  4/15/2020
 		, pop.PopID, -1, 53
 		, cd.ReportID, '8.10.1'
 	from tlsa_Enrollment n 
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -97,8 +96,7 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
@@ -117,9 +115,7 @@ Date:  4/15/2020
 		, pop.PopID, -1, 53
 		, cd.ReportID, '8.10.2'
 	from tlsa_Enrollment n 
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -135,15 +131,12 @@ Date:  4/15/2020
 	where n.Active = 1 and cd.Cohort between 1 and 13
 		and pop.PopID between 0 and 10 and pop.PopType = 1
 		and pop.SystemPath is null
-		and (
-			(n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+		and (bn.BedNight between cd.CohortStart and cd.CohortEnd
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
-			or (n.ProjectType in (2,8))
-			)
+			or (n.ProjectType in (2,8)))
 	group by cd.Cohort, pop.PopID 
-			, cd.ReportID
-			, pop.HHType
+		, cd.ReportID
+		, pop.HHType
 
 /*
 	8.11 Get Counts of Households by Project ID 
@@ -158,9 +151,7 @@ Date:  4/15/2020
 		, pop.PopID, -1, 54
 		, hhid.ProjectID, cd.ReportID, '8.11'
 	from tlsa_HHID hhid 
-	left outer join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = hhid.EnrollmentID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
@@ -180,14 +171,12 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(hhid.ProjectType in (3,13) and hhid.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (hhid.TrackingMethod = 3 and hhid.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (hhid.TrackingMethod = 0 and hhid.ProjectType = 1)
 			or (hhid.ProjectType in (2,8))
 			)
 	group by cd.Cohort, pop.PopID, hhid.ProjectID, cd.ReportID
 		, pop.HHType
-
 
 /*
 	8.12 Get Counts of Households by Project Type 
@@ -207,9 +196,7 @@ Date:  4/15/2020
 		, pop.PopID, -1, 54
 		, cd.ReportID, '8.12.1'
 	from tlsa_HHID hhid 
-	left outer join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_BedNights bn on bn.EnrollmentID = hhid.EnrollmentID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
@@ -229,8 +216,7 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(hhid.ProjectType in (3,13) and hhid.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (hhid.TrackingMethod = 3 and hhid.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (hhid.TrackingMethod = 0 and hhid.ProjectType = 1)
 			or (hhid.ProjectType in (2,8))
 			)
@@ -252,9 +238,7 @@ Date:  4/15/2020
 		, pop.PopID, -1, 54
 		, cd.ReportID, '8.12.2'
 	from tlsa_HHID hhid 
-	left outer join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_BedNights bn on bn.EnrollmentID = hhid.EnrollmentID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
@@ -270,8 +254,7 @@ Date:  4/15/2020
 		and pop.PopID between 0 and 10 and pop.PopType = 1 and pop.SystemPath is null
 		and pop.SystemPath is null
 		and (--for night-by-night ES, count only people with bednights in period
-			(hhid.TrackingMethod = 3 and hhid.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			(bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (hhid.TrackingMethod = 0 and hhid.ProjectType = 1)
 			or (hhid.ProjectType in (2,8))
 			)
@@ -281,6 +264,7 @@ Date:  4/15/2020
 /*
 	8.13 Get Counts of People by ProjectID and Personal Characteristics
 */
+
 	--Count people with specific characteristic
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
@@ -292,9 +276,7 @@ Date:  4/15/2020
 		, n.ProjectID, cd.ReportID, '8.13'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -323,8 +305,7 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or bn.BedNight between cd.CohortStart and cd.CohortEnd
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
@@ -355,9 +336,7 @@ Date:  4/15/2020
 		, cd.ReportID, '8.14.1'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -388,8 +367,7 @@ Date:  4/15/2020
 			 --for RRH and PSH, count only people who are housed in period
 			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
 			--for night-by-night ES, count only people with bednights in period
-			or (n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
@@ -412,9 +390,7 @@ Date:  4/15/2020
 		, cd.ReportID, '8.14.2'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
@@ -443,8 +419,7 @@ Date:  4/15/2020
 		and pop.PopType = 3 
 		and (
 			--for night-by-night ES, count only people with bednights in period
-			(n.TrackingMethod = 3 and n.ProjectType = 1
-				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			(bn.BedNight between cd.CohortStart and cd.CohortEnd)
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
@@ -474,9 +449,7 @@ Date:  4/15/2020
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
@@ -488,15 +461,15 @@ Date:  4/15/2020
 		and (rrhpsh.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 				or (n.ProjectType = 13 and rrhpsh.theDate = n.MoveinDate and rrhpsh.theDate = n.ExitDate))
 		and n.ProjectType in (3,13)
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and  pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 	group by n.ProjectID, rpt.ReportID, pop.PopID, pop.HHType
 
 /*
 	8.16 Get Counts of Bed Nights in Report Period by Project Type
 */
+
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
@@ -517,9 +490,7 @@ Date:  4/15/2020
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
@@ -531,9 +502,8 @@ Date:  4/15/2020
 		and (rrhpsh.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 				or (n.ProjectType = 13 and rrhpsh.theDate = n.MoveinDate and rrhpsh.theDate = n.ExitDate))
 		and n.ProjectType in (3,13)
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 	group by rpt.ReportID, pop.PopID, pop.HHType, n.ProjectType
 
@@ -551,18 +521,15 @@ Date:  4/15/2020
 	inner join ref_Populations pop on
 		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
 		and est.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 		and ((n.ProjectType = 1 and n.TrackingMethod = 0)
 				or n.ProjectType in (2,8))
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 		and n.ProjectType in (1,8,2)
 	group by rpt.ReportID, pop.PopID, pop.HHType
@@ -570,6 +537,7 @@ Date:  4/15/2020
 /*
 	8.17 Get Counts of Bed Nights in Report Period by Project ID/Personal Char
 */
+
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
@@ -589,9 +557,7 @@ Date:  4/15/2020
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
@@ -603,15 +569,15 @@ Date:  4/15/2020
 		and (rrhpsh.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 				or (n.ProjectType = 13 and rrhpsh.theDate = n.MoveinDate and rrhpsh.theDate = n.ExitDate))
 		and n.ProjectType in (3,13)
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
 	group by n.ProjectID, rpt.ReportID, pop.PopID, pop.HHType
 
 /*
 	8.18 Get Counts of Bed Nights in Report Period by Project Type/Personal Char
 */
+
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
@@ -636,9 +602,7 @@ Date:  4/15/2020
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
@@ -650,9 +614,8 @@ Date:  4/15/2020
 		and (rrhpsh.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 				or (n.ProjectType = 13 and rrhpsh.theDate = n.MoveinDate and rrhpsh.theDate = n.ExitDate))
 		and n.ProjectType in (3,13)
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
 	group by rpt.ReportID, pop.PopID, pop.HHType, n.ProjectType
 
@@ -675,21 +638,19 @@ Date:  4/15/2020
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
-	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-		and bn.RecordType = 200
-		and bn.DateDeleted is null
+	left outer join tlsa_Bednights bn on bn.EnrollmentID = n.EnrollmentID
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
 		and est.theDate >= rpt.ReportStart
 		and est.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 		and ((n.ProjectType = 1 and n.TrackingMethod = 0)
 				or n.ProjectType in (2,8))
-	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
+	left outer join ref_Calendar bnd on bnd.theDate = bn.BedNight
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
-		and n.ProjectType = 1 and n.TrackingMethod = 3
 	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
 		and n.ProjectType in (1,8,2)
 	group by rpt.ReportID, pop.PopID, pop.HHType
+
 
 /*
 	8.19 Get Counts of Enrollments Active after Operating End Date by ProjectID
@@ -763,4 +724,5 @@ Date:  4/15/2020
 		and coc.InformationDate <= rpt.ReportEnd
 	where coc.CoCCode is null
 	group by p.ProjectID, rpt.ReportID
+
 

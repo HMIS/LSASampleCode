@@ -9,6 +9,12 @@ Date:  4/17/2020
 					number is followed by a statement number -- e.g., '3.6.1' and '3.6.2', etc.
 	   5/28/2020 -- remove extraneous DQ1Adult and DQ3Adult columns from CREATE tlsa_Enrollment
 	   6/4/2020  -- change ch_Include.chDate column name to ESSHStreetDate per specs
+	   7/30/2020 -- Add optional temporary table tlsa_Bednights to isolate and index EnrollmentIDs and BedNights 
+					potentially relevant to the LSA.  This is intended as a performance improvement. It implements 
+					the business logic defined by the specs, but uses a more streamlined approach.  
+					Code in subsequent steps has been updated to use tlsa_Bednights -- related changes are in 
+					code for LSAPerson (section 5), LSAHousehold (section 6), LSAExit (section 7)
+					and LSACalculated steps 8.9-8.19
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -27,6 +33,7 @@ This script drops (if tables exist) and creates the following temp reporting tab
 		sys_TimePadded - used to identify households' last inactive date for SystemPath 
 		sys_Time - used to count dates in ES/SH, TH, RRH/PSH but not housed, housed in RRH/PSH, and ES/SH/StreetDates
 	tlsa_Exit - household-level precursor to LSAExit / households with system exits in exit cohort periods
+	tlsa_BedNights - used to isolate and index EnrollmentIDs and BedNights potentially relevant to the LSA
 
 	dq_Enrollments - Enrollments included in LSAReport data quality reporting 
 
@@ -86,6 +93,21 @@ create table tlsa_HHID (
 	, Step nvarchar(10) not NULL
 	, constraint pk_tlsa_HHID primary key clustered (HouseholdID)
 	)
+		/***********************************************************************
+			Delete or comment out code between here and the next comment block
+			if not using optional temporary table tlsa_Bednights in steps 5.8
+		***********************************************************************/
+
+		if object_id ('tlsa_Bednights') is not NULL drop table tlsa_Bednights 
+
+		create table tlsa_Bednights (
+			EnrollmentID varchar(32)
+			, BedNight date
+			, constraint pk_tlsa_Bednights primary key clustered (EnrollmentID, BedNight)
+			)
+		/***********************************************************************
+			End optional temporary table tlsa_Bednights
+		***********************************************************************/
 
 if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment 
 
@@ -111,7 +133,6 @@ create table tlsa_Enrollment (
 	, Step nvarchar(10) not NULL
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)
-
 
 if object_id ('tlsa_Person') is not NULL drop table tlsa_Person
 

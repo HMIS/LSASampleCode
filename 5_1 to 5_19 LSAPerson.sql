@@ -21,6 +21,10 @@ Date:  4/7/2020
 		7/2/2020 -  5.14.2, 5.15.2, 5.16.2 -- add requirement that MoveInDate is not null in order to count
 						RRH households for AHAR
 				 -  5.15.1-5.15.3 - remove extraneous check for CO HHType when setting AHAR Adult identifiers
+		7/30/2020 - Add code to 5.8 to use tlsa_Bednights -- for detailed description, see notes for this date in the file 
+					in the file 1 Create Temp Reporting and Reference Tables.sql.  This may change chronic homeless 
+					designation for non-HoH members of households served in ES/nbn IF bed nights are recorded only for the 
+					HoH with the assumption that they apply to all HH members.
 				
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -214,25 +218,43 @@ Date:  4/7/2020
 	where (chn.ProjectType = 8 or (chn.ProjectType = 1 and chn.TrackingMethod = 0))
 		and chx.excludeDate is null
 
+		/***********************************************************************
+			Delete or comment out code between here and the next comment block
+			if not using optional temporary table tlsa_Bednights
+		***********************************************************************/
+
+			insert into tlsa_Bednights (
+				EnrollmentID, BedNight)
+			select distinct n.EnrollmentID, bn.DateProvided 
+			from tlsa_Enrollment n
+			inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
+				and hhid.ProjectType = 1 and hhid.TrackingMethod = 3
+			inner join hmis_Services bn on 
+				(bn.EnrollmentID = n.EnrollmentID or bn.EnrollmentID = hhid.EnrollmentID) 
+				and bn.RecordType = 200
+				and bn.DateProvided >= hhid.EntryDate
+				and bn.DateProvided >= '10/1/2012'
+				and (bn.DateProvided < n.ExitDate or n.ExitDate is NULL)
+				and bn.DateDeleted is null
+			inner join lsa_Report rpt on rpt.ReportEnd >= bn.DateProvided 
+			where n.CH = 1  --bednights for all active HoH/adults for CH
+				or hhid.HoHID = n.PersonalID --bednights for HoH for SystemPath
+				or (n.Active = 1 and bn.DateProvided >= rpt.ReportStart --bednights for counts in 
+	
 	--ES nbn bed nights
-	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
-	select distinct lp.PersonalID, cal.theDate, '5.8.2'
-	from tlsa_Person lp
-		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
-		inner join hmis_Services bn on bn.EnrollmentID = chn.EnrollmentID
-			and bn.RecordType = 200 
-			and bn.DateProvided >= chn.EntryDate 
-			and (bn.DateProvided < chn.ExitDate or chn.ExitDate is null)
-			and bn.DateDeleted is null
-		inner join ref_Calendar cal on 
-			cal.theDate = bn.DateProvided 
-			and cal.theDate between lp.CHStart and lp.LastActive
-		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
-			and chx.PersonalID = chn.PersonalID
-		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
-			and chi.PersonalID = chn.PersonalID
-	where chn.ProjectType = 1 and chn.TrackingMethod = 3 and chx.excludeDate is null
-		and chi.ESSHStreetDate is null
+			insert into ch_Include (PersonalID, ESSHStreetDate, Step)
+			select distinct lp.PersonalID, cal.theDate, '5.8.2'
+			from tlsa_Person lp
+				inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
+				inner join tlsa_Bednights bn on bn.EnrollmentID = chn.EnrollmentID
+				inner join ref_Calendar cal on 
+					cal.theDate = bn.BedNight
+					and cal.theDate between lp.CHStart and lp.LastActive
+				left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
+					and chx.PersonalID = chn.PersonalID
+				left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
+					and chi.PersonalID = chn.PersonalID
+			where chx.excludeDate is null and chi.ESSHStreetDate is null
 
 	--ES/SH/Street dates from 3.917 DateToStreetESSH to the day prior to 
 	--  EntryDates > CHStart.

@@ -21,6 +21,7 @@ Date:  4/20/2020
 	   7/9/2020 -  6.12.1 - Set LastInactive to 9/30/2012 if the calculated date is earlier
 				   6.12.2.b - Only use bednights that are valid (fall during the period of the enrollment)
 						  and relevant to LastInactive (>= 10/1/2012)
+		7/30/2020 - 6.12.2.b and 6.13.2 -- Update to use tlsa_BedNights
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -684,19 +685,14 @@ Date:  4/20/2020
 		and hhid.TrackingMethod <> 3
 	union
 	select distinct hh.HoHID, hh.HHType, 1
-		, bn.DateProvided	
-		, dateadd(dd, 6, bn.DateProvided)
+		, bn.BedNight	
+		, dateadd(dd, 6, bn.BedNight)
 		, '6.12.2.b'
 	from tlsa_Household hh
 	inner join lsa_Report rpt on rpt.ReportStart >= hh.FirstEntry
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and (hhid.Active = 1 or hhid.ExitDate < rpt.ReportStart) 
-	inner join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID 
-		and bn.DateProvided between '10/1/2012' and rpt.ReportEnd
-		and bn.DateProvided >= hhid.EntryDate
-		and (bn.DateProvided < hhid.ExitDate or hhid.ExitDate is null)
-		-- 5/14/2020 correct "DateDeleted = 0" to "DateDeleted is null"
-		and bn.RecordType = 200 and bn.DateDeleted is null
+	inner join tlsa_BedNights bn on bn.EnrollmentID = hhid.EnrollmentID 
 	where hh.LastInactive is null 
 		and hh.PSHMoveIn <> 2
 		and hhid.TrackingMethod = 3
@@ -749,10 +745,9 @@ Date:  4/20/2020
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and hhid.EntryDate > hh.LastInactive 
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
-	inner join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID
-		and bn.RecordType = 200 and bn.DateDeleted is null
+	inner join tlsa_BedNights bn on bn.EnrollmentID = hhid.EnrollmentID
 	inner join ref_Calendar cal on 
-		cal.theDate = bn.DateProvided
+		cal.theDate = bn.BedNight
 		and cal.theDate between hhid.EntryDate and coalesce(dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate

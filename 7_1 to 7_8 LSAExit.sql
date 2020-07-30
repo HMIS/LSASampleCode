@@ -294,8 +294,8 @@ from tlsa_Exit ex
 		and possible.TrackingMethod <> 3
 	union
 	select distinct ex.HoHID, ex.HHType, 1
-		, bn.DateProvided	
-		, dateadd(dd, 6, bn.DateProvided) 
+		, bn.BedNight	
+		, dateadd(dd, 6, bn.BedNight) 
 		, '7.6.2.b'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
@@ -305,12 +305,9 @@ from tlsa_Exit ex
 				when -1 then possible.Exit1HHType
 				else possible.ActiveHHType end = ex.HHType 
 			and possible.ExitDate <= hhid.ExitDate
-	inner join hmis_Services bn on bn.EnrollmentID = possible.EnrollmentID 
-		and bn.DateProvided <= cd.CohortEnd
-		-- 5/14/2020 correct "DateDeleted = 0" to "DateDeleted is null"
-		and bn.RecordType = 200 and bn.DateDeleted is null
+	inner join tlsa_BedNights bn on bn.EnrollmentID = possible.EnrollmentID 
+		and bn.BedNight <= cd.CohortEnd
 	where ex.LastInactive is null 
-		and possible.TrackingMethod = 3
 		
 	update ex
 	set ex.LastInactive = coalesce(lastDay.inactive, '9/30/2012')
