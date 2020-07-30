@@ -8,6 +8,7 @@ Date:  4/7/2020
 					- Correct WHERE clause in 8.3 from PSHStatus > 0 to PSHStatus between 11 and 22
 					- Split 8.6 and 8.7 into separate statements to produce appropriate ReportRow and SystemPath values
 					  (see GitHub issue #290)
+		7/30/2020 - step 8.1/2.9 - correct criteria for SystemPath consistent with specs
 
 
 	8.1 and 8.2 Average Days for Length of Time Homeless 
@@ -315,7 +316,7 @@ Date:  4/7/2020
 		and (lh.SystemPath = pop.SystemPath or pop.SystemPath is null)
 	where lh.SystemDaysNotPSHHoused > 0 
 		and pop.LOTH = 1
-		and (lh.SystemPath in (4,5,6,7,8,9,10,11,12) or pop.SystemPath is null)
+		and (lh.SystemPath <> -1 or pop.SystemPath is null)
 	group by pop.PopID
 		, pop.HHType
 		, pop.SystemPath
