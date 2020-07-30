@@ -19,6 +19,7 @@ Date:  4/20/2020
 	   7/23/2020 - 7.5 - correction to use most recent exit prior to the qualifying exit where the most 
 					recent EnrollmentCoC = ReportCoC (neither were limited to most recent) to determine Stat 
 				   7.8 - modify case statement for Return time to match specs 
+	7/30/2020 -- 7.6.1 -- correct relationship between EntryDate and ExitDate for PRIOR enrollment, not the same one.
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -272,7 +273,7 @@ from tlsa_Exit ex
 				when -2 then prior.Exit2HHType
 				when -1 then prior.Exit1HHType
 				else prior.ActiveHHType end = ex.HHType
-			and dateadd(dd, 6, hhid.ExitDate) >= hhid.EntryDate) is null
+			and dateadd(dd, 6, prior.ExitDate) >= hhid.EntryDate) is null
 
 	delete from sys_TimePadded
 
