@@ -2,26 +2,27 @@
 LSA FY2019 Sample Code
 
 Name:  1 Create Temp Reporting and Reference Tables.sql
-Date:  4/17/2020   
+Date:  4/17/2020
        5/21/2020 -- add column Step (nvarchar(10) not NULL) to all tables except ref_Calendar and ref_Populations.
 					This is set in the sample code with every INSERT and UPDATE statement to the section number in
 					which the step occurs.  For sections with multiple INSERT and/or UPDATE statements, the section
 					number is followed by a statement number -- e.g., '3.6.1' and '3.6.2', etc.
 	   5/28/2020 -- remove extraneous DQ1Adult and DQ3Adult columns from CREATE tlsa_Enrollment
 	   6/4/2020  -- change ch_Include.chDate column name to ESSHStreetDate per specs
-	   7/30/2020 -- Add optional temporary table tlsa_Bednights to isolate and index EnrollmentIDs and BedNights 
-					potentially relevant to the LSA.  This is intended as a performance improvement. It implements 
-					the business logic defined by the specs, but uses a more streamlined approach.  
-					Code in subsequent steps has been updated to use tlsa_Bednights -- related changes are in 
+	   7/30/2020 -- Add optional temporary table tlsa_Bednights to isolate and index EnrollmentIDs and BedNights
+					potentially relevant to the LSA.  This is intended as a performance improvement. It implements
+					the business logic defined by the specs, but uses a more streamlined approach.
+					Code in subsequent steps has been updated to use tlsa_Bednights -- related changes are in
 					code for LSAPerson (section 5), LSAHousehold (section 6), LSAExit (section 7)
 					and LSACalculated steps 8.9-8.19
+	   7/30/2020 - corrected name of dq_Enrollment (was dq_Enrollments) in the comments just below.
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
 	tlsa_CohortDates - based on ReportStart and ReportEnd, all cohorts and dates used in the LSA
-	tlsa_HHID - 'master' table of HMIS HouseholdIDs active in continuum ES/SH/TH/RRH/PSH projects 
-			between 10/1/2012 and ReportEnd.  Used to store adjusted move-in and exit dates, 
-			household types, and other frequently-referenced data 
+	tlsa_HHID - 'master' table of HMIS HouseholdIDs active in continuum ES/SH/TH/RRH/PSH projects
+			between 10/1/2012 and ReportEnd.  Used to store adjusted move-in and exit dates,
+			household types, and other frequently-referenced data
 	tlsa_Enrollment - a 'master' table of enrollments associated with the HouseholdIDs in tlsa_HHID
 			with enrollment ages and other frequently-referenced data
 
@@ -30,26 +31,26 @@ This script drops (if tables exist) and creates the following temp reporting tab
 		ch_Include - dates in ES/SH or on the street; used for LSAPerson chronic homelessness determination
 		ch_Episodes - episodes of ES/SH/Street time constructed from ch_Include for chronic homelessness determination
 	tlsa_Household - a household-level precursor to LSAHousehold / households active in report period
-		sys_TimePadded - used to identify households' last inactive date for SystemPath 
+		sys_TimePadded - used to identify households' last inactive date for SystemPath
 		sys_Time - used to count dates in ES/SH, TH, RRH/PSH but not housed, housed in RRH/PSH, and ES/SH/StreetDates
 	tlsa_Exit - household-level precursor to LSAExit / households with system exits in exit cohort periods
 	tlsa_BedNights - used to isolate and index EnrollmentIDs and BedNights potentially relevant to the LSA
 
-	dq_Enrollments - Enrollments included in LSAReport data quality reporting 
+	dq_Enrollment - Enrollments included in LSAReport data quality reporting
 
-This script drops (if tables exist), creates, and populates the following 
-reference tables used in the sample code:  
-	ref_Calendar 
+This script drops (if tables exist), creates, and populates the following
+reference tables used in the sample code:
+	ref_Calendar
 		-Table of dates between 10/1/2012 and 9/30/2022
-	
-	ref_Populations 
+
+	ref_Populations
 		-Table of LSA household types/household populations/person-level populations
 		 with columns that can be used to match population identifiers in LSAPerson,
 		 LSAHousehold, and LSAExit with population IDs used in LSACalculated.
 */
 
 if object_id ('tlsa_CohortDates') is not null drop table tlsa_CohortDates
-	
+
 create table tlsa_CohortDates (
 	Cohort int
 	, CohortStart date
@@ -59,7 +60,7 @@ create table tlsa_CohortDates (
 	)
 	;
 
-if object_id ('tlsa_HHID') is not NULL drop table tlsa_HHID 
+if object_id ('tlsa_HHID') is not NULL drop table tlsa_HHID
 
 create table tlsa_HHID (
 	 HouseholdID nvarchar(32)
@@ -98,7 +99,7 @@ create table tlsa_HHID (
 			if not using optional temporary table tlsa_Bednights in steps 5.8
 		***********************************************************************/
 
-		if object_id ('tlsa_Bednights') is not NULL drop table tlsa_Bednights 
+		if object_id ('tlsa_Bednights') is not NULL drop table tlsa_Bednights
 
 		create table tlsa_Bednights (
 			EnrollmentID varchar(32)
@@ -109,7 +110,7 @@ create table tlsa_HHID (
 			End optional temporary table tlsa_Bednights
 		***********************************************************************/
 
-if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment 
+if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment
 
 create table tlsa_Enrollment (
 	EnrollmentID nvarchar(32)
@@ -197,7 +198,7 @@ create table tlsa_Person (
 	AHARHoHPSH int,
 	ReportID int,
 	Step nvarchar(10) not NULL,
-	constraint pk_tlsa_Person primary key clustered (PersonalID) 
+	constraint pk_tlsa_Person primary key clustered (PersonalID)
 	)
 	;
 
@@ -208,12 +209,12 @@ if object_id ('ch_Exclude') is not NULL drop table ch_Exclude
 	PersonalID varchar(32) not NULL,
 	excludeDate date not NULL,
 	Step nvarchar(10) not NULL,
-	constraint pk_ch_Exclude primary key clustered (PersonalID, excludeDate) 
+	constraint pk_ch_Exclude primary key clustered (PersonalID, excludeDate)
 	)
 	;
 
 if object_id ('ch_Include') is not NULL drop table ch_Include
-	
+
 	create table ch_Include(
 	PersonalID varchar(32) not NULL,
 	ESSHStreetDate date not NULL,
@@ -221,7 +222,7 @@ if object_id ('ch_Include') is not NULL drop table ch_Include
 	constraint pk_ch_Include primary key clustered (PersonalID, ESSHStreetDate)
 	)
 	;
-	
+
 if object_id ('ch_Episodes') is not NULL drop table ch_Episodes
 	create table ch_Episodes(
 	PersonalID varchar(32),
@@ -311,7 +312,7 @@ create table tlsa_Household(
 	;
 
 	if object_id ('sys_TimePadded') is not null drop table sys_TimePadded
-	
+
 	create table sys_TimePadded (
 	HoHID varchar(32) not null
 	, HHType int not null
@@ -323,7 +324,7 @@ create table tlsa_Household(
 	;
 
 	if object_id ('sys_Time') is not null drop table sys_Time
-	
+
 	create table sys_Time (
 		HoHID nvarchar(32)
 		, HHType int
@@ -336,7 +337,7 @@ create table tlsa_Household(
 
 
 	if object_id ('dq_Enrollment') is not null drop table dq_Enrollment
-	
+
 	create table dq_Enrollment(
 	EnrollmentID varchar(32) not null
 	, PersonalID varchar(32) not null
@@ -350,13 +351,13 @@ create table tlsa_Household(
 	, Status3 int
 	, SSNValid int
 	, Step nvarchar(10) not NULL
-    constraint pk_dq_Enrollment primary key clustered (EnrollmentID) 
+    constraint pk_dq_Enrollment primary key clustered (EnrollmentID)
 	)
 	;
-		
+
 
 	if object_id ('tlsa_Exit') is not NULL drop table tlsa_Exit
- 
+
 	create table tlsa_Exit(
 		HoHID nvarchar(32) not null,
 		HHType int not null,
@@ -385,14 +386,14 @@ create table tlsa_Household(
 
 if object_id ('ref_Calendar') is not null drop table ref_Calendar
 create table ref_Calendar (
-	theDate date not null 
+	theDate date not null
 	, yyyy smallint
-	, mm tinyint 
+	, mm tinyint
 	, dd tinyint
 	, month_name varchar(10)
-	, day_name varchar(10) 
+	, day_name varchar(10)
 	, fy smallint
-	, constraint pk_ref_Calendar primary key clustered (theDate) 
+	, constraint pk_ref_Calendar primary key clustered (theDate)
 )
 ;
 if object_id ('ref_Populations') is not null drop table ref_Populations
@@ -401,32 +402,32 @@ create table ref_Populations (
 	, PopID int not null
 	, PopName varchar(255) not null
 	, PopType int not null
-	, HHType int 
-	, HHAdultAge int 
-	, HHVet int 
-	, HHDisability int 
-	, HHChronic int 
-	, HHFleeingDV int 
-	, HHParent int 
-	, HHChild int 
-	, AC3Plus int 
-	, Stat int 
-	, PSHMoveIn int 
-	, HoHRace int 
-	, HoHEthnicity int 
-	, SystemPath int 
-	, Race int 
-	, Ethnicity int 
-	, Age int 
-	, Gender int 
-	, VetStatus int 
-	, CHTime int 
-	, CHTimeStatus int 
-	, DisabilityStatus int 
-	, Core int 
-	, LOTH int 
-	, ReturnSummary int 
-	, ProjectLevelCount int 
+	, HHType int
+	, HHAdultAge int
+	, HHVet int
+	, HHDisability int
+	, HHChronic int
+	, HHFleeingDV int
+	, HHParent int
+	, HHChild int
+	, AC3Plus int
+	, Stat int
+	, PSHMoveIn int
+	, HoHRace int
+	, HoHEthnicity int
+	, SystemPath int
+	, Race int
+	, Ethnicity int
+	, Age int
+	, Gender int
+	, VetStatus int
+	, CHTime int
+	, CHTimeStatus int
+	, DisabilityStatus int
+	, Core int
+	, LOTH int
+	, ReturnSummary int
+	, ProjectLevelCount int
 )
 ;
 
@@ -434,12 +435,12 @@ create table ref_Populations (
 declare @start date = '2012-10-01'
 declare @end date = '2022-09-30'
 declare @i int = 0
-declare @total_days int = DATEDIFF(d, @start, @end) 
+declare @total_days int = DATEDIFF(d, @start, @end)
 
 while @i <= @total_days
 begin
-		insert into ref_Calendar (theDate) 
-		select cast(dateadd(d, @i, @start) as date) 
+		insert into ref_Calendar (theDate)
+		select cast(dateadd(d, @i, @start) as date)
 		set @i = @i + 1
 end
 
@@ -449,11 +450,11 @@ set	month_name = datename(month, theDate),
 	yyyy = datepart(yyyy, theDate),
 	mm = datepart(mm, theDate),
 	dd = datepart(dd, theDate),
-	fy = case when datepart(mm, theDate) between 10 and 12 then datepart(yyyy, theDate) + 1 
+	fy = case when datepart(mm, theDate) between 10 and 12 then datepart(yyyy, theDate) + 1
 		else datepart(yyyy, theDate) end
 
 
-SET IDENTITY_INSERT [dbo].[ref_Populations] ON 
+SET IDENTITY_INSERT [dbo].[ref_Populations] ON
 GO
 INSERT [dbo].[ref_Populations] ([id], [PopID], [PopName], [PopType], [HHType], [HHAdultAge], [HHVet], [HHDisability], [HHChronic], [HHFleeingDV], [HHParent], [HHChild], [AC3Plus], [Stat], [PSHMoveIn], [HoHRace], [HoHEthnicity], [SystemPath], [Race], [Ethnicity], [Age], [Gender], [VetStatus], [CHTime], [CHTimeStatus], [DisabilityStatus], [Core], [LOTH], [ReturnSummary], [ProjectLevelCount]) VALUES (1, 0, N'All', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1, NULL)
 GO
