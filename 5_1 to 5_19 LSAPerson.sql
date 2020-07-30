@@ -21,6 +21,9 @@ Date:  4/7/2020
 		7/2/2020 -  5.14.2, 5.15.2, 5.16.2 -- add requirement that MoveInDate is not null in order to count
 						RRH households for AHAR
 				 -  5.15.1-5.15.3 - remove extraneous check for CO HHType when setting AHAR Adult identifiers
+		7/30/2020 - 5.8.3 - correct join criteria for tlsa_Enrollment chn to include CH = 1
+					5.8.3 and 5.8.4 - correct join criteria to ref_Calendar to use tlsa_Enrollment.EntryDate vs hmis_Enrollment
+					5.8.4 - correct criteria to include LastActive in ESSHStreetDates (was excluding)
 				
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -240,12 +243,12 @@ Date:  4/7/2020
 	select distinct lp.PersonalID, cal.theDate, '5.8.3'
 	from tlsa_Person lp
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID
-			and chn.EntryDate > lp.CHStart
+			and chn.EntryDate > lp.CHStart and chn.CH = 1
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
 		inner join ref_Calendar cal on 
 			cal.theDate >= hn.DateToStreetESSH
 			and cal.theDate between lp.CHStart and lp.LastActive
-			and cal.theDate < hn.EntryDate
+			and cal.theDate < chn.EntryDate
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
 		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
@@ -254,10 +257,11 @@ Date:  4/7/2020
 		and chi.ESSHStreetDate is null
 			and (chn.ProjectType in (1,8)
 				or hn.LivingSituation in (1,18,16)		
-				or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
-				or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-					and hn.LivingSituation in (4,5,6,7,15,25) ) 
-				)
+				or (chn.ProjectType not in (1,8)
+						and ((hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+							or (hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+					and hn.LivingSituation in (4,5,6,7,15,25)) ) 
+				))
 
 	--	For RRH/PSH, dates from entry to the earlier of move-in or exit are counted
 	--   when LivingSituation at entry is ES/SH/Street.
@@ -266,9 +270,9 @@ Date:  4/7/2020
 	from tlsa_Person lp
 	inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 	inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID 
-	inner join ref_Calendar cal on cal.theDate >= hn.EntryDate
+	inner join ref_Calendar cal on cal.theDate >= chn.EntryDate
 		and cal.theDate >= lp.CHStart 
-		and cal.theDate < coalesce(chn.MoveInDate, chn.ExitDate, lp.LastActive)
+		and cal.theDate < coalesce(chn.MoveInDate, chn.ExitDate, dateadd(dd, 1, lp.LastActive))
 	left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 		and chx.PersonalID = chn.PersonalID
 	left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
