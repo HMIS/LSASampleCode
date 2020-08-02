@@ -470,7 +470,7 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			, case when rrh.HoHID is not null then 100 else 0 end
 				+ case when th.HoHID is not null then 10 else 0 end
 				+ case when es.HoHID is not null then 1 else 0 end
-				+ case when pshpre.HoHID is not null then 1000 else 0 end
+				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
