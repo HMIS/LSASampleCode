@@ -239,7 +239,7 @@ Date:  4/7/2020
 			inner join lsa_Report rpt on rpt.ReportEnd >= bn.DateProvided 
 			where n.CH = 1  --bednights for all active HoH/adults for CH
 				or hhid.HoHID = n.PersonalID --bednights for HoH for SystemPath
-				or (n.Active = 1 and bn.DateProvided >= rpt.ReportStart --bednights for counts in 
+				or (n.Active = 1 and bn.DateProvided >= rpt.ReportStart) --bednights for counts in 
 	
 	--ES nbn bed nights
 			insert into ch_Include (PersonalID, ESSHStreetDate, Step)
