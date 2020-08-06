@@ -12,6 +12,7 @@ Date:  4/15/2020
 				   8.14 - Apply max(age) criteria to point-in-time cohorts as well as active cohort for counts by age group.
 						The specs do not exclude the PIT cohorts from the requirement and it removes the possibility of 
 						overlapping enrollments with different ActiveAge values causing double counts.
+				   8.15 - Use tlsa_HHID vs. tlsa_Enrollment Active = 1 for bednight counts
 				   8.21 - Include exit date and appropriate CoCCode criteria
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
@@ -485,7 +486,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and  pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
+	where hhid.Active = 1 and  pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 	group by n.ProjectID, rpt.ReportID, pop.PopID, pop.HHType
 
 /*
@@ -528,7 +529,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
+	where hhid.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 	group by rpt.ReportID, pop.PopID, pop.HHType, n.ProjectType
 
 	insert into lsa_Calculated
@@ -557,7 +558,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
+	where hhid.Active = 1 and pop.PopID in (0,1,2) and pop.SystemPath is null and pop.PopType = 1
 		and n.ProjectType in (1,8,2)
 	group by rpt.ReportID, pop.PopID, pop.HHType
 
