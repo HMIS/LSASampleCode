@@ -27,6 +27,7 @@ Date:	4/16/2020 -- original
 					3.3.1 - correction so that all enrollments located in ReportCoC at any time are included in tlsa_HHID 
 							instead of limiting it to enrollment in ReportCoC as of the most recent EnrollmentCoC record.
 		7/2/2020 - 3.3.1 - add 'and p.ContinuumProject = 1' -- was inadvertently deleted on a previous update
+		8/6/2020 - 3.5.2 and 3.5.3 - align Exit1/Exit2Age calculation to specs
 
 	3.2 Cohort Dates 
 */
@@ -278,8 +279,8 @@ where hoh.RelationshipToHoH = 1
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
 	update n
-	set n.Exit1Age = case when n.ExitDate < cd.CohortStart
-				or n.EntryDate >= cd.CohortStart
+	set n.Exit1Age = case when n.ExitDate not between cd.CohortStart and cd.CohortEnd 
+				or (n.ExitDate between cd.CohortStart and cd.CohortEnd and n.EntryDate >= cd.CohortStart)
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
 			--		or entry is in or after cohort period, use EntryAge; 
@@ -301,8 +302,8 @@ where hoh.RelationshipToHoH = 1
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
 	update n
-	set n.Exit2Age = case when n.ExitDate < cd.CohortStart
-				or n.EntryDate >= cd.CohortStart
+	set n.Exit2Age = case when n.ExitDate not between cd.CohortStart and cd.CohortEnd 
+				or (n.ExitDate between cd.CohortStart and cd.CohortEnd and n.EntryDate >= cd.CohortStart)
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
 			--		or entry is in or after cohort period, use EntryAge; 
