@@ -28,6 +28,7 @@ Date:	4/16/2020 -- original
 							instead of limiting it to enrollment in ReportCoC as of the most recent EnrollmentCoC record.
 		7/2/2020 - 3.3.1 - add 'and p.ContinuumProject = 1' -- was inadvertently deleted on a previous update
 		8/6/2020 - 3.5.2 and 3.5.3 - align Exit1/Exit2Age calculation to specs
+					3.3.1, 3.4.1, 3.4.2 - specify DateDeleted is null 
 
 	3.2 Cohort Dates 
 */
@@ -138,7 +139,8 @@ left outer join (select distinct svc.EnrollmentID, max(svc.DateProvided) as Last
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		group by svc.EnrollmentID
 		) bn on bn.EnrollmentID = hoh.EnrollmentID
-where hoh.RelationshipToHoH = 1
+where hoh.DateDeleted is null
+	and hoh.RelationshipToHoH = 1
 	and hohCheck.EnrollmentID is null 
 	and p.ContinuumProject = 1 
 	and (p.OperatingEndDate is null 
@@ -227,6 +229,7 @@ where hoh.RelationshipToHoH = 1
 		, '3.4.1'
 	from tlsa_HHID hhid
 	inner join hmis_Enrollment hn on hn.HouseholdID = hhid.HouseholdID
+		and hn.DateDeleted is NULL
 	inner join hmis_Client c on c.PersonalID = hn.PersonalID 
 	inner join lsa_Report rpt on rpt.ReportEnd >= hn.EntryDate
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID	
@@ -246,6 +249,7 @@ where hoh.RelationshipToHoH = 1
 				else null end) 
 			from lsa_Report rpt 
 			inner join hmis_HealthAndDV dv on dv.EnrollmentID = n.EnrollmentID 
+				 and dv.DateDeleted is null
 				 and dv.InformationDate <= rpt.ReportEnd
 				 and (dv.InformationDate <= n.ExitDate or n.ExitDate is null))
 		, n.Step = '3.4.2'
