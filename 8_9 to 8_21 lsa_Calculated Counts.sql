@@ -8,6 +8,11 @@ Date:  4/15/2020
 				Corrections to 8.9-8.18 to consistently reflect that a bednight is counted for RRH when 
 					the MoveInDate occurs on the ExitDate.
 				Corrections to 8.10.2, 8.12.2, 8.14.2 to remove RRH/PSH criteria to counts for ES/SH/TH combined
+		8/6/2020 - 8.13 - Correct anomalies in WHERE clause
+				   8.14 - Apply max(age) criteria to point-in-time cohorts as well as active cohort for counts by age group.
+						The specs do not exclude the PIT cohorts from the requirement and it removes the possibility of 
+						overlapping enrollments with different ActiveAge values causing double counts.
+				   8.21 - Include exit date and appropriate CoCCode criteria
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -305,12 +310,6 @@ Date:  4/15/2020
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
 		and (n.ActiveAge = pop.Age or pop.Age is null)
-	left outer join (select n.PersonalID, hhid.ActiveHHType, hhid.ProjectID, max(n.ActiveAge) as Age
-		from tlsa_Enrollment n
-		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-		group by n.PersonalID, hhid.ActiveHHType, hhid.ProjectID
-		) latest on latest.PersonalID = n.PersonalID and latest.ActiveHHType = hhid.ActiveHHType
-			and latest.ProjectID = hhid.ProjectID and latest.Age = n.ActiveAge
 	inner join tlsa_CohortDates cd on cd.CohortEnd >= n.EntryDate
 		  and (cd.CohortStart < n.ExitDate 
 			or n.ExitDate is null
@@ -327,11 +326,6 @@ Date:  4/15/2020
 				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
-			)
-		and (
-			(cd.Cohort <> 1 or pop.PopID not between 24 and 34)
-			or
-			(latest.Age is not null)
 			)
 	group by cd.Cohort, pop.PopID, n.ProjectID, cd.ReportID
 		, pop.HHType
@@ -394,7 +388,7 @@ Date:  4/15/2020
 			or (n.ProjectType in (2,8))
 			)
 		and (
-			(cd.Cohort <> 1 or pop.PopID not between 24 and 34)
+			(pop.PopID not between 24 and 34)
 			or
 			(latest.Age is not null)
 			)
@@ -449,7 +443,7 @@ Date:  4/15/2020
 			or (n.ProjectType in (2,8))
 			)
 		and (
-			(cd.Cohort <> 1 or pop.PopID not between 24 and 34)
+			(pop.PopID not between 24 and 34)
 			or
 			(latest.Age is not null)
 			)
@@ -750,7 +744,7 @@ Date:  4/15/2020
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct hn.EnrollmentID), 1, 10, 0, 0, -1, 62, p.ProjectID, rpt.ReportID, '8.21'
+	select count (distinct hn.HouseholdID), 1, 10, 0, 0, -1, 62, p.ProjectID, rpt.ReportID, '8.21'
 	from lsa_Report rpt
 	inner join hmis_Enrollment hn on hn.EntryDate <= rpt.ReportEnd
 	inner join hmis_Project p on p.ProjectID = hn.ProjectID and p.ContinuumProject = 1 and p.ProjectType in (1,2,3,8,13)
@@ -759,8 +753,12 @@ Date:  4/15/2020
 		and hx.ExitDate >= rpt.ReportStart
 	left outer join hmis_Enrollment hoh on hoh.HouseholdID = hn.HouseholdID 
 		and hoh.RelationshipToHoH = 1 
-	left outer join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID 
-		and coc.InformationDate <= rpt.ReportEnd
-	where coc.CoCCode is null
+	left outer join (select distinct coc.EnrollmentID, coc.InformationDate, coc.CoCCode
+					from hmis_EnrollmentCoC coc
+					where coc.CoCCode is not null) coccode on coccode.EnrollmentID = hoh.EnrollmentID 
+						and coccode.InformationDate <= rpt.ReportEnd 
+	where coccode.CoCCode is null
+		and (hx.ExitDate is null or 
+				(hx.ExitDate > rpt.ReportStart and hx.ExitDate > hn.EntryDate))
 	group by p.ProjectID, rpt.ReportID
 
