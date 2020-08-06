@@ -9,7 +9,10 @@ Date:  4/7/2020
 				   section 9.2 - correct 24 (deceased) to 25 (LTC/nursing home) in list of institutional 
 								 living situations for HomelessDate1/3, TimesHomeless1/3, MonthsHomeless1/3
 	   5/28/2020 - section 9.2 - add missing PH destinations (HMIS values 33,34) to HoHPermToPH1/3
-	   7/30/2020-  9.1 - join to lsa_Project instead of hmis_Project
+	   7/30/2020 -  9.1 - join to lsa_Project instead of hmis_Project
+	   8/6/2020  - 9.1 -- streamline case statement for Status1 and Status3 (no change to output, just elimination of redundancies)
+						- compare DOB to both EntryDate and CohortStart to check for ages >= 105 years (possible change to output 
+								for clients who were <= 104 years old as of entry but >= 105 by CohortStart)
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -20,25 +23,27 @@ insert into dq_Enrollment (EnrollmentID, PersonalID, HouseholdID, RelationshipTo
 select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 	, p.ProjectType, n.EntryDate, hhinfo.MoveInDate, ExitDate
 	, case when x.ExitDate < cd1.CohortStart then null
-			when c.DOBDataQuality in (8,9) 
-			or c.DOB is null 
-			or c.DOB = '1/1/1900'
-			or c.DOB > n.EntryDate
-			or (c.DOB = n.EntryDate and n.RelationshipToHoH = 1)
-			or dateadd(yy, 105, c.DOB) <= n.EntryDate 
-			or c.DOBDataQuality is null
-			or c.DOBDataQuality not in (1,2) then 99
-		when dateadd(yy, 18, c.DOB) <= n.EntryDate 
-			or dateadd(yy, 18, c.DOB) <= cd1.CohortStart then 1
-		else 0 end
-	, case when c.DOBDataQuality in (8,9) 
+		when c.DOBDataQuality not in (1,2)
+				or c.DOBDataQuality is null 
 				or c.DOB is null 
 				or c.DOB = '1/1/1900'
 				or c.DOB > n.EntryDate
 				or (c.DOB = n.EntryDate and n.RelationshipToHoH = 1)
 				or dateadd(yy, 105, c.DOB) <= n.EntryDate 
-				or c.DOBDataQuality is null
-				or c.DOBDataQuality not in (1,2) then 99
+				or dateadd(yy, 105, c.DOB) <= cd1.CohortStart 
+			then 99
+		when dateadd(yy, 18, c.DOB) <= n.EntryDate 
+			or dateadd(yy, 18, c.DOB) <= cd1.CohortStart then 1
+		else 0 end
+	, case when c.DOBDataQuality not in (1,2)
+				or c.DOBDataQuality is null 
+				or c.DOB is null 
+				or c.DOB = '1/1/1900'
+				or c.DOB > n.EntryDate
+				or (c.DOB = n.EntryDate and n.RelationshipToHoH = 1)
+				or dateadd(yy, 105, c.DOB) <= n.EntryDate 
+				or dateadd(yy, 105, c.DOB) <= cd1.CohortStart 
+			then 99
 		when dateadd(yy, 18, c.DOB) <= n.EntryDate 
 			or dateadd(yy, 18, c.DOB) <= cd3.CohortStart  then 1
 		else 0 end
