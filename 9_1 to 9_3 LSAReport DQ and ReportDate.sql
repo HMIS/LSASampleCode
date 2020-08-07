@@ -13,6 +13,7 @@ Date:  4/7/2020
 	   8/6/2020  - 9.1 -- streamline case statement for Status1 and Status3 (no change to output, just elimination of redundancies)
 						- compare DOB to both EntryDate and CohortStart to check for ages >= 105 years (possible change to output 
 								for clients who were <= 104 years old as of entry but >= 105 by CohortStart)
+				   9.2 - correct criteria for counting DQ issues in DateToStreetESSH for cohort 20 / LSA column HomelessDate3 
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -289,8 +290,10 @@ update rpt
 			from dq_Enrollment n
 			inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 			where (n.RelationshipToHoH = 1 or n.Status3 = 1)
-				-- DateToStreetESSH is required and may not be after hn.EntryDate if...
-				and (hn.DateToStreetESSH is null or hn.DateToStreetESSH > hn.EntryDate) 
+				-- DateToStreetESSH may not be after hn.EntryDate...
+				and (hn.DateToStreetESSH > hn.EntryDate
+				-- ...and may not be null if...
+				or (hn.DateToStreetESSH is null 
 				-- ...ProjectType is ES/SH...
 				and (n.ProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
@@ -301,7 +304,7 @@ update rpt
 							-- and PreviousStreetESSH = 1 
 						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
 							and hn.LivingSituation in (4,5,6,7,15,25))
-					))
+					))))
 	,	TimesHomeless1 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join lsa_Report rpt on rpt.ReportStart >= n.ExitDate or n.ExitDate is null
