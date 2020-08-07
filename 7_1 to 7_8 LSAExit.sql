@@ -20,6 +20,8 @@ Date:  4/20/2020
 					recent EnrollmentCoC = ReportCoC (neither were limited to most recent) to determine Stat 
 				   7.8 - modify case statement for Return time to match specs 
 	7/30/2020 -- 7.6.1 -- correct relationship between EntryDate and ExitDate for PRIOR enrollment, not the same one.
+	8/6/2020 - 7.6.2.a -- correct WHERE clause for tlsa_HHID to include enrollments for e/e ES and SH/TH/RRH/PSH  
+							(was previously excluding all but e/e ES by requiring TrackingMethod <> 3) 
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -292,7 +294,7 @@ from tlsa_Exit ex
 				else possible.ActiveHHType end = ex.HHType 
 			and possible.ExitDate <= hhid.ExitDate
 	where ex.LastInactive is null 
-		and possible.TrackingMethod <> 3
+		and (possible.ProjectType in (2,3,8,13) or possible.TrackingMethod = 0)
 	union
 	select distinct ex.HoHID, ex.HHType, 1
 		, bn.DateProvided	
