@@ -14,8 +14,8 @@ Date:  4/7/2020
 						- compare DOB to both EntryDate and CohortStart to check for ages >= 105 years (possible change to output 
 								for clients who were <= 104 years old as of entry but >= 105 by CohortStart)
 				   9.2 - correct criteria for counting DQ issues in DateToStreetESSH for cohort 20 / LSA column HomelessDate3 
-					   - remove superfluous joins to lsa_Report for DisablingCond1, LivingSituation1, LengthOfStay1, HomelessDate1, 
-							TimesHomeless1, MonthsHomeless1, and DV1
+					   - use Status1 consistently / remove superfluous joins to lsa_Report for DisablingCond1, LivingSituation1, 
+							LengthOfStay1, HomelessDate1, TimesHomeless1, MonthsHomeless1, DV1, Destination1, NotOneHoH1, and MoveInDate1
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -401,21 +401,22 @@ update rpt
 			from dq_Enrollment n
 			inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
-			where (x.Destination in (8,9,17,30,99) or x.Destination is null))
+			where n.Status1 is not null and n.ExitDate is not null 
+				and (x.Destination in (8,9,17,30,99) or x.Destination is null))
 	,	Destination3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
-			where n.ExitDate is not null and (x.Destination in (8,9,17,30,99) or x.Destination is null))
+			where n.ExitDate is not null 
+				and (x.Destination in (8,9,17,30,99) or x.Destination is null))
 	,	NotOneHoH1 = (select count(distinct n.HouseholdID)
 			from dq_Enrollment n
-			inner join lsa_Report rpt on rpt.ReportEnd >= n.ExitDate or n.ExitDate is null
 			left outer join (select hn.HouseholdID, count(distinct hn.EnrollmentID) as hoh
 				from hmis_Enrollment hn
 				where hn.RelationshipToHoH = 1
 				group by hn.HouseholdID
-			) hoh on hoh.HouseholdID = n.HouseholdID
-			where hoh.hoh <> 1 or hoh.HouseholdID is null)
+				) hoh on hoh.HouseholdID = n.HouseholdID
+			where n.Status1 is not null and (hoh.hoh <> 1 or hoh.HouseholdID is null))
 	,	NotOneHoH3 = (select count(distinct n.HouseholdID)
 			from dq_Enrollment n
 			left outer join (select hn.HouseholdID, count(distinct hn.EnrollmentID) as hoh
@@ -426,13 +427,11 @@ update rpt
 			where hoh.hoh <> 1 or hoh.HouseholdID is null)
 	,	MoveInDate1 = coalesce((select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
-			inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
-			where n.RelationshipToHoH = 1
+			where n.Status1 is not null and n.RelationshipToHoH = 1
 				and n.ProjectType in (3,13)
-				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
-				and ((n.MoveInDate < n.EntryDate or n.MoveInDate > x.ExitDate)
+				and ((n.MoveInDate < n.EntryDate or n.MoveInDate > n.ExitDate)
 					or (x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34) 
 						and n.MoveInDate is null))), 0)
 	,	MoveInDate3 = coalesce((select count(distinct n.EnrollmentID)
