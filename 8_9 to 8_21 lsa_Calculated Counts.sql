@@ -13,7 +13,10 @@ Date:  4/15/2020
 						The specs do not exclude the PIT cohorts from the requirement and it removes the possibility of 
 						overlapping enrollments with different ActiveAge values causing double counts.
 				   8.15 - Use tlsa_HHID vs. tlsa_Enrollment Active = 1 for bednight counts
+						- Limit bednight counts to nbn ES projects.
+				   8.19-8.21 - Require DateDeleted is NULL in joins to HMIS tables
 				   8.21 - Include exit date and appropriate CoCCode criteria
+
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -471,6 +474,7 @@ Date:  4/15/2020
 		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
 	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
 		and bn.RecordType = 200
+		and n.ProjectType = 1 and n.TrackingMethod = 3
 		and bn.DateDeleted is null
 	inner join lsa_Report rpt on rpt.ReportEnd >= n.EntryDate
 	left outer join ref_Calendar est on est.theDate >= n.EntryDate
@@ -698,6 +702,7 @@ Date:  4/15/2020
 		, p.ProjectID, cd.ReportID, '8.19'
 	from tlsa_Enrollment n
 	left outer join hmis_Exit hx on hx.EnrollmentID = n.EnrollmentID 
+		and hx.DateDeleted is null
 	inner join hmis_Project p on p.ProjectID = n.ProjectID 
 	inner join tlsa_CohortDates cd on cd.Cohort = 20 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
 	where (hx.ExitDate is null or hx.ExitDate > p.OperatingEndDate)
@@ -721,6 +726,7 @@ Date:  4/15/2020
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
+		and hx.DateDeleted is NULL
 	inner join hmis_Project p on p.ProjectID = hn.ProjectID and p.ProjectType = 1 and p.TrackingMethod = 3 and p.ContinuumProject = 1
 	left outer join (select distinct svc.EnrollmentID, max(svc.DateProvided) as LastBednight
 		from hmis_Services svc
@@ -750,15 +756,20 @@ Date:  4/15/2020
 	inner join hmis_Enrollment hn on hn.EntryDate <= rpt.ReportEnd
 	inner join hmis_Project p on p.ProjectID = hn.ProjectID and p.ContinuumProject = 1 and p.ProjectType in (1,2,3,8,13)
 	inner join hmis_ProjectCoC pcoc on pcoc.ProjectID = p.ProjectID and pcoc.CoCCode = rpt.ReportCoC
+		and pcoc.DateDeleted is null
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
 		and hx.ExitDate >= rpt.ReportStart
+		and hx.DateDeleted is null
 	left outer join hmis_Enrollment hoh on hoh.HouseholdID = hn.HouseholdID 
 		and hoh.RelationshipToHoH = 1 
+		and hoh.DateDeleted is null
 	left outer join (select distinct coc.EnrollmentID, coc.InformationDate, coc.CoCCode
 					from hmis_EnrollmentCoC coc
-					where coc.CoCCode is not null) coccode on coccode.EnrollmentID = hoh.EnrollmentID 
+					where coc.CoCCode is not null
+						and coc.DateDeleted is null) coccode on coccode.EnrollmentID = hoh.EnrollmentID 
 						and coccode.InformationDate <= rpt.ReportEnd 
-	where coccode.CoCCode is null
+	where hn.DateDeleted is null 
+		and coccode.CoCCode is null
 		and (hx.ExitDate is null or 
 				(hx.ExitDate > rpt.ReportStart and hx.ExitDate > hn.EntryDate))
 	group by p.ProjectID, rpt.ReportID
