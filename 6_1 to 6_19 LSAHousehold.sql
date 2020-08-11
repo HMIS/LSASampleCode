@@ -21,6 +21,7 @@ Date:  4/20/2020
 	   7/9/2020 -  6.12.1 - Set LastInactive to 9/30/2012 if the calculated date is earlier
 				   6.12.2.b - Only use bednights that are valid (fall during the period of the enrollment)
 						  and relevant to LastInactive (>= 10/1/2012)
+	   8/11/2020 - 6.13.1 - Include days in Safe Haven projects for sysStatus = 4
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -723,7 +724,7 @@ Date:  4/20/2020
 /*
 	6.13 Get Dates of Other System Use
 */
-	--Transitional Housing and Entry/Exit ES (sysStatus = 3 and 4)
+	--Transitional Housing (sysStatus = 3) and SafeHaven/Entry-Exit ES (sysStatus = 4)
 	insert into sys_Time (HoHID, HHType, sysDate, sysStatus, Step)
 	select distinct hh.HoHID, hh.HHType, cal.theDate
 		, min(case when hhid.ProjectType = 2 then 3 else 4 end)
@@ -738,7 +739,7 @@ Date:  4/20/2020
 	left outer join sys_Time housed on housed.HoHID = hh.HoHID and housed.HHType = hh.HHType
 		and housed.sysDate = cal.theDate
 	where housed.sysDate is null 
-		and (hhid.ProjectType = 2 or (hhid.ProjectType = 1 and hhid.TrackingMethod = 0))
+		and (hhid.ProjectType in (2,8) or (hhid.ProjectType = 1 and hhid.TrackingMethod = 0))
 	group by hh.HoHID, hh.HHType, cal.theDate
 
 	--Emergency Shelter (Night-by-Night) (sysStatus = 4)
