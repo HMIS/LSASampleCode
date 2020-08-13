@@ -29,7 +29,9 @@ Date:	4/16/2020 -- original
 		7/2/2020 - 3.3.1 - add 'and p.ContinuumProject = 1' -- was inadvertently deleted on a previous update
 		8/6/2020 - 3.5.2 and 3.5.3 - align Exit1/Exit2Age calculation to specs
 					3.3.1, 3.4.1, 3.4.2 - specify DateDeleted is null 
-		8/13/2020 - 3.5.2 and 3.5.3 - use EntryAge when ExitDate is NULL (case statement) 
+		8/13/2020 - 3.4.1 - if HH member EntryDate < HoH EntryDate, insert enrollment to tlsa_Enrollment w/ HoH EntryDate
+						(required per specs section 3.3 -- code was omitting these enrollments altogether)
+					3.5.2 and 3.5.3 - use EntryAge when ExitDate is NULL (case statement) 
 
 	3.2 Cohort Dates 
 */
@@ -197,7 +199,7 @@ where hoh.DateDeleted is null
 	select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 		, hn.RelationshipToHoH
 		, hhid.ProjectID, hhid.ProjectType, hhid.TrackingMethod
-		, hn.EntryDate
+		, case when hhid.EntryDate > hn.EntryDate then hhid.EntryDate else hn.EntryDate end
 		, case when hhid.MoveInDate < hn.EntryDate then hn.EntryDate
 			when hhid.MoveInDate > hx.ExitDate then NULL
 			when hhid.MoveInDate = hx.ExitDate and 
@@ -236,7 +238,7 @@ where hoh.DateDeleted is null
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID	
 		and hx.ExitDate <= rpt.ReportEnd
 	where hn.RelationshipToHoH in (1,2,3,4,5)
-		and hn.EntryDate between hhid.EntryDate and isnull(hhid.ExitDate, rpt.ReportEnd)
+		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
 		and (hx.ExitDate is null or 
 				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= '10/1/2012'
 					and hx.ExitDate > hn.EntryDate)) 
