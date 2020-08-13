@@ -24,8 +24,9 @@ Date:  4/7/2020
 		7/30/2020 - 5.8.3 - correct join criteria for tlsa_Enrollment chn to include CH = 1
 					5.8.3 and 5.8.4 - correct join criteria to ref_Calendar to use tlsa_Enrollment.EntryDate vs hmis_Enrollment
 					5.8.4 - correct criteria to include LastActive in ESSHStreetDates (was excluding)
-		8/6/2020 - 5.8.3-4 - rewrite to correspond more closely to the way the business logic is expressed in the specs.
+		8/11/2020 - 5.8.3-4 - rewrite to correspond more closely to the way the business logic is expressed in the specs.
 						All dates are inserted in 5.8.3; 5.8.4 has been deleted.
+		8/13/2020 - 5.7 - Exclude RRH ExitDates from count of ESSHStreetDates if MoveInDate = ExitDate (GitHub #436)
 				
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -191,8 +192,10 @@ Date:  4/7/2020
 	inner join ref_Calendar cal on cal.theDate >=
 			case when chn.ProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
-		and (cal.theDate < chn.ExitDate or chn.ExitDate is null)
-		and cal.theDate between lp.CHStart and lp.LastActive
+		and ((cal.theDate < chn.ExitDate 
+			or (chn.ProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
+			or chn.ExitDate is null))
+			and cal.theDate between lp.CHStart and lp.LastActive
 	where chn.ProjectType in (2,3,13)
 
 /*
