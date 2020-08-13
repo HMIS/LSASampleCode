@@ -29,7 +29,8 @@ Date:	4/16/2020 -- original
 		7/2/2020 - 3.3.1 - add 'and p.ContinuumProject = 1' -- was inadvertently deleted on a previous update
 		8/6/2020 - 3.5.2 and 3.5.3 - align Exit1/Exit2Age calculation to specs
 					3.3.1, 3.4.1, 3.4.2 - specify DateDeleted is null 
-		8/13/2020 - 3.4.1 - if HH member EntryDate < HoH EntryDate, insert enrollment to tlsa_Enrollment w/ HoH EntryDate
+		8/13/2020 - 3.3.1 - Project's operating end date must be null or after start date in order to include in LSA
+					3.4.1 - if HH member EntryDate < HoH EntryDate, insert enrollment to tlsa_Enrollment w/ HoH EntryDate
 						(required per specs section 3.3 -- code was omitting these enrollments altogether)
 					3.5.2 and 3.5.3 - use EntryAge when ExitDate is NULL (case statement) 
 
