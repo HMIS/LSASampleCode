@@ -29,6 +29,7 @@ Date:	4/16/2020 -- original
 		7/2/2020 - 3.3.1 - add 'and p.ContinuumProject = 1' -- was inadvertently deleted on a previous update
 		8/6/2020 - 3.5.2 and 3.5.3 - align Exit1/Exit2Age calculation to specs
 					3.3.1, 3.4.1, 3.4.2 - specify DateDeleted is null 
+		8/13/2020 - 3.5.2 and 3.5.3 - use EntryAge when ExitDate is NULL (case statement) 
 
 	3.2 Cohort Dates 
 */
@@ -283,7 +284,7 @@ where hoh.DateDeleted is null
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
 	update n
-	set n.Exit1Age = case when n.ExitDate not between cd.CohortStart and cd.CohortEnd 
+	set n.Exit1Age = case when (n.ExitDate not between cd.CohortStart and cd.CohortEnd or n.ExitDate is null)
 				or (n.ExitDate between cd.CohortStart and cd.CohortEnd and n.EntryDate >= cd.CohortStart)
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
@@ -306,7 +307,7 @@ where hoh.DateDeleted is null
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
 	update n
-	set n.Exit2Age = case when n.ExitDate not between cd.CohortStart and cd.CohortEnd 
+	set n.Exit2Age = case when (n.ExitDate not between cd.CohortStart and cd.CohortEnd or n.ExitDate is null)
 				or (n.ExitDate between cd.CohortStart and cd.CohortEnd and n.EntryDate >= cd.CohortStart)
 				or n.EntryAge in (98,99) then n.EntryAge
 			--  If exit is prior to cohort start, age is unknown, 
