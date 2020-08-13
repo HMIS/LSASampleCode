@@ -21,7 +21,9 @@ Date:  4/20/2020
 				   7.8 - modify case statement for Return time to match specs 
 	7/30/2020 -- 7.6.1 -- correct relationship between EntryDate and ExitDate for PRIOR enrollment, not the same one.
 	8/6/2020 - 7.6.2.a -- correct WHERE clause for tlsa_HHID to include enrollments for e/e ES and SH/TH/RRH/PSH  
-							(was previously excluding all but e/e ES by requiring TrackingMethod <> 3) 
+							(was previously excluding all but e/e ES by requiring TrackingMethod <> 3)
+	8/13/2020 - 7.3 - revise query to ensure that only enrollments with entry dates after the qualifying exit 
+					  are included in pool of potential returns
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -102,31 +104,28 @@ Date:  4/20/2020
 */
 	
 	update ex
-	set ex.ReturnTime = 
-		case when later.HoHID is null then -1
-			else datediff(dd, qx.ExitDate, later.EntryDate) end
-		, ex.Step = '7.3'
-	from tlsa_Exit ex 
-	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
-	inner join lsa_Report rpt on rpt.ReportEnd >= qx.EntryDate
-	left outer join (select rn.HoHID, min(rn.EntryDate) as EntryDate
-				, rn.ActiveHHType, rn.Exit1HHType, rn.Exit2HHType
-			from tlsa_HHID rn 
-			inner join lsa_Report rpt on rpt.ReportEnd >= rn.EntryDate
+	set ex.ReturnTime = coalesce (
+			(select datediff(dd, qx.ExitDate, min(rn.EntryDate))
+			from tlsa_hhid qx
+			inner join tlsa_HHID rn on rn.HoHID = qx.HoHID 
+				and case qx.ExitCohort 
+						when -2 then rn.Exit2HHType
+						when -1 then rn.Exit1HHType
+						else rn.ActiveHHType end 
+					= case qx.ExitCohort 
+						when -2 then qx.Exit2HHType
+						when -1 then qx.Exit1HHType
+						else qx.ActiveHHType end 
+				and rn.EntryDate between dateadd(dd, 15, qx.ExitDate) and dateadd(dd, 730, qx.ExitDate)
 			inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = rn.EnrollmentID 
-				and coc.InformationDate = rn.EntryDate 
-				and coc.CoCCode = rpt.ReportCoC
-			group by rn.HoHID, rn.ActiveHHType, rn.Exit1HHType, rn.Exit2HHType
-			) later on later.HoHID = qx.HoHID and 
-				case qx.ExitCohort 
-					when -2 then later.Exit2HHType
-					when -1 then later.Exit1HHType
-					else later.ActiveHHType end
-					= ex.HHType
-				and later.EntryDate between dateadd(dd, 15, qx.ExitDate) and dateadd(dd, 730, qx.ExitDate) 
-
-
-
+					and coc.InformationDate = rn.EntryDate 
+			inner join lsa_Report rpt on coc.CoCCode = rpt.ReportCoC
+			where qx.HouseholdID = ex.QualifyingExitHHID
+			group by qx.ExitDate)
+		, -1)
+		, ex.Step = '7.3'
+		from tlsa_Exit ex
+		
 /*
 	7.4 Population Identifiers for LSAExit
 */
