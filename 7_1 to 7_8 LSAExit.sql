@@ -24,6 +24,7 @@ Date:  4/20/2020
 							(was previously excluding all but e/e ES by requiring TrackingMethod <> 3)
 	8/13/2020 - 7.3 - revise query to ensure that only enrollments with entry dates after the qualifying exit 
 					  are included in pool of potential returns
+				7.7.4 and 7.7.5 - correct HHType column used for join to psh subquery
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -446,7 +447,7 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			and (rrh.Exit1HHType = ex.HHType)
 		left outer join tlsa_HHID psh on psh.ProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate and psh.ExitDate > ex.LastInactive
-			and (psh.ActiveHHType = ex.HHType)
+			and (psh.Exit1HHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.Cohort = -1 and ex.SystemPath is null
@@ -486,7 +487,7 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 			and (rrh.Exit2HHType = ex.HHType)
 		left outer join tlsa_HHID psh on psh.ProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate and psh.ExitDate > ex.LastInactive
-			and (psh.ActiveHHType = ex.HHType)
+			and (psh.Exit2HHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
 		and ptype.Cohort = ex.Cohort
 where ex.Cohort = -2 and ex.SystemPath is null
