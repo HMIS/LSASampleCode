@@ -22,6 +22,11 @@ Date:  4/20/2020
 				   6.12.2.b - Only use bednights that are valid (fall during the period of the enrollment)
 						  and relevant to LastInactive (>= 10/1/2012)
 	   8/11/2020 - 6.13.1 - Include days in Safe Haven projects for sysStatus = 4
+	   8/13/2020 - 6.9.2 - correct prior.ExitDate comparisons to FirstEntry 
+				   6.11 - add join to tlsa_Household on HoHID and HHType 
+				   6.12.2(a and b) - delete PSHMoveIn <> 2 from WHERE clause
+				   6.12.2.a - correct TrackingMethod <> 3 to (ProjectType <> 1 or TrackingMethod = 0)
+
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -583,8 +588,8 @@ Date:  4/20/2020
 	set hh.StatEnrollmentID = 
 	  (select top 1 prior.EnrollmentID
 		from tlsa_HHID prior 
-		inner join lsa_Report rpt on rpt.ReportStart > prior.ExitDate
-		where prior.ExitDate >= dateadd (dd,-730,hh.FirstEntry) 
+		where prior.ExitDate > dateadd (dd,-730,hh.FirstEntry)
+			and prior.ExitDate < hh.FirstEntry
 			and prior.HoHID = hh.HoHID and prior.ActiveHHType = hh.HHType
 		order by prior.ExitDate desc)
 		, hh.Step = '6.9.2'
@@ -644,6 +649,7 @@ Date:  4/20/2020
 				else 2 end)
 		, '6.11'
 	from tlsa_HHID hhid
+	inner join tlsa_Household hh on hh.HoHID = hhid.HoHID and hh.HHType = hhid.ActiveHHType
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join ref_Calendar cal on cal.theDate >= hhid.MoveInDate
 		and (cal.theDate < hhid.ExitDate 
@@ -681,8 +687,7 @@ Date:  4/20/2020
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and (hhid.Active = 1 or hhid.ExitDate < rpt.ReportStart) 
 	where hh.LastInactive is null 
-		and hh.PSHMoveIn <> 2
-		and hhid.TrackingMethod <> 3
+		and (hhid.ProjectType <> 1 or hhid.TrackingMethod = 0)
 	union
 	select distinct hh.HoHID, hh.HHType, 1
 		, bn.DateProvided	
@@ -698,8 +703,6 @@ Date:  4/20/2020
 		and (bn.DateProvided < hhid.ExitDate or hhid.ExitDate is null)
 		-- 5/14/2020 correct "DateDeleted = 0" to "DateDeleted is null"
 		and bn.RecordType = 200 and bn.DateDeleted is null
-	where hh.LastInactive is null 
-		and hh.PSHMoveIn <> 2
 		and hhid.TrackingMethod = 3
 		
 	update hh
