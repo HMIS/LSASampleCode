@@ -25,6 +25,7 @@ Date:  4/20/2020
 	8/13/2020 - 7.3 - revise query to ensure that only enrollments with entry dates after the qualifying exit 
 					  are included in pool of potential returns
 				7.7.4 and 7.7.5 - correct HHType column used for join to psh subquery
+	8/19/2020 - 7.4 - add vet subquery / correct set of HHVet
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -132,9 +133,7 @@ Date:  4/20/2020
 */
 
 	update ex
-	set HHVet = (select max(case when c.VeteranStatus = 1 then 1 else 0 end)
-			from hmis_Client c
-			where c.PersonalID = hh.PersonalID)
+	set HHVet = vet.vet
 		, HHDisability = (select max(case when disability.DisabilityStatus = 1 then 1 else 0 end)
 			from tlsa_Enrollment disability
 			where disability.HouseholdID = hh.HouseholdID)
@@ -168,7 +167,11 @@ Date:  4/20/2020
 			, n.RelationshipToHoH
 		from tlsa_Enrollment n
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID) hh on hh.HouseholdID = ex.QualifyingExitHHID and hh.ExitCohort = ex.Cohort
-
+	inner join (select n.HouseholdID, hhid.ExitCohort, max(case when c.VeteranStatus = 1 then 1 else 0 end) as vet
+		from tlsa_Enrollment n
+		inner join hmis_Client c on c.PersonalID = n.PersonalID
+		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
+		group by n.HouseholdID, hhid.ExitCohort) vet on vet.HouseholdID = ex.QualifyingExitHHID and vet.ExitCohort = ex.Cohort
 
 update ex
 set ex.HHAdultAge = case when ages.MaxAge not between 18 and 65 then -1
