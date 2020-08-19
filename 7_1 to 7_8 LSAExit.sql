@@ -121,6 +121,7 @@ Date:  4/20/2020
 				and rn.EntryDate between dateadd(dd, 15, qx.ExitDate) and dateadd(dd, 730, qx.ExitDate)
 			inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = rn.EnrollmentID 
 					and coc.InformationDate = rn.EntryDate 
+					and coc.DateDeleted is null
 			inner join lsa_Report rpt on coc.CoCCode = rpt.ReportCoC
 			where qx.HouseholdID = ex.QualifyingExitHHID
 			group by qx.ExitDate)
