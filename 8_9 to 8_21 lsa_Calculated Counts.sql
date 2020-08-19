@@ -14,9 +14,12 @@ Date:  4/15/2020
 						overlapping enrollments with different ActiveAge values causing double counts.
 				   8.15 - Use tlsa_HHID vs. tlsa_Enrollment Active = 1 for bednight counts
 						- Limit bednight counts to nbn ES projects.
+				   8.17-8.18 - remove extraneous 'WHERE n.Active = 1' - no change to output but entry/exit/bednight criteria
+						in joins already ensure this
 				   8.19-8.21 - Require DateDeleted is NULL in joins to HMIS tables
 				   8.21 - Include exit date and appropriate CoCCode criteria
-
+		8/13/2020 - 8.18.2 - correct value for Step column inserted to lsa_Calculated
+		8/19/2020 - 8.9 and 8.11 - add counts for PopID 6 (CH) 
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -52,7 +55,7 @@ Date:  4/15/2020
 			or n.ExitDate is null
 			or (n.ProjectType = 13 and n.ExitDate = cd.CohortStart and n.MoveInDate = cd.CohortStart))
 	where n.Active = 1 and cd.Cohort between 1 and 13
-		and pop.PopID in (0,1,2,3,4,5,7,8,9,10) and pop.PopType = 1 
+		and pop.PopID between 0 and 10 and pop.PopType = 1 
 		and pop.SystemPath is null
 		and (
 			 --for RRH and PSH, count only people who are housed in period
@@ -183,7 +186,7 @@ Date:  4/15/2020
 			or hhid.ExitDate is null
 			or (hhid.ProjectType = 13 and hhid.ExitDate = cd.CohortStart and hhid.MoveInDate = cd.CohortStart))
 	where hhid.Active = 1 and cd.Cohort between 1 and 13
-		and pop.PopID in (0,1,2,3,4,5,7,8,9,10) and pop.PopType = 1
+		and pop.PopID between 0 and 10 and pop.PopType = 1
 		and pop.SystemPath is null
 		and (
 			 --for RRH and PSH, count only people who are housed in period
@@ -605,7 +608,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
+	where pop.PopID in (3,6) and pop.PopType = 3
 	group by n.ProjectID, rpt.ReportID, pop.PopID, pop.HHType
 
 /*
@@ -652,7 +655,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
+	where pop.PopID in (3,6) and pop.PopType = 3
 	group by rpt.ReportID, pop.PopID, pop.HHType, n.ProjectType
 
 	--ES/SH/TH unduplicated
@@ -664,7 +667,7 @@ Date:  4/15/2020
 		, 1, 16
 		, coalesce(pop.HHType, 0)
 		, pop.PopID, -1, 57
-		, rpt.ReportID, '8.16.2'
+		, rpt.ReportID, '8.18.2'
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
@@ -686,7 +689,7 @@ Date:  4/15/2020
 	left outer join ref_Calendar bnd on bnd.theDate = bn.DateProvided
 		and bnd.theDate >= rpt.ReportStart and bnd.theDate <= rpt.ReportEnd
 		and n.ProjectType = 1 and n.TrackingMethod = 3
-	where n.Active = 1 and pop.PopID in (3,6) and pop.PopType = 3
+	where pop.PopID in (3,6) and pop.PopType = 3
 		and n.ProjectType in (1,8,2)
 	group by rpt.ReportID, pop.PopID, pop.HHType
 
