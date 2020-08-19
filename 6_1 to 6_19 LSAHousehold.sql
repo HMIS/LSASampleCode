@@ -26,6 +26,7 @@ Date:  4/20/2020
 				   6.11 - add join to tlsa_Household on HoHID and HHType 
 				   6.12.2(a and b) - delete PSHMoveIn <> 2 from WHERE clause
 				   6.12.2.a - correct TrackingMethod <> 3 to (ProjectType <> 1 or TrackingMethod = 0)
+	   8/19/2020 - 6.9.2 - per specs, correct so prior.ExitDate >= dateadd (dd,-730,hh.FirstEntry) (was just >) 
 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
@@ -588,7 +589,7 @@ Date:  4/20/2020
 	set hh.StatEnrollmentID = 
 	  (select top 1 prior.EnrollmentID
 		from tlsa_HHID prior 
-		where prior.ExitDate > dateadd (dd,-730,hh.FirstEntry)
+		where prior.ExitDate >= dateadd (dd,-730,hh.FirstEntry)
 			and prior.ExitDate < hh.FirstEntry
 			and prior.HoHID = hh.HoHID and prior.ActiveHHType = hh.HHType
 		order by prior.ExitDate desc)
