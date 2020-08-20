@@ -26,7 +26,10 @@ Date:  4/20/2020
 					  are included in pool of potential returns
 				7.7.4 and 7.7.5 - correct HHType column used for join to psh subquery
 	8/19/2020 - 7.4 - add vet subquery / correct set of HHVet
-	8/20/2020 - 7.6.1 - add criteria to ensure enrollment used for Stat is earlier than the qualifying exit 
+	8/20/2020 - 7.2 - add sort columns to selection of reportable exit to ensure consistency in the event of 
+						> 1 enrollments with the same destination category and exit date
+				7.5 - correct code to align with specs / logic for LSAHousehold system engagement status
+				7.6.1 - add criteria to ensure enrollment used for Stat is earlier than the qualifying exit 
 				7.7 - compare EntryDate instead of ExitDate to LastInactive for SystemPath enrollments (no change in output
 						-- if any part of the enrollment is > LastInactive, the whole enrollment is --
 						but aligning to specs to reduce confusion)
@@ -102,7 +105,10 @@ Date:  4/20/2020
 					else qx.ActiveHHType end
 			order by case when qx.ExitDest between 1 and 6 then 2
                       when qx.ExitDest between 7 and 14 then 3
-                      else 4 end asc, qx.ExitDate asc
+                      else 4 end asc
+					 , qx.ExitDate asc
+					 , qx.EntryDate desc
+					 , qx.EnrollmentID desc
 			)
 	
 /*
@@ -245,24 +251,17 @@ from tlsa_Exit ex
 	inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	left outer join tlsa_HHID prior on prior.HoHID = ex.HoHID 
 		and (select top 1 last.EnrollmentID 
-			from tlsa_HHID last 
-			where last.ExitCohort = qx.ExitCohort and last.HoHID = qx.HoHID
-				and case last.ExitCohort when -2 then qx.Exit2HHType
+			from tlsa_HHID last
+			where last.HoHID = qx.HoHID
+				and case ex.Cohort	
+					when -2 then last.Exit2HHType
 					when -1 then last.Exit1HHType
 					else last.ActiveHHType end
-					= case last.ExitCohort when -2 then last.Exit2HHType
-					when -1 then last.Exit1HHType
-					else last.ActiveHHType end
+					= ex.HHType
 				and last.EntryDate < qx.EntryDate
-				and prior.ExitDate between dateadd(dd, -730, qx.EntryDate) and qx.ExitDate
+				and last.ExitDate between dateadd(dd, -730, qx.EntryDate) and qx.ExitDate
 			order by last.ExitDate desc
 			) = prior.EnrollmentID
-		and (select top 1 coc.CoCCode
-			from hmis_EnrollmentCoC coc
-			where coc.EnrollmentID = prior.EnrollmentID
-				and coc.InformationDate <= (select rpt.ReportEnd from lsa_Report rpt)
-				and coc.DateDeleted is null
-			order by coc.InformationDate desc) = (select rpt.ReportCoC from lsa_Report rpt)
 
 /*
 	7.6  Last Inactive Date for Exit Cohorts
