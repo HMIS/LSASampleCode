@@ -21,6 +21,9 @@ Date:  4/15/2020
 		8/13/2020 - 8.18.2 - correct value for Step column inserted to lsa_Calculated
 		8/19/2020 - 8.9 and 8.11 - add counts for PopID 6 (CH) 
 					8.12.2 - remove duplicate 'pop.SystemPath is null' from WHERE clause
+		8/20/2020 - 8.14 - split out counts of parenting children/youth, which are limited to HoH
+							into separate steps (former 8.14.1 is now 8.14.1 and 8.14.2, and
+							former 8.14.2 is now 8.14.3 and 8.14.4)
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -342,6 +345,7 @@ Date:  4/15/2020
 	8.14 Get Counts of People by Project Type and Personal Characteristics
 */
 	--Count people with specific characteristics for each project type
+	-- EXCEPT popIDs 113-144, which are limited to HoH and counted in next step
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
@@ -385,7 +389,70 @@ Date:  4/15/2020
 			or n.ExitDate is null
 			or (n.ProjectType = 13 and n.ExitDate = cd.CohortStart and n.MoveInDate = cd.CohortStart))
 	where n.Active = 1 and cd.Cohort between 1 and 13
-		and pop.PopType = 3 
+		and pop.PopType = 3 and pop.PopID not between 113 and 144
+		and (
+			 --for RRH and PSH, count only people who are housed in period
+			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
+			--for night-by-night ES, count only people with bednights in period
+			or (n.TrackingMethod = 3 and n.ProjectType = 1
+				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (n.TrackingMethod = 0 and n.ProjectType = 1)
+			or (n.ProjectType in (2,8))
+			)
+		and 
+			(pop.PopID not between 24 and 34 
+				or pop.PopID not between 145 and 148
+				or latest.Age is not null
+			)
+	group by cd.Cohort, pop.PopID, n.ProjectType, cd.ReportID
+		, pop.HHType
+
+	--Count people with specific characteristics for each project type
+	--  (counts of PopIDs 113-144 for parenting children/youth limited to HoH)
+	insert into lsa_Calculated
+		(Value, Cohort, Universe, HHType
+		, Population, SystemPath, ReportRow, ReportID, Step)
+	select count (distinct lp.PersonalID)
+		, cd.Cohort, case n.ProjectType 
+			when 1 then 11 
+			when 8 then 12	
+			when 2 then 13	
+			when 13 then 14	
+			else 15 end 
+		, coalesce(pop.HHType, 0) as HHType
+		, pop.PopID, -1, 55
+		, cd.ReportID, '8.14.2'
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
+		and bn.RecordType = 200
+		and bn.DateDeleted is null
+	inner join tlsa_HHID hhid on hhid.EnrollmentID = n.EnrollmentID
+	inner join ref_Populations pop on
+		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
+		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
+		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
+			 or pop.CHTime is null)
+		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
+		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
+		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
+		and (n.ActiveAge = pop.Age or pop.Age is null)
+		and (lp.Gender = pop.Gender or pop.Gender is null)
+		and (lp.Race = pop.Race or pop.Race is null)
+		and (lp.Ethnicity = pop.Ethnicity or pop.Ethnicity is null)
+	left outer join (select n.PersonalID, hhid.ActiveHHType as HHType, hhid.ProjectType, max(n.ActiveAge) as Age
+		from tlsa_Enrollment n
+		inner join tlsa_HHID hhid on hhid.EnrollmentID = n.EnrollmentID 
+		group by n.PersonalID, hhid.ActiveHHType, hhid.ProjectType
+		) latest on latest.PersonalID = n.PersonalID and latest.HHType = hhid.ActiveHHType
+			and latest.ProjectType = hhid.ProjectType and latest.Age = n.ActiveAge
+	inner join tlsa_CohortDates cd on cd.CohortEnd >= n.EntryDate
+		  and (cd.CohortStart < n.ExitDate 
+			or n.ExitDate is null
+			or (n.ProjectType = 13 and n.ExitDate = cd.CohortStart and n.MoveInDate = cd.CohortStart))
+	where n.Active = 1 and cd.Cohort between 1 and 13
+		and pop.PopType = 3 and pop.PopID between 113 and 144
 		and (
 			 --for RRH and PSH, count only people who are housed in period
 			(n.ProjectType in (3,13) and n.MoveInDate <= cd.CohortEnd) 
@@ -396,14 +463,16 @@ Date:  4/15/2020
 			or (n.ProjectType in (2,8))
 			)
 		and (
-			(pop.PopID not between 24 and 34)
+			(pop.PopID not between 113 and 128)
 			or
 			(latest.Age is not null)
 			)
 	group by cd.Cohort, pop.PopID, n.ProjectType, cd.ReportID
 		, pop.HHType
 
+
 	--Count people with specific characteristics for ES/SH/TH combined
+	-- EXCEPT popIDs 113-144, which are limited to HoH and counted in next step
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
@@ -411,7 +480,7 @@ Date:  4/15/2020
 		, cd.Cohort, 16 
 		, coalesce(pop.HHType, 0) as HHType
 		, pop.PopID, -1, 55
-		, cd.ReportID, '8.14.2'
+		, cd.ReportID, '8.14.3'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
 	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
@@ -442,7 +511,7 @@ Date:  4/15/2020
 		  and (cd.CohortStart < n.ExitDate 
 			or n.ExitDate is null)
 	where n.Active = 1 and cd.Cohort between 1 and 13
-		and pop.PopType = 3 
+		and pop.PopType = 3 and pop.PopID not between 113 and 144
 		and (
 			--for night-by-night ES, count only people with bednights in period
 			(n.TrackingMethod = 3 and n.ProjectType = 1
@@ -450,11 +519,65 @@ Date:  4/15/2020
 			or (n.TrackingMethod = 0 and n.ProjectType = 1)
 			or (n.ProjectType in (2,8))
 			)
-		and (
-			(pop.PopID not between 24 and 34)
-			or
-			(latest.Age is not null)
+		and 
+			(pop.PopID not between 24 and 34 
+				or pop.PopID not between 145 and 148
+				or latest.Age is not null
 			)
+	group by cd.Cohort, pop.PopID, cd.ReportID
+		, pop.HHType
+
+	--Count people with specific characteristics for ES/SH/TH combined
+	-- popIDs 113-144, which are limited to HoH 
+	insert into lsa_Calculated
+		(Value, Cohort, Universe, HHType
+		, Population, SystemPath, ReportRow, ReportID, Step)
+	select count (distinct lp.PersonalID)
+		, cd.Cohort, 16 
+		, coalesce(pop.HHType, 0) as HHType
+		, pop.PopID, -1, 55
+		, cd.ReportID, '8.14.4'
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
+		and bn.RecordType = 200
+		and bn.DateDeleted is null
+	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.HoHID = n.PersonalID
+	inner join ref_Populations pop on
+		(hhid.ActiveHHType = pop.HHType or pop.HHType is null)
+		and (hhid.HHAdultAge = pop.HHAdultAge or pop.HHAdultAge is null)
+		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
+			 or pop.CHTime is null)
+		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
+		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
+		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
+		and (n.ActiveAge = pop.Age or pop.Age is null)
+		and (lp.Gender = pop.Gender or pop.Gender is null)
+		and (lp.Race = pop.Race or pop.Race is null)
+		and (lp.Ethnicity = pop.Ethnicity or pop.Ethnicity is null)
+	left outer join (select n.PersonalID, hhid.ActiveHHType as HHType, hhid.ProjectType, max(n.ActiveAge) as Age
+		from tlsa_Enrollment n
+		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.HoHID = n.PersonalID
+		where hhid.ProjectType in (1,2,8)
+		group by n.PersonalID, hhid.ActiveHHType, hhid.ProjectType
+		) latest on latest.PersonalID = n.PersonalID and latest.HHType = hhid.ActiveHHType
+			and latest.ProjectType = hhid.ProjectType and latest.Age = n.ActiveAge
+	inner join tlsa_CohortDates cd on cd.CohortEnd >= n.EntryDate
+		  and (cd.CohortStart < n.ExitDate 
+			or n.ExitDate is null)
+	where n.Active = 1 and cd.Cohort between 1 and 13
+		and pop.PopType = 3 and pop.PopID between 113 and 144
+		and (
+			--for night-by-night ES, count only people with bednights in period
+			(n.TrackingMethod = 3 and n.ProjectType = 1
+				and bn.DateProvided between cd.CohortStart and cd.CohortEnd)
+			or (n.TrackingMethod = 0 and n.ProjectType = 1)
+			or (n.ProjectType in (2,8))
+			)
+		and 
+			(pop.PopID not between 113 and 128
+			or latest.Age is not null)	
 	group by cd.Cohort, pop.PopID, cd.ReportID
 		, pop.HHType
 
