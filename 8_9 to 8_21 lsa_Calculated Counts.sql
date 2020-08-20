@@ -20,6 +20,7 @@ Date:  4/15/2020
 				   8.21 - Include exit date and appropriate CoCCode criteria
 		8/13/2020 - 8.18.2 - correct value for Step column inserted to lsa_Calculated
 		8/19/2020 - 8.9 and 8.11 - add counts for PopID 6 (CH) 
+					8.12.2 - remove duplicate 'pop.SystemPath is null' from WHERE clause
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -279,7 +280,7 @@ Date:  4/15/2020
 		  and (cd.CohortStart < hhid.ExitDate 
 			or hhid.ExitDate is null)
 	where hhid.Active = 1 and cd.Cohort between 1 and 13
-		and pop.PopID between 0 and 10 and pop.PopType = 1 and pop.SystemPath is null
+		and pop.PopID between 0 and 10 and pop.PopType = 1 
 		and pop.SystemPath is null
 		and (--for night-by-night ES, count only people with bednights in period
 			(hhid.TrackingMethod = 3 and hhid.ProjectType = 1
