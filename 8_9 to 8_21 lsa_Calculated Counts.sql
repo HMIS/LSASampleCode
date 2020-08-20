@@ -24,6 +24,7 @@ Date:  4/15/2020
 		8/20/2020 - 8.14 - split out counts of parenting children/youth, which are limited to HoH
 							into separate steps (former 8.14.1 is now 8.14.1 and 8.14.2, and
 							former 8.14.2 is now 8.14.3 and 8.14.4)
+						   use tlsa_Person.DVStatus instead of tlsa_HHID.HHFleeingDV (personal characteristic vs household)
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -371,7 +372,7 @@ Date:  4/15/2020
 		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
-		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (lp.DVStatus = pop.HHFleeingDV or pop.HHFleeingDV is null)
 		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
 		and (n.ActiveAge = pop.Age or pop.Age is null)
@@ -434,7 +435,7 @@ Date:  4/15/2020
 		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
-		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (lp.DVStatus = pop.HHFleeingDV or pop.HHFleeingDV is null)
 		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
 		and (n.ActiveAge = pop.Age or pop.Age is null)
@@ -493,7 +494,7 @@ Date:  4/15/2020
 		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
-		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (lp.DVStatus = pop.HHFleeingDV or pop.HHFleeingDV is null)
 		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
 		and (n.ActiveAge = pop.Age or pop.Age is null)
@@ -549,7 +550,7 @@ Date:  4/15/2020
 		and ((lp.CHTime = pop.CHTime and lp.CHTimeStatus = pop.CHTimeStatus)
 			 or pop.CHTime is null)
 		and (lp.DisabilityStatus = pop.DisabilityStatus or pop.DisabilityStatus is null)
-		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
+		and (lp.DVStatus = pop.HHFleeingDV or pop.HHFleeingDV is null)
 		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
 		and (lp.VetStatus = pop.VetStatus or pop.VetStatus is null)
 		and (n.ActiveAge = pop.Age or pop.Age is null)
