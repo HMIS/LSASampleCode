@@ -25,6 +25,9 @@ Date:  4/15/2020
 							into separate steps (former 8.14.1 is now 8.14.1 and 8.14.2, and
 							former 8.14.2 is now 8.14.3 and 8.14.4)
 						   use tlsa_Person.DVStatus instead of tlsa_HHID.HHFleeingDV (personal characteristic vs household)
+		8/25/2020 - (Final Step) - Note that export of lsa_Calculated values to LSACalculated.csv must omit the Step column.
+		8/27/2020 - 8.9 - include HHChronic criteria in join to ref_Populations
+					8.21 - correct exit date criteria in WHERE clause
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -55,6 +58,7 @@ Date:  4/15/2020
 		and (hhid.HHDisability = pop.HHDisability or pop.HHDisability is null)
 		and (hhid.HHFleeingDV = pop.HHFleeingDV or pop.HHFleeingDV is null)
 		and (hhid.HHParent = pop.HHParent or pop.HHParent is null)
+		and (hhid.HHChronic = pop.HHChronic or pop.HHChronic is null)
 	inner join tlsa_CohortDates cd on cd.CohortEnd >= n.EntryDate
 		  and (cd.CohortStart < n.ExitDate 
 			or n.ExitDate is null
@@ -899,6 +903,15 @@ Date:  4/15/2020
 	where hn.DateDeleted is null 
 		and coccode.CoCCode is null
 		and (hx.ExitDate is null or 
-				(hx.ExitDate > rpt.ReportStart and hx.ExitDate > hn.EntryDate))
+				(hx.ExitDate >= rpt.ReportStart and hx.ExitDate > hn.EntryDate))
 	group by p.ProjectID, rpt.ReportID
 
+	/*
+		
+		NOTE:  Export of lsa_Calculated data to LSACalculated.csv has to exclude the Step column.
+
+		alter lsa_Calculated drop column Step
+
+		select Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID
+		from lsa_Calculated
+	*/
