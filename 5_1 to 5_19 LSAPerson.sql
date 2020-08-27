@@ -27,6 +27,7 @@ Date:  4/7/2020
 		8/11/2020 - 5.8.3-4 - rewrite to correspond more closely to the way the business logic is expressed in the specs.
 						All dates are inserted in 5.8.3; 5.8.4 has been deleted.
 		8/13/2020 - 5.7 - Exclude RRH ExitDates from count of ESSHStreetDates if MoveInDate = ExitDate (GitHub #436)
+		8/27/2020 - 5.8.3 - Add 'or ProjectType in (1,8)' to WHERE clause 
 				
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -259,7 +260,8 @@ Date:  4/7/2020
 			and chi.PersonalID = chn.PersonalID
 	where chx.excludeDate is null
 		and chi.ESSHStreetDate is null
-		and (hn.LivingSituation in (1,18,16)
+		and (chn.ProjectType in (1,8)
+			or hn.LivingSituation in (1,18,16)
 			or	(chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
 			or (chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
 					and hn.LivingSituation in (4,5,6,7,15,25)) 
