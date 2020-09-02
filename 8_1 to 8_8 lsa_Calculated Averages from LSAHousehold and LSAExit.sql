@@ -9,6 +9,7 @@ Date:  4/7/2020
 					- Split 8.6 and 8.7 into separate statements to produce appropriate ReportRow and SystemPath values
 					  (see GitHub issue #290)
 		7/30/2020 - step 8.1/2.9 - correct criteria for SystemPath consistent with specs
+		9/2/2020 - remove 'pop.PopID between 0 and 4' from the WHERE clause -- averages are required for a much larger number of PopIDs
 
 
 	8.1 and 8.2 Average Days for Length of Time Homeless 
@@ -502,7 +503,7 @@ Date:  4/7/2020
 		and (lx.HoHEthnicity = pop.HoHEthnicity or pop.HoHEthnicity is null)
 		and (lx.SystemPath = pop.SystemPath or pop.SystemPath is null)
 	where lx.ReturnTime > 0 
-		and pop.ReturnSummary = 1 and pop.PopID between 0 and 4 
+		and pop.ReturnSummary = 1 
 		and pop.SystemPath is null
 	group by pop.PopID, lx.ReportID
 		, lx.Cohort
