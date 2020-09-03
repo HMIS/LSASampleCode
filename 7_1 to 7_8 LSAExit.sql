@@ -40,6 +40,7 @@ Date:  4/20/2020
 				7.6.3 - add Cohort to lastDay subquery in both the SELECT and the join to tlsa_Exit
 				7.7.5 - correct typo (was pshpre / should be psh)
 				7.8 - correct group by clause
+	9/3/2020 - 7.1 - add DateDeleted criteria for hmis_EnrollmentCoC
 	   
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -62,7 +63,8 @@ Date:  4/20/2020
 		and (disqualify.ExitDate is null or disqualify.ExitDate > hhid.ExitDate)
 		and (select top 1 CoCCode 
 			 from hmis_EnrollmentCoC 
-			 where EnrollmentID = disqualify.EnrollmentID 
+			 where DateDeleted is null 
+				and EnrollmentID = disqualify.EnrollmentID 
 				and InformationDate <= dateadd(dd, 14, hhid.ExitDate)
 			 order by InformationDate desc) = rpt.ReportCoC
 	where disqualify.EnrollmentID is null
