@@ -28,6 +28,7 @@ Date:  4/15/2020
 		8/25/2020 - (Final Step) - Note that export of lsa_Calculated values to LSACalculated.csv must omit the Step column.
 		8/27/2020 - 8.9 - include HHChronic criteria in join to ref_Populations
 					8.21 - correct exit date criteria in WHERE clause
+		9/3/2020 -  8.21 - limit count to projects in lsa_Project
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -886,9 +887,7 @@ Date:  4/15/2020
 	select count (distinct hn.HouseholdID), 1, 10, 0, 0, -1, 62, p.ProjectID, rpt.ReportID, '8.21'
 	from lsa_Report rpt
 	inner join hmis_Enrollment hn on hn.EntryDate <= rpt.ReportEnd
-	inner join hmis_Project p on p.ProjectID = hn.ProjectID and p.ContinuumProject = 1 and p.ProjectType in (1,2,3,8,13)
-	inner join hmis_ProjectCoC pcoc on pcoc.ProjectID = p.ProjectID and pcoc.CoCCode = rpt.ReportCoC
-		and pcoc.DateDeleted is null
+	inner join lsa_Project p on p.ProjectID = hn.ProjectID and p.ProjectType not in (9,10)
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
 		and hx.ExitDate >= rpt.ReportStart
 		and hx.DateDeleted is null
