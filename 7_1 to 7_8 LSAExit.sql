@@ -41,7 +41,8 @@ Date:  4/20/2020
 				7.7.5 - correct typo (was pshpre / should be psh)
 				7.8 - correct group by clause
 	9/3/2020 - 7.1 - add DateDeleted criteria for hmis_EnrollmentCoC
-	   
+				7.6.2 (a and b) - replace hardcoded value of 1 for Cohort with tlsa_Exit.Cohort in INSERT to sys_TimePadded 
+
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
 
@@ -307,7 +308,7 @@ from tlsa_Exit ex
 	delete from sys_TimePadded
 
 	insert into sys_TimePadded (HoHID, HHType, Cohort, StartDate, EndDate, Step)
-	select distinct ex.HoHID, ex.HHType, 1
+	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, hhid.EntryDate	
 		, case when hhid.ExitDate is null then cd.CohortEnd 
 			else dateadd(dd, 6, hhid.ExitDate) end
@@ -323,7 +324,7 @@ from tlsa_Exit ex
 	where ex.LastInactive is null 
 		and (possible.ProjectType in (2,3,8,13) or possible.TrackingMethod = 0)
 	union
-	select distinct ex.HoHID, ex.HHType, 1
+	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, bn.DateProvided	
 		, dateadd(dd, 6, bn.DateProvided) 
 		, '7.6.2.b'
