@@ -28,7 +28,6 @@ Date:  4/7/2020
 						All dates are inserted in 5.8.3; 5.8.4 has been deleted.
 		8/13/2020 - 5.7 - Exclude RRH ExitDates from count of ESSHStreetDates if MoveInDate = ExitDate (GitHub #436)
 		8/27/2020 - 5.8.3 - Add 'or ProjectType in (1,8)' to WHERE clause 
-		9/3/2020 - 5.10.4 and 5.10.5 - use tlsa_Enrollment.EntryDate vs hmis_Enrollment.EntryDate
 				
 	5.1 Get Active HMIS HouseholdIDs
 */
@@ -376,7 +375,7 @@ Date:  4/7/2020
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
 			and hn.MonthsHomelessPastThreeYears in (112,113) 
 			and hn.TimesHomelessPastThreeYears = 4
-			and chn.EntryDate > dateadd(yyyy, -1, lp.LastActive)
+			and hn.EntryDate > dateadd(yyyy, -1, lp.LastActive)
 	where 
 		lp.CHTime not in (-1,365) or lp.CHTimeStatus = 3
 
@@ -390,7 +389,7 @@ Date:  4/7/2020
 		inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
 	where (lp.CHTime in (0,270) or lp.CHTimeStatus = 3)
-		and (hn.DateToStreetESSH > chn.EntryDate 
+		and (hn.DateToStreetESSH > hn.EntryDate 
 				or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
 				or (chn.ProjectType not in (1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
