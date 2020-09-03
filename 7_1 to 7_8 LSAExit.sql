@@ -42,6 +42,7 @@ Date:  4/20/2020
 				7.8 - correct group by clause
 	9/3/2020 - 7.1 - add DateDeleted criteria for hmis_EnrollmentCoC
 				7.6.2 (a and b) - replace hardcoded value of 1 for Cohort with tlsa_Exit.Cohort in INSERT to sys_TimePadded 
+								- use CohortEnd as sys_TimePadded.EndDate if the padded value > CohortEnd
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -310,7 +311,8 @@ from tlsa_Exit ex
 	insert into sys_TimePadded (HoHID, HHType, Cohort, StartDate, EndDate, Step)
 	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, hhid.EntryDate	
-		, case when hhid.ExitDate is null then cd.CohortEnd 
+		, case when hhid.ExitDate is null 
+			or dateadd(dd, 6, hhid.ExitDate) > cd.CohortEnd then cd.CohortEnd 
 			else dateadd(dd, 6, hhid.ExitDate) end
 		, '7.6.2.a'
 	from tlsa_Exit ex
@@ -326,7 +328,8 @@ from tlsa_Exit ex
 	union
 	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, bn.DateProvided	
-		, dateadd(dd, 6, bn.DateProvided) 
+		, case when dateadd(dd, 6, bn.DateProvided) > cd.CohortEnd then cd.CohortEnd
+			else dateadd(dd, 6, bn.DateProvided) end
 		, '7.6.2.b'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
