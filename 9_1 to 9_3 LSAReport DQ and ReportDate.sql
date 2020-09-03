@@ -18,6 +18,7 @@ Date:  4/7/2020
 							LengthOfStay1, HomelessDate1, TimesHomeless1, MonthsHomeless1, DV1, Destination1, NotOneHoH1, and MoveInDate1
 	   9/2/2020 - 9.1 and 9.2 - add more DateDeleted restrictions
 				  9.2 - use dq_Enrollment and not hmis_Enrollment for ExitDate 
+	   9/3/2020 - 9.2 - correct criteria for NoCoC counts
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -153,16 +154,17 @@ update rpt
 	,   NoCoC = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			left outer join hmis_EnrollmentCoC coc on 
-				coc.EnrollmentID = n.EnrollmentID 
+				coc.EnrollmentID = n.EnrollmentID
+				and coc.InformationDate <= rpt.ReportEnd
 				and coc.DateDeleted is null 
 			inner join hmis_Project p on p.ProjectID = n.ProjectID
 				and p.ContinuumProject = 1 and p.ProjectType in (1,2,3,8,13)
 			inner join hmis_ProjectCoC pcoc on pcoc.CoCCode = rpt.ReportCoC
 				and pcoc.DateDeleted is null 
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
-				and x.ExitDate >= dateadd(yy, -3, rpt.ReportStart)
-				and x.DateDeleted is null 
+				and x.DateDeleted is null
 			where n.EntryDate <= rpt.ReportEnd 
+				and (x.ExitDate is null or x.ExitDate >= dateadd(yy, -2, rpt.ReportStart))
 				and n.RelationshipToHoH = 1 
 				and coc.CoCCode is null
 				and n.DateDeleted is null)
