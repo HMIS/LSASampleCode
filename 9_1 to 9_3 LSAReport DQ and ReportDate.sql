@@ -19,6 +19,7 @@ Date:  4/7/2020
 	   9/2/2020 - 9.1 and 9.2 - add more DateDeleted restrictions
 				  9.2 - use dq_Enrollment and not hmis_Enrollment for ExitDate 
 	   9/3/2020 - 9.2 - correct criteria for NoCoC counts
+				  9.1 - compare DOB to CohortStart for the 3 year DQ period for Status3 (was using value for cohort 1)
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -48,7 +49,7 @@ select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
 				or c.DOB > n.EntryDate
 				or (c.DOB = n.EntryDate and n.RelationshipToHoH = 1)
 				or dateadd(yy, 105, c.DOB) <= n.EntryDate 
-				or dateadd(yy, 105, c.DOB) <= cd1.CohortStart 
+				or dateadd(yy, 105, c.DOB) <= cd3.CohortStart 
 			then 99
 		when dateadd(yy, 18, c.DOB) <= n.EntryDate 
 			or dateadd(yy, 18, c.DOB) <= cd3.CohortStart  then 1
