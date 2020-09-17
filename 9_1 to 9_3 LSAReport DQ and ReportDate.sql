@@ -20,7 +20,7 @@ Date:  4/7/2020
 				  9.2 - use dq_Enrollment and not hmis_Enrollment for ExitDate 
 	   9/3/2020 - 9.2 - correct criteria for NoCoC counts
 				  9.1 - compare DOB to CohortStart for the 3 year DQ period for Status3 (was using value for cohort 1)
-				  9.1 - limit dq_Enrollment to those where EntryDate <= CohortEnd
+	   9/17/2020 - 9.1 - limit dq_Enrollment to those where EntryDate <= CohortEnd and ES/SH/TH/RRH/PSH project types
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -77,6 +77,7 @@ inner join hmis_EnrollmentCoC coc on coc.HouseholdID = n.HouseholdID
 inner join tlsa_CohortDates cd1 on cd1.Cohort = 1
 inner join tlsa_CohortDates cd3 on cd3.Cohort = 20
 inner join lsa_Project p on p.ProjectID = n.ProjectID 
+	and p.ProjectType in (1,2,3,8,13)
 inner join hmis_Client c on c.PersonalID = n.PersonalID
 left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 	and x.DateDeleted is null 
