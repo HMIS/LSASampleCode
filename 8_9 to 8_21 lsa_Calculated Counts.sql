@@ -30,7 +30,8 @@ Date:  4/15/2020
 					8.21 - correct exit date criteria in WHERE clause
 		9/3/2020 -  8.21 - limit count to projects in lsa_Project
 		9/10/2020 - 8.14.1 and .3 -- correction in WHERE clause re: latest age and popIDs
-		9/17/2020 - 8.13 add max age criteria for popIDs 145-148
+		9/17/2020 - 8.13 - add max age criteria for popIDs 145-148
+					8.20 - in WHERE clause, LastBednight <= dateadd(dd, -90, cd.CohortEnd) (was just <)
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -882,7 +883,7 @@ Date:  4/15/2020
 		where svc.RecordType = 200 and svc.DateDeleted is null
 		group by svc.EnrollmentID
 		) bn on bn.EnrollmentID = n.EnrollmentID
-	where (hx.ExitDate is null and bn.LastBednight < dateadd(dd, -90, cd.CohortEnd))
+	where (hx.ExitDate is null and bn.LastBednight <= dateadd(dd, -90, cd.CohortEnd))
 		or (hx.ExitDate <> dateadd(dd, 1, bn.LastBednight))
 	group by case when hx.ExitDate is null then 60
 			else 61 end 
