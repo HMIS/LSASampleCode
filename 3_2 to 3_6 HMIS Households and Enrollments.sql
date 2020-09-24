@@ -43,6 +43,7 @@ Date:	4/16/2020 -- original
 							insert of records to simplify this and re-numbered steps.  
 		9/10/2020 - 3.5.1 - if a person's DOB is invalidated for any enrollment, age is considered unknown for all.
 		9/17/2020 - 3.3.1 - project's operating end date must be after its start date in order to include in LSA
+		9/24/2020 - 3.3.1 - use operating end date as exit date if it is prior to LastBednight + 1 		
 
 	3.2 Cohort Dates 
 */
@@ -118,7 +119,9 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 		when p.ProjectType = 13 and (hoh.MoveInDate <= hx.ExitDate or hx.ExitDate is null) 
 			then hoh.MoveInDate
 		else null end
-	, case when p.ProjectType = 1 and p.TrackingMethod = 3 and hx.ExitDate > dateadd(dd, 1, bn.LastBednight)
+	, case when p.ProjectType = 1 and p.TrackingMethod = 3 
+				and dateadd(dd, 1, bn.LastBednight) >= p.OperatingEndDate then p.OperatingEndDate
+	    when p.ProjectType = 1 and p.TrackingMethod = 3 and hx.ExitDate > dateadd(dd, 1, bn.LastBednight)
 			then dateadd(dd, 1, bn.LastBednight)
 		when p.ProjectType = 1 and p.TrackingMethod = 3 and hx.ExitDate is null 
 			and dateadd(dd, 90, bn.LastBednight) <= rpt.ReportEnd then dateadd(dd, 1, bn.LastBednight) 
@@ -132,6 +135,7 @@ inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID
 	and coc.CoCCode = rpt.ReportCoC and coc.InformationDate <= rpt.ReportEnd
 	and coc.DateDeleted is null
 inner join hmis_Project p on p.ProjectID = hoh.ProjectID
+	and (p.OperatingEndDate >= rpt.ReportStart or p.OperatingEndDate is NULL)
 	and p.DateDeleted is null
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd 
