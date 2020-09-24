@@ -45,7 +45,8 @@ Date:  4/20/2020
 								- use CohortEnd as sys_TimePadded.EndDate if the padded value > CohortEnd
 	9/24/2020 - 7.6.2.a - Insert entry/exit dates for all possible enrollments that might be part of system path to sys_TimePadded
 						(was only inserting dates for qualifying exit).  Alse, remove impossible condition from CASE statement (ExitDate is null)
-
+				7.6.2.b - limit relevant bednights to those >= entry and < exit dates (if non-NULL)
+						because enrollment dates may have been adjusted in tlsa_HHID/tlsa_Enrollment
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
 
