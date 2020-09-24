@@ -21,6 +21,7 @@ Date:  4/7/2020
 	   9/3/2020 - 9.2 - correct criteria for NoCoC counts
 				  9.1 - compare DOB to CohortStart for the 3 year DQ period for Status3 (was using value for cohort 1)
 	   9/17/2020 - 9.1 - limit dq_Enrollment to those where EntryDate <= CohortEnd and ES/SH/TH/RRH/PSH project types
+	   9/24/2020 - 9.1 - EntryDate < OR EQUAL TO (was just <) CohortEnd
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -97,7 +98,7 @@ left outer join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDat
 	group by hh.HouseholdID
 	) hhinfo on hhinfo.HouseholdID = n.HouseholdID
 --5/14/2020 add parentheses to WHERE clause 
-where n.EntryDate < cd1.CohortEnd
+where n.EntryDate <= cd1.CohortEnd
 	and (x.ExitDate is null or x.ExitDate >= cd3.CohortStart)
 	and n.DateDeleted is null 
 
