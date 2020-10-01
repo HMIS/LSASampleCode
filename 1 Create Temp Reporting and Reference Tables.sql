@@ -13,7 +13,6 @@ Date:  4/17/2020
 	   8/13/2020 - updates to ref_Populations
 	   8/19/2020 - updates to ref_Populations / additions, corrections, deletions to match specs
 	   8/20/2020 - updates to ref_Populations / additions, corrections, deletions to match specs (popIDs 113-128)
-	   9/24/2020 - add primary key to sys_TimePadded
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -300,10 +299,9 @@ create table tlsa_Household(
 	HoHID varchar(32) not null
 	, HHType int not null
 	, Cohort int not null
-	, StartDate date not null
+	, StartDate date
 	, EndDate date
 	, Step nvarchar(10) not NULL
-	, constraint pk_sys_TimePadded primary key clustered (HoHID, HHType, Cohort, StartDate)
 	)
 	;
 
