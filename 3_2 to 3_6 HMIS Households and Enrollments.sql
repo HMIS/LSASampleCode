@@ -44,6 +44,7 @@ Date:	4/16/2020 -- original
 		9/10/2020 - 3.5.1 - if a person's DOB is invalidated for any enrollment, age is considered unknown for all.
 		9/17/2020 - 3.3.1 - project's operating end date must be after its start date in order to include in LSA
 		9/24/2020 - 3.3.1 - use operating end date as exit date if it is prior to LastBednight + 1 		
+		10/1/2020 - 3.3.1 (bn subclause) - limit relevant bednights to those dated prior to OperatingEndDate (it it exists)
 
 	3.2 Cohort Dates 
 */
@@ -135,7 +136,6 @@ inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID
 	and coc.CoCCode = rpt.ReportCoC and coc.InformationDate <= rpt.ReportEnd
 	and coc.DateDeleted is null
 inner join hmis_Project p on p.ProjectID = hoh.ProjectID
-	and (p.OperatingEndDate >= rpt.ReportStart or p.OperatingEndDate is NULL)
 	and p.DateDeleted is null
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd 
@@ -150,7 +150,7 @@ left outer join (select distinct svc.EnrollmentID, max(svc.DateProvided) as Last
 		left outer join hmis_Exit nbnx on nbnx.EnrollmentID = nbn.EnrollmentID
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
 			and p.ProjectType = 1 and p.TrackingMethod = 3 
-			and (p.OperatingEndDate is null or p.OperatingEndDate >= DateProvided)
+			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
 		inner join lsa_Report rpt on svc.DateProvided between '10/1/2012' and rpt.ReportEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
