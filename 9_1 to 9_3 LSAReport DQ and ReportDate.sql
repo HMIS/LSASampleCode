@@ -22,6 +22,7 @@ Date:  4/7/2020
 				  9.1 - compare DOB to CohortStart for the 3 year DQ period for Status3 (was using value for cohort 1)
 	   9/17/2020 - 9.1 - limit dq_Enrollment to those where EntryDate <= CohortEnd and ES/SH/TH/RRH/PSH project types
 	   9/24/2020 - 9.1 - EntryDate < OR EQUAL TO (was just <) CohortEnd
+	   10/1/2020 - 9.1 and 9.2 - adjustments to hhinfo subquery (9.1) and MoveInDate1/3 (9.2) consistent with specs
 
 	9.1 Get Relevant Enrollments for Data Quality Checks
 */
@@ -83,7 +84,7 @@ inner join hmis_Client c on c.PersonalID = n.PersonalID
 left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 	and x.DateDeleted is null 
 	and x.ExitDate <= cd3.CohortEnd
-left outer join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDate
+left outer join (select distinct hh.HouseholdID, hh.MoveInDate
 	from hmis_Enrollment hh
 	inner join lsa_Report rpt on hh.EntryDate <= rpt.ReportEnd
 	inner join hmis_Project p on p.ProjectID = hh.ProjectID
@@ -92,12 +93,12 @@ left outer join (select distinct hh.HouseholdID, min(hh.MoveInDate) as MoveInDat
 		and coc.InformationDate <= rpt.ReportEnd
 		and coc.DateDeleted is null 
 	where p.ProjectType in (3,13) 
+		and hh.RelationshipToHoH = 1
 		and hh.MoveInDate <= rpt.ReportEnd 
 		and p.ContinuumProject = 1
 		and hh.DateDeleted is null
 	group by hh.HouseholdID
 	) hhinfo on hhinfo.HouseholdID = n.HouseholdID
---5/14/2020 add parentheses to WHERE clause 
 where n.EntryDate <= cd1.CohortEnd
 	and (x.ExitDate is null or x.ExitDate >= cd3.CohortStart)
 	and n.DateDeleted is null 
