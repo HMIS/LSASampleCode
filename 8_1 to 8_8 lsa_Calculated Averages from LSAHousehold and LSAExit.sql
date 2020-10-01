@@ -13,6 +13,7 @@ Date:  4/7/2020
 					 and add SystemPath criteria to join to ref_Populations in 8.7
 		10/1/2020 - 8.5 - correct set of ReportRow for new ExitFrom values 7 and 8 (w/ related changes in specs section 8.5
 					and dictionary list 33/ReportRow).
+					8.1 and 8.2 - correct step numbering
 
 	8.1 and 8.2 Average Days for Length of Time Homeless 
 */
@@ -27,7 +28,7 @@ Date:  4/7/2020
 		, coalesce(pop.SystemPath, -1)
 		, 1 as ReportRow
 		, lh.ReportID
-		, '8.1/8.2'
+		, '8.1/2.1'
 	from tlsa_Household lh
 	inner join ref_Populations pop on
 		(lh.HHType = pop.HHType or pop.HHType is null)
