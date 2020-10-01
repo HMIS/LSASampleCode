@@ -36,7 +36,8 @@ Date:  4/20/2020
 						(which unduplicates project participation status to 1 project type per day and
 						 might undercount households in EST and/or RRH if all active dates of enrollment
 						 overlap with enrollment(s) in another project type) 
-	   10/1/2020 - 6.17.1, 2, and 3 - add missing closing parentheses (issue created in 9/24 update) 
+	   10/1/2020 -  6.11 - include RRH exit date as date housed in RRH if equal to move-in date
+					6.17.1, 2, and 3 - add missing closing parentheses (issue created in 9/24 update) 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -663,7 +664,8 @@ Date:  4/20/2020
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join ref_Calendar cal on cal.theDate >= hhid.MoveInDate
 		and (cal.theDate < hhid.ExitDate 
-				or (hhid.ExitDate is null and cal.theDate <= rpt.ReportEnd))
+			or (cal.theDate = hhid.MoveInDate and cal.theDate = hhid.ExitDate and hhid.ProjectType = 13)
+			or (hhid.ExitDate is null and cal.theDate <= rpt.ReportEnd))
 	where hhid.ProjectType in (3,13) and hhid.Active = 1
 	group by hhid.HoHID, hhid.ActiveHHType, cal.theDate
 /*
