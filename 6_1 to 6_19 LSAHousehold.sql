@@ -36,6 +36,7 @@ Date:  4/20/2020
 						(which unduplicates project participation status to 1 project type per day and
 						 might undercount households in EST and/or RRH if all active dates of enrollment
 						 overlap with enrollment(s) in another project type) 
+	   10/1/2020 - 6.17.1, 2, and 3 - add missing closing parentheses (issue created in 9/24 update) 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -903,7 +904,7 @@ Date:  4/20/2020
 	from tlsa_Household hh
 
 /*
-	6.16 Update ESTStatus and RRHStatus
+	6.16 Update EST/RRH/PSHStatus 
 */
 
 	update hh
@@ -945,7 +946,7 @@ Date:  4/20/2020
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType 
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID and n.PersonalID = hhid.HoHID
 	where n.Active = 1 
-		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)
+		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report))
 		and hhid.ProjectType in (1,2,8)
 
 	update hh
@@ -957,7 +958,7 @@ Date:  4/20/2020
 	where n.Active = 1 
 		and (hhid.ExitDate is null 
 			or hhid.ExitDate > (select ReportStart from lsa_Report)
-			or (hhid.ExitDate = hhid.MoveInDate and hhid.ExitDate = (select ReportStart from lsa_Report))
+			or (hhid.ExitDate = hhid.MoveInDate and hhid.ExitDate = (select ReportStart from lsa_Report)))
 		and (hhid.MoveInDate is not null)
 		and hhid.ProjectType = 13
 
@@ -969,7 +970,7 @@ Date:  4/20/2020
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID and n.PersonalID = hhid.HoHID
 	where n.Active = 1 
 		and hhid.MoveInDate is not null
-		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)
+		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report))
 		and hhid.ProjectType = 3
 
 /*
