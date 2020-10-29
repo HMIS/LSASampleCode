@@ -33,8 +33,7 @@ Date:  4/15/2020
 		9/17/2020 - 8.13 - add max age criteria for popIDs 145-148
 					8.20 - in WHERE clause, LastBednight <= dateadd(dd, -90, cd.CohortEnd) (was just <)
 		9/24/2020 - 8.9 through 8.14 - limit relevant bednights to those >= entry and < exit dates (if non-NULL)
-						because enrollment dates may have been adjusted in tlsa_HHID/tlsa_Enrollment
-		10/29/2020 - 8.21 Correction to comment identifying section name / no change to code 
+						because enrollment dates may have been adjusted in tlsa_HHID/tlsa_Enrollment 
 
 	8.9 Get Counts of People by Project ID and Household Characteristics
 */
@@ -915,7 +914,7 @@ Date:  4/15/2020
 		, p.ProjectID, cd.ReportID
 
 /*
-	8.21 Get Counts of Households with no Enrollment CoC Record
+	8.21 Get Counts of Enrollments with no Enrollment CoC Record
 */
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
