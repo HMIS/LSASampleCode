@@ -211,6 +211,10 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		from tlsa_Enrollment n
 		inner join hmis_Client c on c.PersonalID = n.PersonalID
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
+		where case hhid.ExitCohort 
+			when 0 then n.ActiveAge
+			when -1 then n.Exit1Age
+			when -2 then n.Exit2Age end between 18 and 65
 		group by n.HouseholdID, hhid.ExitCohort) vet on vet.HouseholdID = ex.QualifyingExitHHID and vet.ExitCohort = ex.Cohort
 
 update ex
