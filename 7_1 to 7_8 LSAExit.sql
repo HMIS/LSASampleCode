@@ -56,6 +56,7 @@ Date:  4/20/2020
 	12/3/2020 - 7.7.2-7.7.4 - correct so that SystemPath includes enrollments with entry dates prior
 						to 10/1/2012 when LastInactive = 9/30/2012 and the enrollments extend beyond that date
 	12/17/2020 - 7.7.3 & 7.7.4 - correct hhid household type columns
+			- 7.4.1 - limit setting HHVet to 1 to people over 18 during the relevant cohort period.
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
