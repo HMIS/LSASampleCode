@@ -47,10 +47,10 @@ create table tlsa_CohortDates (
 if object_id ('tlsa_HHID') is not NULL drop table tlsa_HHID 
 
 create table tlsa_HHID (
-	 HouseholdID nvarchar(32)
-	, HoHID nvarchar(32)
-	, EnrollmentID nvarchar(32)
-	, ProjectID nvarchar(32)
+	 HouseholdID varchar(32)
+	, HoHID varchar(32)
+	, EnrollmentID varchar(32)
+	, ProjectID varchar(32)
 	, ProjectType int
 	, TrackingMethod int
 	, EntryDate date
@@ -80,18 +80,18 @@ create table tlsa_HHID (
 	, HHAdultAge int
 	, HHParent int
 	, AC3Plus int
-	, Step nvarchar(10) not NULL
+	, Step varchar(10) not NULL
 	, constraint pk_tlsa_HHID primary key clustered (HouseholdID)
 	)
 
 if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment 
 
 create table tlsa_Enrollment (
-	EnrollmentID nvarchar(32)
-	, PersonalID nvarchar(32)
-	, HouseholdID nvarchar(32)
+	EnrollmentID varchar(32)
+	, PersonalID varchar(32)
+	, HouseholdID varchar(32)
 	, RelationshipToHoH int
-	, ProjectID nvarchar(32)
+	, ProjectID varchar(32)
 	, ProjectType int
 	, TrackingMethod int
 	, EntryDate date
@@ -111,7 +111,7 @@ create table tlsa_Enrollment (
 	, PITApril bit
 	, PITJuly bit
 	, CH bit
-	, Step nvarchar(10) not NULL
+	, Step varchar(10) not NULL
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)
 
@@ -181,7 +181,7 @@ create table tlsa_Person (
 	AHARHoHPSH int,
 	AHARAdultPSH int,
 	ReportID int,
-	Step nvarchar(10) not NULL,
+	Step varchar(10) not NULL,
 	constraint pk_tlsa_Person primary key clustered (PersonalID) 
 	)
 	;
@@ -192,7 +192,7 @@ if object_id ('ch_Exclude') is not NULL drop table ch_Exclude
 	create table ch_Exclude(
 	PersonalID varchar(32) not NULL,
 	excludeDate date not NULL,
-	Step nvarchar(10) not NULL,
+	Step varchar(10) not NULL,
 	constraint pk_ch_Exclude primary key clustered (PersonalID, excludeDate) 
 	)
 	;
@@ -202,7 +202,7 @@ if object_id ('ch_Include') is not NULL drop table ch_Include
 	create table ch_Include(
 	PersonalID varchar(32) not NULL,
 	ESSHStreetDate date not NULL,
-	Step nvarchar(10) not NULL,
+	Step varchar(10) not NULL,
 	constraint pk_ch_Include primary key clustered (PersonalID, ESSHStreetDate)
 	)
 	;
@@ -213,7 +213,7 @@ if object_id ('ch_Episodes') is not NULL drop table ch_Episodes
 	episodeStart date,
 	episodeEnd date,
 	episodeDays int null,
-	Step nvarchar(10) not NULL,
+	Step varchar(10) not NULL,
 	constraint pk_ch_Episodes primary key clustered (PersonalID, episodeStart)
 	)
 	;
@@ -290,7 +290,7 @@ create table tlsa_Household(
 	RRHAHAR int,
 	PSHAHAR int,
 	ReportID int,
-	Step nvarchar(10) not NULL,
+	Step varchar(10) not NULL,
 	constraint pk_tlsa_Household primary key clustered (HoHID, HHType)
 	)
 	;
@@ -303,18 +303,18 @@ create table tlsa_Household(
 	, Cohort int not null
 	, StartDate date
 	, EndDate date
-	, Step nvarchar(10) not NULL
+	, Step varchar(10) not NULL
 	)
 	;
 
 	if object_id ('sys_Time') is not null drop table sys_Time
 	
 	create table sys_Time (
-		HoHID nvarchar(32)
+		HoHID varchar(32)
 		, HHType int
 		, sysDate date
 		, sysStatus int
-		, Step nvarchar(10) not NULL
+		, Step varchar(10) not NULL
 		, constraint pk_sys_Time primary key clustered (HoHID, HHType, sysDate)
 		)
 		;
@@ -334,7 +334,7 @@ create table tlsa_Household(
 	, Status1 int
 	, Status3 int
 	, SSNValid int
-	, Step nvarchar(10) not NULL
+	, Step varchar(10) not NULL
     constraint pk_dq_Enrollment primary key clustered (EnrollmentID) 
 	)
 	;
@@ -343,9 +343,9 @@ create table tlsa_Household(
 	if object_id ('tlsa_Exit') is not NULL drop table tlsa_Exit
  
 	create table tlsa_Exit(
-		HoHID nvarchar(32) not null,
+		HoHID varchar(32) not null,
 		HHType int not null,
-		QualifyingExitHHID nvarchar(32),
+		QualifyingExitHHID varchar(32),
 		LastInactive date,
 		Cohort int not NULL,
 		Stat int,
@@ -363,7 +363,7 @@ create table tlsa_Household(
 		AC3Plus int,
 		SystemPath int,
 		ReportID int not NULL,
-		Step nvarchar(10) not NULL,
+		Step varchar(10) not NULL,
 		constraint pk_tlsa_Exit primary key (Cohort, HoHID, HHType)
 		)
 		;
@@ -371,15 +371,15 @@ create table tlsa_Household(
 	if object_id ('tlsa_ExitHoHAdult') is not NULL drop table tlsa_ExitHoHAdult
  
 	create table tlsa_ExitHoHAdult(
-		PersonalID nvarchar(32) not null,
-		QualifyingExitHHID nvarchar(32),
+		PersonalID varchar(32) not null,
+		QualifyingExitHHID varchar(32),
 		Cohort int not NULL,
 		DisabilityStatus int,
-		CHStart int,
-		LastActive int,
+		CHStart date,
+		LastActive date,
 		CHTime int,
 		CHTimeStatus int,
-		Step nvarchar(10) not NULL,
+		Step varchar(10) not NULL,
 		constraint pk_tlsa_ExitHoHAdult primary key (PersonalID, QualifyingExitHHID, Cohort)
 		)
 		;
