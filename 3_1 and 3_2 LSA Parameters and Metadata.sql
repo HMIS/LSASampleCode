@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 	Name:	3_1 to 3_2 LSA Parameters and Metadata.sql 
-	Date:	16 AUG 2021
+	Date:	19 AUG 2021
 
 	The hard-coded values here must be replaced with code to accept actual user-entered parameters 
 	and info specific to the HMIS application.
@@ -81,4 +81,3 @@ insert into lsa_Report (
 	select 20, dateadd(dd, 1, dateadd(yyyy, -3, rpt.ReportEnd)), rpt.ReportEnd, rpt.ReportID
 	from lsa_Report rpt
 
-/*

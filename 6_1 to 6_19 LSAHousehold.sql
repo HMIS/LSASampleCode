@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  6_1 to 6_19 LSAHousehold.sql  
-Date:  16 AUG 2021 
+Date:  19 AUG 2021 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -669,7 +669,7 @@ Date:  16 AUG 2021
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and (hhid.Active = 1 or hhid.ExitDate < rpt.ReportStart) 
 	where hh.LastInactive is null 
-		and (hhid.ProjectType <> 1 or hhid.TrackingMethod = 0)
+		and (hhid.ProjectType = 0)
 	union
 	select distinct hh.HoHID, hh.HHType, 1
 		, bn.DateProvided	
@@ -684,7 +684,7 @@ Date:  16 AUG 2021
 		and bn.DateProvided >= hhid.EntryDate
 		and (bn.DateProvided < hhid.ExitDate or hhid.ExitDate is null)
 		and bn.RecordType = 200 and bn.DateDeleted is null
-		and hhid.TrackingMethod = 3
+		and hhid.ProjectType = 3
 	where hh.LastInactive is null
 		
 	update hh
@@ -724,7 +724,7 @@ Date:  16 AUG 2021
 	left outer join sys_Time housed on housed.HoHID = hh.HoHID and housed.HHType = hh.HHType
 		and housed.sysDate = cal.theDate
 	where housed.sysDate is null 
-		and (hhid.ProjectType in (2,8) or (hhid.ProjectType = 1 and hhid.TrackingMethod = 0))
+		and (hhid.ProjectType in (2,8) or (hhid.ProjectType = 0))
 	group by hh.HoHID, hh.HHType, cal.theDate
 
 	--Emergency Shelter (Night-by-Night) (sysStatus = 4)
@@ -742,7 +742,7 @@ Date:  16 AUG 2021
 		and cal.theDate between hhid.EntryDate and coalesce(dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
-	where other.sysDate is null and hhid.ProjectType = 1 and hhid.TrackingMethod = 3
+	where other.sysDate is null and hhid.ProjectType = 1 
 	
 	--Homeless (Time prior to Move-In) in PSH and RRH (sysStatus = 5 and 6)
 	insert into sys_Time (HoHID, HHType, sysDate, sysStatus, Step)

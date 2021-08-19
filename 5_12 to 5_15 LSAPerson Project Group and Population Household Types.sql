@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  5_12 to 5_15 LSAPerson Project Group and Population Household Types.sql  
-Date:  16 AUG 2021   
+Date:  19 AUG 2021   
 
 	
 	5.12 Set Population Identifiers for Active HouseholdIDs
@@ -96,7 +96,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)) 
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)) 
 		, lp.HoHEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -104,7 +104,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and n.RelationshipToHoH = 1) 
 		, lp.AdultEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -113,7 +113,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
 		, lp.AHAREST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -122,7 +122,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (1,2,8)) 
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (0,1,2,8)) 
 		, lp.AHARHoHEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -130,7 +130,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR= 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AHAR= 1 and n.ProjectType in (0,1,2,8)
 					and n.RelationshipToHoH = 1) 
 		, lp.AHARAdultEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -139,7 +139,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -148,7 +148,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.HHChronic = 1)
 		, lp.HHVetEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -157,7 +157,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.HHVet = 1)
 		, lp.HHDisabilityEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -166,7 +166,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.HHDisability = 1)
 		, lp.HHFleeingDVEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -175,7 +175,7 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.HHFleeingDV = 1)
 		, lp.HHParentEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -184,12 +184,12 @@ Date:  16 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.HHParent = 1)
 		, lp.AC3PlusEST = (select sum(distinct case when hhid.AC3Plus = 1 then 1 else 0 end)
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
 					and hhid.AC3Plus = 1)
 		, lp.HHTypeRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -398,44 +398,46 @@ Date:  16 AUG 2021
 		, lp.Step = '5.13'
 	from tlsa_Person lp
 
-	update lp set lp.AdultEST = case lp.AdultEST when 0 then -1 else cast(replace(cast(lp.AdultEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AdultPSH = case lp.AdultPSH when 0 then -1 else cast(replace(cast(lp.AdultPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AdultRRH = case lp.AdultRRH when 0 then -1 else cast(replace(cast(lp.AdultRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARAdultEST = case lp.AHARAdultEST when 0 then -1 else cast(replace(cast(lp.AHARAdultEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARAdultPSH = case lp.AHARAdultPSH when 0 then -1 else cast(replace(cast(lp.AHARAdultPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARAdultRRH = case lp.AHARAdultRRH when 0 then -1 else cast(replace(cast(lp.AHARAdultRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHAREST = case lp.AHAREST when 0 then -1 else cast(replace(cast(lp.AHAREST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARHoHEST = case lp.AHARHoHEST when 0 then -1 else cast(replace(cast(lp.AHARHoHEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARHoHPSH = case lp.AHARHoHPSH when 0 then -1 else cast(replace(cast(lp.AHARHoHPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARHoHRRH = case lp.AHARHoHRRH when 0 then -1 else cast(replace(cast(lp.AHARHoHRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARPSH = case lp.AHARPSH when 0 then -1 else cast(replace(cast(lp.AHARPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.AHARRRH = case lp.AHARRRH when 0 then -1 else cast(replace(cast(lp.AHARRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHChronicEST = case lp.HHChronicEST when 0 then -1 else cast(replace(cast(lp.HHChronicEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHChronicPSH = case lp.HHChronicPSH when 0 then -1 else cast(replace(cast(lp.HHChronicPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHChronicRRH = case lp.HHChronicRRH when 0 then -1 else cast(replace(cast(lp.HHChronicRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHDisabilityEST = case lp.HHDisabilityEST when 0 then -1 else cast(replace(cast(lp.HHDisabilityEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHDisabilityPSH = case lp.HHDisabilityPSH when 0 then -1 else cast(replace(cast(lp.HHDisabilityPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHDisabilityRRH = case lp.HHDisabilityRRH when 0 then -1 else cast(replace(cast(lp.HHDisabilityRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHFleeingDVEST = case lp.HHFleeingDVEST when 0 then -1 else cast(replace(cast(lp.HHFleeingDVEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHFleeingDVPSH = case lp.HHFleeingDVPSH when 0 then -1 else cast(replace(cast(lp.HHFleeingDVPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHFleeingDVRRH = case lp.HHFleeingDVRRH when 0 then -1 else cast(replace(cast(lp.HHFleeingDVRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHParentEST = case lp.HHParentEST when 0 then -1 else cast(replace(cast(lp.HHParentEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHParentPSH = case lp.HHParentPSH when 0 then -1 else cast(replace(cast(lp.HHParentPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHParentRRH = case lp.HHParentRRH when 0 then -1 else cast(replace(cast(lp.HHParentRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHTypeEST = case lp.HHTypeEST when 0 then -1 else cast(replace(cast(lp.HHTypeEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHTypePSH = case lp.HHTypePSH when 0 then -1 else cast(replace(cast(lp.HHTypePSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHTypeRRH = case lp.HHTypeRRH when 0 then -1 else cast(replace(cast(lp.HHTypeRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHVetEST = case lp.HHVetEST when 0 then -1 else cast(replace(cast(lp.HHVetEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHVetPSH = case lp.HHVetPSH when 0 then -1 else cast(replace(cast(lp.HHVetPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HHVetRRH = case lp.HHVetRRH when 0 then -1 else cast(replace(cast(lp.HHVetRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HoHEST = case lp.HoHEST when 0 then -1 else cast(replace(cast(lp.HoHEST as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HoHPSH = case lp.HoHPSH when 0 then -1 else cast(replace(cast(lp.HoHPSH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.HoHRRH = case lp.HoHRRH when 0 then -1 else cast(replace(cast(lp.HoHRRH as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.PSHAgeMax = case lp.PSHAgeMax when 0 then -1 else cast(replace(cast(lp.PSHAgeMax as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.PSHAgeMin = case lp.PSHAgeMin when 0 then -1 else cast(replace(cast(lp.PSHAgeMin as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.RRHAgeMax = case lp.RRHAgeMax when 0 then -1 else cast(replace(cast(lp.RRHAgeMax as varchar), '0', '') as int) end from tlsa_Person lp
-	update lp set lp.RRHAgeMin = case lp.RRHAgeMin when 0 then -1 else cast(replace(cast(lp.RRHAgeMin as varchar), '0', '') as int) end from tlsa_Person lp
-
+	update lp set lp.AC3PlusEST = case when lp.AC3PlusEST is NULL then -1 else cast(replace(cast(lp.AC3PlusEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AC3PlusPSH = case when lp.AC3PlusPSH is NULL then -1 else cast(replace(cast(lp.AC3PlusPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AC3PlusRRH = case when lp.AC3PlusRRH is NULL then -1 else cast(replace(cast(lp.AC3PlusRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AdultEST = case when lp.AdultEST is NULL then -1 else cast(replace(cast(lp.AdultEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AdultPSH = case when lp.AdultPSH is NULL then -1 else cast(replace(cast(lp.AdultPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AdultRRH = case when lp.AdultRRH is NULL then -1 else cast(replace(cast(lp.AdultRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARAdultEST = case when lp.AHARAdultEST is NULL then -1 else cast(replace(cast(lp.AHARAdultEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARAdultPSH = case when lp.AHARAdultPSH is NULL then -1 else cast(replace(cast(lp.AHARAdultPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARAdultRRH = case when lp.AHARAdultRRH is NULL then -1 else cast(replace(cast(lp.AHARAdultRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHAREST = case when lp.AHAREST is NULL then -1 else cast(replace(cast(lp.AHAREST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARHoHEST = case when lp.AHARHoHEST is NULL then -1 else cast(replace(cast(lp.AHARHoHEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARHoHPSH = case when lp.AHARHoHPSH is NULL then -1 else cast(replace(cast(lp.AHARHoHPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARHoHRRH = case when lp.AHARHoHRRH is NULL then -1 else cast(replace(cast(lp.AHARHoHRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARPSH = case when lp.AHARPSH is NULL then -1 else cast(replace(cast(lp.AHARPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.AHARRRH = case when lp.AHARRRH is NULL then -1 else cast(replace(cast(lp.AHARRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHChronicEST = case when lp.HHChronicEST is NULL then -1 else cast(replace(cast(lp.HHChronicEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHChronicPSH = case when lp.HHChronicPSH is NULL then -1 else cast(replace(cast(lp.HHChronicPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHChronicRRH = case when lp.HHChronicRRH is NULL then -1 else cast(replace(cast(lp.HHChronicRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHDisabilityEST = case when lp.HHDisabilityEST is NULL then -1 else cast(replace(cast(lp.HHDisabilityEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHDisabilityPSH = case when lp.HHDisabilityPSH is NULL then -1 else cast(replace(cast(lp.HHDisabilityPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHDisabilityRRH = case when lp.HHDisabilityRRH is NULL then -1 else cast(replace(cast(lp.HHDisabilityRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHFleeingDVEST = case when lp.HHFleeingDVEST is NULL then -1 else cast(replace(cast(lp.HHFleeingDVEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHFleeingDVPSH = case when lp.HHFleeingDVPSH is NULL then -1 else cast(replace(cast(lp.HHFleeingDVPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHFleeingDVRRH = case when lp.HHFleeingDVRRH is NULL then -1 else cast(replace(cast(lp.HHFleeingDVRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHParentEST = case when lp.HHParentEST is NULL then -1 else cast(replace(cast(lp.HHParentEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHParentPSH = case when lp.HHParentPSH is NULL then -1 else cast(replace(cast(lp.HHParentPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHParentRRH = case when lp.HHParentRRH is NULL then -1 else cast(replace(cast(lp.HHParentRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHTypeEST = case when lp.HHTypeEST is NULL then -1 else cast(replace(cast(lp.HHTypeEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHTypePSH = case when lp.HHTypePSH is NULL then -1 else cast(replace(cast(lp.HHTypePSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHTypeRRH = case when lp.HHTypeRRH is NULL then -1 else cast(replace(cast(lp.HHTypeRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHVetEST = case when lp.HHVetEST is NULL then -1 else cast(replace(cast(lp.HHVetEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHVetPSH = case when lp.HHVetPSH is NULL then -1 else cast(replace(cast(lp.HHVetPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HHVetRRH = case when lp.HHVetRRH is NULL then -1 else cast(replace(cast(lp.HHVetRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HoHEST = case when lp.HoHEST is NULL then -1 else cast(replace(cast(lp.HoHEST as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HoHPSH = case when lp.HoHPSH is NULL then -1 else cast(replace(cast(lp.HoHPSH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.HoHRRH = case when lp.HoHRRH is NULL then -1 else cast(replace(cast(lp.HoHRRH as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.PSHAgeMax = case when lp.PSHAgeMax is NULL then -1 else cast(replace(cast(lp.PSHAgeMax as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.PSHAgeMin = case when lp.PSHAgeMin is NULL then -1 else cast(replace(cast(lp.PSHAgeMin as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.RRHAgeMax = case when lp.RRHAgeMax is NULL then -1 else cast(replace(cast(lp.RRHAgeMax as varchar), '0', '') as int) end from tlsa_Person lp
+	update lp set lp.RRHAgeMin = case when lp.RRHAgeMin is NULL then -1 else cast(replace(cast(lp.RRHAgeMin as varchar), '0', '') as int) end from tlsa_Person lp
 	   	  
 	/*
 		5.14 Adult Age Population Identifiers - LSAPerson
@@ -447,7 +449,7 @@ Date:  16 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 1 
-					and hhid.ProjectType in (1,2,8)
+					and hhid.ProjectType in (0,1,2,8)
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeACEST = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -455,7 +457,7 @@ Date:  16 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 2
-					and hhid.ProjectType in (1,2,8)
+					and hhid.ProjectType in (0,1,2,8)
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeAORRH = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -507,6 +509,7 @@ Date:  16 AUG 2021
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, AHARAdultEST, AHARAdultRRH, AHARAdultPSH
 		, ReportID 
 		)
 	select count(distinct PersonalID)
@@ -518,6 +521,7 @@ Date:  16 AUG 2021
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, AHARAdultEST, AHARAdultRRH, AHARAdultPSH
 		, ReportID 
 	from tlsa_Person
 	group by 
@@ -529,6 +533,7 @@ Date:  16 AUG 2021
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, AHARAdultEST, AHARAdultRRH, AHARAdultPSH
 		, ReportID 
 	
 /*

@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  7_1 to 7_8 LSAExit.sql  
-Date:  18 AUG 2021   
+Date:  19 AUG 2021   
 					
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
@@ -531,7 +531,7 @@ from tlsa_Exit ex
 				else possible.ActiveHHType end = ex.HHType 
 			and possible.ExitDate <= hhid.ExitDate
 	where ex.LastInactive is null 
-		and (possible.ProjectType in (2,3,8,13) or possible.TrackingMethod = 0)
+		and possible.ProjectType in (0,2,3,8,13)
 	union
 	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, bn.DateProvided	
@@ -549,10 +549,9 @@ from tlsa_Exit ex
 	inner join hmis_Services bn on bn.EnrollmentID = possible.EnrollmentID 
 		and bn.DateProvided <= cd.CohortEnd
 		and bn.DateProvided >= possible.EntryDate and bn.DateProvided < possible.ExitDate
-		-- 5/14/2020 correct "DateDeleted = 0" to "DateDeleted is null"
 		and bn.RecordType = 200 and bn.DateDeleted is null
 	where ex.LastInactive is null 
-		and possible.TrackingMethod = 3
+		and possible.ProjectType = 1
 		
 	update ex
 	set ex.LastInactive = coalesce(lastDay.inactive, '9/30/2012')

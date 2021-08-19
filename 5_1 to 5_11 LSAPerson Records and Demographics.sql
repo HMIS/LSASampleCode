@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  5_1 to 5_11 LSAPerson.sql  
-Date:  16 AUG 2021   
+Date:  19 AUG 2021   
 
 	
 	5.1 Identify Active and AHAR HouseholdIDs
@@ -127,7 +127,7 @@ Date:  16 AUG 2021
 			when HoHAdult.stat = 0 then -1 
 			when c.GenderNone in (8,9) then 98
 			when c.Questioning = 1 then 5
-			when c.GenderOther = 1 then 4
+			when c.NoSingleGender = 1 then 4
 			when c.Female = 1 and c.Male = 1 then 4
 			when c.Transgender = 1 then 3
 			when c.Female = 1 then 1
@@ -312,7 +312,7 @@ Date:  16 AUG 2021
 		and ( 
 			
 			(-- for ES/SH/TH, count dates prior to EntryDate
-				chn.ProjectType in (1,2,8) and cal.theDate < chn.EntryDate)
+				chn.ProjectType in (0,1,2,8) and cal.theDate < chn.EntryDate)
 			or (-- for PSH/RRH, dates prior to and after EntryDate are counted for 
 				-- as long as the client remains homeless in the project  
 				chn.ProjectType in (3,13)
@@ -433,17 +433,17 @@ Date:  16 AUG 2021
 		and (hn.DateToStreetESSH > chn.EntryDate 
 				or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
-				or (chn.ProjectType not in (1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+				or (chn.ProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 						and hn.LengthOfStay in (2,3)
 						and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
-				or (chn.ProjectType not in (1,8) and hn.LengthOfStay in (10,11) 
+				or (chn.ProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
 							and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
-				or ((chn.ProjectType in (1,8)
+				or ((chn.ProjectType in (0,1,8)
 					  or hn.LivingSituation in (1,16,18)
-					  or (chn.ProjectType not in (1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+					  or (chn.ProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 							and hn.LengthOfStay in (2,3)
 							and hn.PreviousStreetESSH = 1)
-					  or (chn.ProjectType not in (1,8) and hn.LengthOfStay in (10,11) 
+					  or (chn.ProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
 							and hn.PreviousStreetESSH = 1)
 					)
 					and (

@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  3_3 to 3_6 HMIS Households and Enrollments.sql 
-Date:  16 AUG 2021
+Date:  19 AUG 2021
 
 	3.3 HMIS HouseholdIDs 
 */
@@ -116,6 +116,7 @@ where hoh.DateDeleted is null
 */
 	delete from tlsa_Enrollment
 
+	--all project types except ES night-by-night
 	insert into tlsa_Enrollment 
 		(EnrollmentID, PersonalID, HouseholdID
 		, RelationshipToHoH
@@ -147,7 +148,7 @@ where hoh.DateDeleted is null
 				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= '10/1/2012'
 					and hx.ExitDate > hn.EntryDate)) 
 
-
+	-- ES night-by-night
 	insert into tlsa_Enrollment 
 		(EnrollmentID, PersonalID, HouseholdID
 		, RelationshipToHoH
@@ -177,8 +178,11 @@ where hoh.DateDeleted is null
 		and svc.DateProvided >= nbn.EntryDate 
 		and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		and nbn.RelationshipToHoH in (1,2,3,4,5)
-	group by svc.EnrollmentID
-
+	group by svc.EnrollmentID, nbn.PersonalID, nbn.HouseholdID
+		, nbn.RelationshipToHoH
+		, hhid.ProjectID, hhid.ProjectType
+		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition else null end
+		, nbnx.ExitDate, hhid.ExitDate, rpt.ReportEnd
 	update n 
 	set n.MoveInDate = 	case when hhid.MoveInDate < n.EntryDate then n.EntryDate
 			when hhid.MoveInDate > n.ExitDate then NULL
