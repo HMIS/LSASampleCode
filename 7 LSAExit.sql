@@ -2,8 +2,8 @@
 
 LSA FY2021 Sample Code
 
-Name:  7_1 to 7_8 LSAExit.sql  
-Date:  19 AUG 2021   
+Name:  7 LSAExit.sql  
+Date:  20 AUG 2021   
 					
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods

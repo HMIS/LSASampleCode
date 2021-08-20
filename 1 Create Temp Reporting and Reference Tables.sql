@@ -392,6 +392,8 @@ create table tlsa_Household(
 		, PersonalID varchar(32)
 		, HouseholdID varchar(32)
 		, Step varchar(10) not null)
+	CREATE INDEX [IX_tlsa_Pops_PersonalID_HouseholdID] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] ([PersonalID], [HouseholdID]) INCLUDE ([PopID])
+	CREATE INDEX [IX_tlsa_Pops_Cohort_HoHID_HHType] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] (Cohort, HoHID, HHType) INCLUDE ([PopID])
 
 	if object_id ('ref_Calendar') is not null drop table ref_Calendar
 	create table ref_Calendar (
@@ -1550,195 +1552,44 @@ insert into ref_PopHHTypes (PopID, HHType) values (1279,2)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE INDEX [IX_tlsa_Enrollment_AHAR] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([AHAR]) INCLUDE ([PersonalID], [HouseholdID])
+CREATE INDEX [IX_tlsa_Enrollment_ProjectType_AHAR] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([ProjectType], [AHAR]) INCLUDE ([EnrollmentID], [MoveInDate], [ExitDate])
+CREATE INDEX [IX_tlsa_Enrollment_PersonalID_AHAR] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([PersonalID], [AHAR])
+CREATE INDEX [IX_tlsa_Enrollment_ProjectType_Active_MoveInDate] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([ProjectType], [Active],[MoveInDate]) INCLUDE ([EnrollmentID], [EntryDate], [ExitDate])
+CREATE INDEX [IX_tlsa_HHID_HoHID_ProjectType_ActiveHHType_Active] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([HoHID], [ProjectType], [ActiveHHType], [Active])
+CREATE INDEX [IX_tlsa_HHID_AHAR_HHParent_HHAdultAge] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([AHAR], [HHParent],[HHAdultAge]) INCLUDE ([HouseholdID])
+CREATE INDEX [IX_tlsa_HHID_AHAR_HHVet_HHAdultAge] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([AHAR], [HHVet],[HHAdultAge]) INCLUDE ([HouseholdID])
+CREATE INDEX [IX_tlsa_HHID_Active] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([Active]) INCLUDE ([HoHID], [EnrollmentID], [ActiveHHType], [ExitDest])
+CREATE INDEX [IX_tlsa_Enrollment_HouseholdID] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([HouseholdID]) INCLUDE ([EnrollmentID], [EntryDate], [ExitDate])
+CREATE INDEX [IX_tlsa_HHID_HoHID_ActiveHHType_Active_ProjectType] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([HoHID], [ActiveHHType], [Active],[ProjectType])
+CREATE INDEX [IX_tlsa_HHID_ActiveHHType_AHAR_HHParent_HHAdultAge] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ActiveHHType], [AHAR], [HHParent],[HHAdultAge]) INCLUDE ([HouseholdID], [HoHID])
+CREATE INDEX [IX_tlsa_HHID_ProjectType_Active_MoveInDate] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ProjectType], [Active],[MoveInDate]) INCLUDE ([HouseholdID], [EntryDate], [ExitDate])
+CREATE INDEX [IX_tlsa_Enrollment_PersonalID_EntryDate_ExitDate] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([PersonalID],[EntryDate], [ExitDate]) INCLUDE ([EnrollmentID])
+CREATE INDEX [IX_tlsa_Enrollment_EntryDate] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([EntryDate]) INCLUDE ([EnrollmentID], [PersonalID], [ExitDate], [EntryAge])
+CREATE INDEX [IX_tlsa_Enrollment_AHAR_ActiveAge] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([AHAR],[ActiveAge]) INCLUDE ([PersonalID])
+CREATE INDEX [IX_tlsa_HHID_HoHID_ProjectType_ActiveHHType_EntryDate] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([HoHID], [ProjectType], [ActiveHHType],[EntryDate]) INCLUDE ([ExitDate])
+CREATE INDEX [IX_tlsa_HHID_ExitCohort] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ExitCohort]) INCLUDE ([HoHID], [EntryDate], [ActiveHHType], [Exit1HHType], [Exit2HHType])
+CREATE INDEX [IX_tlsa_Enrollment_PersonalID] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([PersonalID]) INCLUDE ([EnrollmentID])
+CREATE INDEX [IX_tlsa_Enrollment_Active_ProjectType] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([Active],[ProjectType]) INCLUDE ([EnrollmentID], [EntryDate], [ExitDate])
+CREATE INDEX [IX_tlsa_HHID_Active_HHAdultAge] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([Active], [HHAdultAge]) INCLUDE ([HoHID], [ActiveHHType])
+
+
+CREATE INDEX [IX_lsa_Calculated_ReportRow] ON [LSA2021SampleDB].[dbo].[lsa_Calculated] ([ReportRow]) INCLUDE ([Value], [Cohort], [Universe], [HHType], [Population], [SystemPath], [ProjectID], [ReportID], [Step])
+CREATE INDEX [IX_sys_Time_sysStatus] ON [LSA2021SampleDB].[dbo].[sys_Time] ([sysStatus]) INCLUDE ([HoHID], [HHType], [sysDate])
+CREATE INDEX [IX_tlsa_Enrollment_ProjectType_CH] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([ProjectType], [CH]) INCLUDE ([PersonalID], [HouseholdID], [EntryDate], [ExitDate])
+CREATE INDEX [IX_tlsa_Enrollment_CH_ProjectType] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([CH],[ProjectType]) INCLUDE ([PersonalID], [EntryDate], [MoveInDate], [ExitDate])
+CREATE INDEX [IX_tlsa_Enrollment_CH] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([CH]) INCLUDE ([EnrollmentID], [PersonalID], [ProjectType], [EntryDate])
+CREATE INDEX [IX_tlsa_Enrollment_EntryAge] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([EntryAge]) INCLUDE ([PersonalID])
+CREATE INDEX [IX_tlsa_Enrollment_ProjectType] ON [LSA2021SampleDB].[dbo].[tlsa_Enrollment] ([ProjectType]) INCLUDE ([PersonalID], [EntryDate], [MoveInDate], [ExitDate])
+CREATE INDEX [IX_tlsa_HHID_EnrollmentID] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([EnrollmentID]) INCLUDE ([ExitDate], [ExitDest])
+CREATE INDEX [IX_tlsa_HHID_ProjectType_Active_EntryDate] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ProjectType], [Active],[EntryDate]) INCLUDE ([HoHID], [ExitDate], [ActiveHHType])
+CREATE INDEX [IX_tlsa_HHID_ProjectType_Active] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ProjectType], [Active]) INCLUDE ([HoHID], [EntryDate], [ExitDate], [ActiveHHType])
+
+CREATE INDEX [IX_tlsa_HHID_ProjectType] ON [LSA2021SampleDB].[dbo].[tlsa_HHID] ([ProjectType]) INCLUDE ([HoHID], [EnrollmentID], [EntryDate], [ExitDate], [ActiveHHType], [Exit1HHType], [Exit2HHType])
+
+CREATE INDEX [IX_tlsa_Pops_PopID] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] ([PopID]) INCLUDE ([Cohort], [HoHID], [HHType])
+CREATE INDEX [IX_tlsa_Pops_HoHID] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] ([HoHID]) INCLUDE ([PopID], [HHType])
+CREATE INDEX [IX_tlsa_Pops_HoHID_HHType] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] ([HoHID], [HHType]) INCLUDE ([PopID])
+
+	CREATE INDEX [IX_tlsa_Pops_PersonalID_PopID] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] ([PersonalID], PopID) 
+	CREATE INDEX [IX_tlsa_Pops_HouseholdID_PopID] ON [LSA2021SampleDB].[dbo].[tlsa_Pops] (HouseholdID, PopID) 

@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  10 LSACalculated Data Quality.sql
-Date:  19 AUG 2021
+Date:  20 AUG 2021
 
 
 	10.2 Get Counts of Enrollments Active after Operating End Date by ProjectID

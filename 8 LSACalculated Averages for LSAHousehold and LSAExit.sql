@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  8_3 to 8_11 LSACalculated Averages .sql  
-Date:  19 AUG 2021   
+Date:  20 AUG 2021   
 	
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
@@ -236,7 +236,7 @@ Populates and references:
 	inner join tlsa_Pops pop1 on (pop1.PopID = 0 or (pop1.HHType = hh.HHType and pop1.HoHID = hh.HoHID)) and pop1.Cohort = 1
 	inner join tlsa_Pops pop2 on (pop2.PopID = 0 or (pop2.HHType = hh.HHType and pop2.HoHID = hh.HoHID)) and pop1.Cohort = 1
 	inner join ref_RowPopulations rp on rp.Pop1 = pop1.PopID and rp.Pop2 = pop2.PopID 
-	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID 
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID and (ph.HHType = hh.HHType or ph.HHType = 0)
 	inner join ref_RowValues rv on rv.RowID between rp.RowMin and rp.RowMax 
 			and (rp.ByPath is null or rv.SystemPath = hh.SystemPath)
 	where rv.RowID between 1 and 16
@@ -281,7 +281,7 @@ Populates and references:
 	inner join tlsa_Pops pop1 on (pop1.PopID = 0 or (pop1.HHType = ex.HHType and pop1.HoHID = ex.HoHID and pop1.Cohort = ex.Cohort)) 
 	inner join tlsa_Pops pop2 on (pop2.PopID = 0 or (pop2.HHType = ex.HHType and pop2.HoHID = ex.HoHID and pop2.Cohort = ex.Cohort)) 
 	inner join ref_RowPopulations rp on rp.Pop1 = pop1.PopID and rp.Pop2 = pop2.PopID 
-	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID 
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID and ph.HHType = 0 or ph.HHType = ex.HHType
 	inner join ref_RowValues rv on rv.RowID between rp.RowMin and rp.RowMax 
 			and (rv.SystemPath = -1 or rv.SystemPath = ex.SystemPath)
 			and rv.Cohort = ex.Cohort 
