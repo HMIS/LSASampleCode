@@ -21,226 +21,195 @@ Populates and references:
 
 	delete from tlsa_Pops
 
-	insert into tlsa_Pops (PopID)
-	values (0)
+	insert into tlsa_Pops (PopID, Step)
+	values (0, '8.3.1')
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 10, 1, hh.HoHID, hh.HHType 
-	from tlsa_Household hh 
-	where hh.HHAdultAge = 18 and hh.HHType = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 10, 1, hh.HoHID, hh.HHType, '8.3.2'
+	from tlsa_Household hh where hh.HHAdultAge = 18 and hh.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 11, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHAdultAge = 24 and hh.HHType = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 11, 1, hh.HoHID, hh.HHType, '8.3.3'
+	from tlsa_Household hh where hh.HHAdultAge = 24 and hh.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 12, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHType = 2 and hh.HHParent = 1 and HHAdultAge in (18,24)
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 12, 1, hh.HoHID, hh.HHType, '8.3.4'
+	from tlsa_Household hh where hh.HHType = 2 and hh.HHParent = 1 and HHAdultAge in (18,24)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 13, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHVet = 1 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 13, 1, hh.HoHID, hh.HHType, '8.3.5'
+	from tlsa_Household hh where hh.HHVet = 1 
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 14, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHVet = 0 and hh.HHAdultAge in (25, 55) and hh.HHType = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 14, 1, hh.HoHID, hh.HHType, '8.3.6'
+	from tlsa_Household hh where hh.HHVet = 0 and hh.HHAdultAge in (25, 55) and hh.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 15, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHChronic = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 15, 1, hh.HoHID, hh.HHType, '8.3.7'
+	from tlsa_Household hh where hh.HHChronic = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 16, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHChronic in (1,2)
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 16, 1, hh.HoHID, hh.HHType, '8.3.8'
+	from tlsa_Household hh where hh.HHChronic in (1,2)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 17, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHChronic in (0,3)
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 17, 1, hh.HoHID, hh.HHType, '8.3.9'
+	from tlsa_Household hh where hh.HHChronic in (0,3)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 18, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHDisability = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 18, 1, hh.HoHID, hh.HHType, '8.3.10'
+	from tlsa_Household hh where hh.HHDisability = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 19, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHFleeingDV = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 19, 1, hh.HoHID, hh.HHType, '8.3.11'
+	from tlsa_Household hh where hh.HHFleeingDV = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 20, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.Stat = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 20, 1, hh.HoHID, hh.HHType, '8.3.12'
+	from tlsa_Household hh where hh.Stat = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 21, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.Stat = 2
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 21, 1, hh.HoHID, hh.HHType, '8.3.13'
+	from tlsa_Household hh where hh.Stat = 2
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 22, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.PSHMoveIn = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 22, 1, hh.HoHID, hh.HHType, '8.3.14'
+	from tlsa_Household hh where hh.PSHMoveIn = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 23, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 5 and hh.HoHEthnicity <> 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select case when hh.HoHRace = 5 and hh.HoHEthnicity <> 1 then 23
+			when hh.HoHRace = 5 and hh.HoHEthnicity = 1 then 24
+			when hh.HoHRace = 3 and hh.HoHEthnicity <> 1 then 25
+			when hh.HoHRace = 3 and hh.HoHEthnicity = 1 then 26
+			when hh.HoHRace = 2 then 27
+			when hh.HoHRace = 1 and hh.HoHEthnicity <> 1 then 28
+			when hh.HoHRace = 1 and hh.HoHEthnicity = 1 then 29
+			when hh.HoHRace = 4 then 30
+			else 31 end
+		, 1, hh.HoHID, hh.HHType, '8.3.15'
+	from tlsa_Household hh where hh.HoHRace not in (8,9,99)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 24, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 5 and HoHEthnicity = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 32, 1, hh.HoHID, hh.HHType, '8.3.16'
+	from tlsa_Household hh where hh.HoHEthnicity = 0
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 25, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 3 and HoHEthnicity <> 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 33, 1, hh.HoHID, hh.HHType, '8.3.17'
+	from tlsa_Household hh where hh.HoHEthnicity = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 26, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 3 and HoHEthnicity = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 34, 1, hh.HoHID, hh.HHType, '8.3.18'
+	from tlsa_Household hh where hh.HHAdultAge = 55 and hh.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 27, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 2
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 35, 1, hh.HoHID, hh.HHType, '8.3.19'
+	from tlsa_Household hh where hh.HHParent = 1 and hh.HHType = 3
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 28, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 1 and HoHEthnicity <> 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 36, 1, hh.HoHID, hh.HHType, '8.3.20'
+	from tlsa_Household hh where hh.HHChild = 3 and hh.HHType = 2
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 29, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 1 and HoHEthnicity = 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 30, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace = 4
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 31, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHRace > 5 and HoHRace not in (98,99)
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 32, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHEthnicity = 0
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 33, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HoHEthnicity = 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 34, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHAdultAge = 55 and hh.HHType = 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 35, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHParent = 1 and hh.HHType = 3
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 36, 1, hh.HoHID, hh.HHType from tlsa_Household hh 
-	where hh.HHChild = 3 and hh.HHType = 2
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 10, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 10, ex.Cohort, ex.HoHID, ex.HHType, '8.3.21'
+	from tlsa_Exit ex
 	where ex.HHAdultAge = 18 and ex.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 11, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 11, ex.Cohort, ex.HoHID, ex.HHType, '8.3.22'
+	from tlsa_Exit ex
 	where ex.HHAdultAge = 24 and ex.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 12, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 12, ex.Cohort, ex.HoHID, ex.HHType, '8.3.23'
+	from tlsa_Exit ex
 	where ex.HHType = 2 and ex.HHParent = 1 and HHAdultAge in (18,24)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 13, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 13, ex.Cohort, ex.HoHID, ex.HHType, '8.3.24'
+	from tlsa_Exit ex
 	where ex.HHVet = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 14, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 14, ex.Cohort, ex.HoHID, ex.HHType, '8.3.25'
+	from tlsa_Exit ex
 	where ex.HHVet = 0 and ex.HHAdultAge in (25, 55) and ex.HHType = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 15, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 15, ex.Cohort, ex.HoHID, ex.HHType, '8.3.26'
+	from tlsa_Exit ex
 	where ex.HHChronic = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 16, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 16, ex.Cohort, ex.HoHID, ex.HHType, '8.3.27'
+	from tlsa_Exit ex
 	where ex.HHChronic in (1,2)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 17, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 17, ex.Cohort, ex.HoHID, ex.HHType, '8.3.28'
+	from tlsa_Exit ex
 	where ex.HHChronic in (0,3)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 18, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 18, ex.Cohort, ex.HoHID, ex.HHType, '8.3.29'
+	from tlsa_Exit ex
 	where ex.HHDisability = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 19, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 19, ex.Cohort, ex.HoHID, ex.HHType, '8.3.30'
+	from tlsa_Exit ex
 	where ex.HHFleeingDV = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 20, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 20, ex.Cohort, ex.HoHID, ex.HHType, '8.3.31'
+	from tlsa_Exit ex
 	where ex.Stat = 1
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 21, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 21, ex.Cohort, ex.HoHID, ex.HHType, '8.3.32'
+	from tlsa_Exit ex
 	where ex.Stat = 2
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 23, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 5 and ex.HoHEthnicity <> 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select case when ex.HoHRace = 5 and ex.HoHEthnicity <> 1 then 23
+			when ex.HoHRace = 5 and ex.HoHEthnicity = 1 then 24
+			when ex.HoHRace = 3 and ex.HoHEthnicity <> 1 then 25
+			when ex.HoHRace = 3 and ex.HoHEthnicity = 1 then 26
+			when ex.HoHRace = 2 then 27
+			when ex.HoHRace = 1 and ex.HoHEthnicity <> 1 then 28
+			when ex.HoHRace = 1 and ex.HoHEthnicity = 1 then 29
+			when ex.HoHRace = 4 then 30
+			else 31 end
+		, ex.Cohort, ex.HoHID, ex.HHType, '8.3.33'
+	from tlsa_Exit ex
+	where ex.HoHRace not in (8,9,99)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 24, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 5 and HoHEthnicity = 1
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select case when ex.HoHEthnicity = 0 then 32
+			else 33 end
+		, ex.Cohort, ex.HoHID, ex.HHType, '8.3.34'
+	from tlsa_Exit ex
+	where ex.HoHEthnicity in (1,0)
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 25, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 3 and HoHEthnicity <> 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 26, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 3 and HoHEthnicity = 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 27, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 2
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 28, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 1 and HoHEthnicity <> 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 29, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 1 and HoHEthnicity = 1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 30, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace = 4
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 31, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHRace > 5 and HoHRace not in (98,99)
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 32, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHEthnicity = 0
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 33, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
-	where ex.HoHEthnicity =1
-
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 34, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 34, ex.Cohort, ex.HoHID, ex.HHType, '8.3.35'
+	from tlsa_Exit ex
 	where ex.HHAdultAge = 55 and ex.HHType = 1 
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 35, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 35, ex.Cohort, ex.HoHID, ex.HHType, '8.3.36'
+	from tlsa_Exit ex
 	where ex.HHParent = 1 and ex.HHType = 3
 
-	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType) 
-	select 36, ex.Cohort, ex.HoHID, ex.HHType from tlsa_Exit ex 
+	insert into tlsa_Pops (PopID, Cohort, HoHID, HHType, Step)
+	select 36, ex.Cohort, ex.HoHID, ex.HHType, '8.3.37'
+	from tlsa_Exit ex
 	where ex.AC3Plus = 1 and ex.HHType = 2
 
-
+/*
+	8.4-8.7 Average Days from LSAHousehold 
+ */
 	delete from lsa_Calculated
 
--- Average Days from LSAHousehold (Specs sections 8.4-8.7)
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
 	select case rv.RowID 
@@ -262,12 +231,12 @@ Populates and references:
 		else avg(hh.RRHHousedDays) end,
 		rv.Cohort, rv.Universe, ph.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
-		hh.ReportID, '8.1'
+		hh.ReportID, '8.4-8.7'
 	from tlsa_household hh 
 	inner join tlsa_Pops pop1 on (pop1.PopID = 0 or (pop1.HHType = hh.HHType and pop1.HoHID = hh.HoHID)) and pop1.Cohort = 1
 	inner join tlsa_Pops pop2 on (pop2.PopID = 0 or (pop2.HHType = hh.HHType and pop2.HoHID = hh.HoHID)) and pop1.Cohort = 1
 	inner join ref_RowPopulations rp on rp.Pop1 = pop1.PopID and rp.Pop2 = pop2.PopID 
-	inner join ref_PopHHTypes ph on ph.Pop1 = rp.Pop1 and ph.Pop2 = rp.Pop2 
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID 
 	inner join ref_RowValues rv on rv.RowID between rp.RowMin and rp.RowMax 
 			and (rp.ByPath is null or rv.SystemPath = hh.SystemPath)
 	where rv.RowID between 1 and 16
@@ -299,18 +268,20 @@ Populates and references:
 		rp.PopID, rv.SystemPath, rv.RowID, 
 		hh.ReportID
 
--- Average Days from LSAExit (specs sections 8.8-8.11)
+/*
+	8.8-8.11 Average Days from LSAExit 
+*/
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
 	select avg(ex.ReturnTime),
 		rv.Cohort, rv.Universe, ex.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
-		ex.ReportID, '8.2'
+		ex.ReportID, '8.8-8.11'
 	from tlsa_Exit ex 
 	inner join tlsa_Pops pop1 on (pop1.PopID = 0 or (pop1.HHType = ex.HHType and pop1.HoHID = ex.HoHID and pop1.Cohort = ex.Cohort)) 
 	inner join tlsa_Pops pop2 on (pop2.PopID = 0 or (pop2.HHType = ex.HHType and pop2.HoHID = ex.HoHID and pop2.Cohort = ex.Cohort)) 
 	inner join ref_RowPopulations rp on rp.Pop1 = pop1.PopID and rp.Pop2 = pop2.PopID 
-	inner join ref_PopHHTypes ph on ph.Pop1 = rp.Pop1 and ph.Pop2 = rp.Pop2 
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID 
 	inner join ref_RowValues rv on rv.RowID between rp.RowMin and rp.RowMax 
 			and (rv.SystemPath = -1 or rv.SystemPath = ex.SystemPath)
 			and rv.Cohort = ex.Cohort 
