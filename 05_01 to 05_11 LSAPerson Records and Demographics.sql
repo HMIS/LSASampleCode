@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  5_1 to 5_11 LSAPerson.sql  
-Date:  19 AUG 2021   
+Name:  05_01 to 05_11 LSAPerson.sql  
+Date:  26 AUG 2021   
 
 	
 	5.1 Identify Active and AHAR HouseholdIDs
