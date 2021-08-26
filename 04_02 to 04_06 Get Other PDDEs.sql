@@ -1,6 +1,6 @@
 /*
-Name:  4_2 to 4_6 Get Other PDDEs.sql
-Date:	16 AUG 2021 
+Name:  04_02 to 04_06 Get Other PDDEs.sql
+Date:	26 AUG 2021 
 
 
 	4.2 Get Organization Records for Export
