@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  1 Create Temp Reporting and Reference Tables.sql
-Date:  19 AUG 2021
+Name:  01 Temp Reporting and Reference Tables.sql
+Date:  26 AUG 2021
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
