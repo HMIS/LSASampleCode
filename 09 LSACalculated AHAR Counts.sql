@@ -2,8 +2,9 @@
 
 LSA FY2021 Sample Code
 
-Name:  9 LSACalculated AHAR Counts .sql  
-Date:  20 AUG 2021   
+Name:  09 LSACalculated AHAR Counts .sql  
+Date:  26 AUG 2021   
+
 	
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
