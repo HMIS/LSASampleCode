@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  2 Create Output Tables.sql 
-Date:  16 AUG 2021
+Name:  02 LSA Output Tables.sql 
+Date:  26 AUG 2021
  
 
 There are some deliberate differences from data typing and nullability as defined by 
