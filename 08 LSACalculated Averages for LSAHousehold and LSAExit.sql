@@ -2,8 +2,8 @@
 
 LSA FY2021 Sample Code
 
-Name:  8_3 to 8_11 LSACalculated Averages .sql  
-Date:  20 AUG 2021   
+Name:  08 LSACalculated Averages .sql  
+Date:  26 AUG 2021   
 	
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
