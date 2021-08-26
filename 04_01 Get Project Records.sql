@@ -1,7 +1,7 @@
 /*
-Name:  4_1 Get Project Records.sql
+Name:  04_01 Get Project Records.sql
 
-Date:	16 AUG 2021 
+Date:	26 AUG 2021 
 
 	4.1 Get Project Records for Export
 		Export records for continuum ES (1), SH (8), TH (2), RRH (13), PSH (3), and OPH (9 or 10)
