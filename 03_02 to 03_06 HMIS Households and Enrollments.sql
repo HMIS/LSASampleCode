@@ -1,7 +1,7 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  03 Section 2-6 HMIS Households and Enrollments.sql 
+Name:  03_02 to 03_06 HMIS Households and Enrollments.sql 
 Date:  19 AUG 2021
 
 
