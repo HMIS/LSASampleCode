@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-	Name:	3_1 LSA Parameters and Metadata.sql 
-	Date:	19 AUG 2021
+	Name:	03 Section 1 LSA Parameters and Metadata.sql 
+	Date:	26 AUG 2021
 
 	The hard-coded values here must be replaced with code to accept actual user-entered parameters 
 	and info specific to the HMIS application.
