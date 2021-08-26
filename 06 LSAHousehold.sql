@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  6 LSAHousehold.sql  
-Date:  20 AUG 2021 
+Name:  06 LSAHousehold.sql  
+Date:  26 AUG 2021 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
