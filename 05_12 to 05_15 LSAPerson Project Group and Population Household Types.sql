@@ -1,8 +1,8 @@
 /*
 LSA FY2021 Sample Code
 
-Name:  5_12 to 5_15 LSAPerson Project Group and Population Household Types.sql  
-Date:  19 AUG 2021   
+Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
+Date:  26 AUG 2021   
 
 	
 	5.12 Set Population Identifiers for Active HouseholdIDs
