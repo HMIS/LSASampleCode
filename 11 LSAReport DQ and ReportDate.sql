@@ -2,16 +2,18 @@
 LSA FY2021 Sample Code
 
 Name: 11 LSAReport DQ and ReportDate 
-Date: 20 AUG 2021
+Date: 02 SEP 2021
 
 	11.1 Get Relevant Enrollments for Data Quality Checks
 */
 
 delete from dq_Enrollment
 insert into dq_Enrollment (EnrollmentID, PersonalID, HouseholdID, RelationshipToHoH
-	, ProjectType, EntryDate, MoveInDate, ExitDate, Status1, Status3, SSNValid, Step)
+	, LSAProjectType, EntryDate, MoveInDate, ExitDate, Status1, Status3, SSNValid, Step)
 select distinct n.EnrollmentID, n.PersonalID, n.HouseholdID, n.RelationshipToHoH
-	, p.ProjectType, n.EntryDate, hhinfo.MoveInDate, ExitDate
+	, case when p.ProjectType <> 1 then p.ProjectType
+		when p.TrackingMethod = 0 then 0 
+		else p.ProjectType end, n.EntryDate, hhinfo.MoveInDate, ExitDate
 	, case when x.ExitDate < cd1.CohortStart then null
 		when c.DOBDataQuality not in (1,2)
 				or c.DOBDataQuality is null 
@@ -127,14 +129,14 @@ update rpt
 			inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
 			where n.Status1 is not null and n.RelationshipToHoH = 1
-				and n.ProjectType in (3,13)
+				and n.LSAProjectType in (3,13)
 				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34))
 	,	HoHPermToPH3 = (select count(distinct n.EnrollmentID)
 			from dq_Enrollment n
 			inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null 
 			where n.RelationshipToHoH = 1
-				and n.ProjectType in (3,13)
+				and n.LSAProjectType in (3,13)
 				and x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34))
 	,   NoCoC = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
@@ -284,7 +286,7 @@ update rpt
 				-- ...and may not be null if...
 				or (hn.DateToStreetESSH is null 
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -303,7 +305,7 @@ update rpt
 				-- ...and may not be null if...
 				or (hn.DateToStreetESSH is null 
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -321,7 +323,7 @@ update rpt
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
 					or hn.TimesHomelessPastThreeYears is null)
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -339,7 +341,7 @@ update rpt
 				and (hn.TimesHomelessPastThreeYears not between 1 and 4  
 					or hn.TimesHomelessPastThreeYears is null)
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -357,7 +359,7 @@ update rpt
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
 				or hn.MonthsHomelessPastThreeYears is null)
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -375,7 +377,7 @@ update rpt
 				and (hn.MonthsHomelessPastThreeYears not between 101 and 113 
 				or hn.MonthsHomelessPastThreeYears is null)
 				-- ...ProjectType is ES/SH...
-				and (n.ProjectType in (1,8)
+				and (n.LSAProjectType in (1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
 						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
@@ -440,7 +442,7 @@ update rpt
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and n.ExitDate is not null and x.DateDeleted is null 
 			where n.Status1 is not null and n.RelationshipToHoH = 1
-				and n.ProjectType in (3,13)
+				and n.LSAProjectType in (3,13)
 				and ((n.MoveInDate < n.EntryDate or n.MoveInDate > n.ExitDate)
 					or (x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34) 
 						and n.MoveInDate is null)))
@@ -450,7 +452,7 @@ update rpt
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and n.ExitDate is not null and x.DateDeleted is null 
 			where n.RelationshipToHoH = 1
-				and n.ProjectType in (3,13)
+				and n.LSAProjectType in (3,13)
 				and ((n.MoveInDate < n.EntryDate or n.MoveInDate > n.ExitDate)
 					or (x.Destination in (3,31,19,20,21,26,28,10,11,22,23,33,34) 
 						and n.MoveInDate is null)))

@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
-Date:  26 AUG 2021   
+Date:  02 SEP 2021   
 
 	
 	5.12 Set Population Identifiers for Active HouseholdIDs
@@ -96,7 +96,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)) 
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)) 
 		, lp.HoHEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -104,7 +104,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and n.RelationshipToHoH = 1) 
 		, lp.AdultEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -113,7 +113,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
 		, lp.AHAREST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -122,7 +122,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (0,1,2,8)) 
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType in (0,1,2,8)) 
 		, lp.AHARHoHEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -130,7 +130,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR= 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AHAR= 1 and n.LSAProjectType in (0,1,2,8)
 					and n.RelationshipToHoH = 1) 
 		, lp.AHARAdultEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -139,7 +139,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -148,7 +148,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.HHChronic = 1)
 		, lp.HHVetEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -157,7 +157,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.HHVet = 1)
 		, lp.HHDisabilityEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -166,7 +166,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.HHDisability = 1)
 		, lp.HHFleeingDVEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -175,7 +175,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.HHFleeingDV = 1)
 		, lp.HHParentEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -184,12 +184,12 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.HHParent = 1)
 		, lp.AC3PlusEST = (select sum(distinct case when hhid.AC3Plus = 1 then 1 else 0 end)
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and hhid.AC3Plus = 1)
 		, lp.HHTypeRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -198,7 +198,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13) 
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13) 
 		, lp.HoHRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -206,7 +206,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and n.RelationshipToHoH = 1) 
 		, lp.AdultRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -215,7 +215,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and n.ActiveAge between 18 and 65) 
 		, lp.AHARRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -224,7 +224,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 13) 
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13) 
 		, lp.AHARHoHRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -232,7 +232,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13
 					and n.RelationshipToHoH = 1) 
 		, lp.AHARAdultRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -241,7 +241,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -250,7 +250,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.HHChronic = 1)
 		, lp.HHVetRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -259,7 +259,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.HHVet = 1)
 		, lp.HHDisabilityRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -268,7 +268,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.HHDisability = 1)
 		, lp.HHFleeingDVRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -277,7 +277,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.HHFleeingDV = 1)
 		, lp.HHParentRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -286,12 +286,12 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.HHParent = 1)
 		, lp.AC3PlusRRH = (select sum(distinct case when hhid.AC3Plus = 1 then 1 else 0 end)
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and hhid.AC3Plus = 1)
 		, lp.HHTypePSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -300,7 +300,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3) 
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3) 
 		, lp.HoHPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -308,7 +308,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and n.RelationshipToHoH = 1) 
 		, lp.AdultPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -317,7 +317,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and n.ActiveAge between 18 and 65) 
 		, lp.AHARPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -326,7 +326,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 3) 
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3) 
 		, lp.AHARHoHPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
@@ -334,7 +334,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3
 					and n.RelationshipToHoH = 1) 
 		, lp.AHARAdultPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -343,7 +343,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -352,7 +352,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.HHChronic = 1)
 		, lp.HHVetPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -361,7 +361,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.HHVet = 1)
 		, lp.HHDisabilityPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -370,7 +370,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.HHDisability = 1)
 		, lp.HHFleeingDVPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -379,7 +379,7 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.HHFleeingDV = 1)
 		, lp.HHParentPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -388,12 +388,12 @@ Date:  26 AUG 2021
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.HHParent = 1)
 		, lp.AC3PlusPSH = (select sum(distinct case when hhid.AC3Plus = 1 then 1 else 0 end)
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.ProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and hhid.AC3Plus = 1)
 		, lp.Step = '5.13'
 	from tlsa_Person lp
@@ -449,7 +449,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 1 
-					and hhid.ProjectType in (0,1,2,8)
+					and hhid.LSAProjectType in (0,1,2,8)
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeACEST = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -457,7 +457,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 2
-					and hhid.ProjectType in (0,1,2,8)
+					and hhid.LSAProjectType in (0,1,2,8)
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeAORRH = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -465,7 +465,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 1 
-					and hhid.ProjectType = 13
+					and hhid.LSAProjectType = 13
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeACRRH = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -473,7 +473,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 2
-					and hhid.ProjectType = 13
+					and hhid.LSAProjectType = 13
 				where n.PersonalID = lp.PersonalID
 					and n.Active = 1), -1)
 		, lp.HHAdultAgeAOPSH = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
@@ -482,7 +482,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 1 
-					and hhid.ProjectType = 3
+					and hhid.LSAProjectType = 3
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.HHAdultAgeACPSH = coalesce((select case when min(hhid.HHAdultAge) between 18 and 24
 					then min(hhid.HHAdultAge) 
@@ -490,7 +490,7 @@ Date:  26 AUG 2021
 				from tlsa_Enrollment n 
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 					and hhid.HHAdultAge between 18 and 55 and hhid.ActiveHHType = 2
-					and hhid.ProjectType = 3
+					and hhid.LSAProjectType = 3
 				where n.PersonalID = lp.PersonalID and n.Active = 1), -1)
 		, lp.Step = '5.14'
 	from tlsa_Person lp

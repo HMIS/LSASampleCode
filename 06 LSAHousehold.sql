@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  06 LSAHousehold.sql  
-Date:  26 AUG 2021 
+Date:  02 SEP 2021 
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -115,7 +115,7 @@ Date:  26 AUG 2021
 			, min(case when hhid.ExitDate is null then 1 else 2 end) as xStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
-		where hhid.Active = 1 and hhid.ProjectType in (1,2,8)
+		where hhid.Active = 1 and hhid.LSAProjectType in (1,2,8)
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 
@@ -130,7 +130,7 @@ Date:  26 AUG 2021
 			, min(case when hhid.ExitDate is null then 1 else 2 end) as xStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
-		where hhid.Active = 1 and hhid.ProjectType = 13
+		where hhid.Active = 1 and hhid.LSAProjectType = 13
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 
@@ -145,7 +145,7 @@ Date:  26 AUG 2021
 			, min(case when hhid.ExitDate is null then 1 else 2 end) as xStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
-		where hhid.Active = 1 and hhid.ProjectType = 3
+		where hhid.Active = 1 and hhid.LSAProjectType = 3
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 	       
@@ -164,7 +164,7 @@ Date:  26 AUG 2021
 			, min(case when hhid.MoveInDate >= rpt.ReportStart then 1 else 2 end) as MoveInStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
-		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.ProjectType = 13
+		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.LSAProjectType = 13
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 
@@ -179,7 +179,7 @@ Date:  26 AUG 2021
 			, min(case when hhid.MoveInDate >= rpt.ReportStart then 1 else 2 end) as MoveInStat
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
-		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.ProjectType = 3
+		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.LSAProjectType = 3
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 
@@ -196,7 +196,7 @@ Date:  26 AUG 2021
 				from tlsa_HHID hhid
 				inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 				inner join lsa_ProjectCoC coc on coc.ProjectID = hhid.ProjectID 
-				where hhid.Active = 1 and hhid.ProjectType in (1,2,8) 
+				where hhid.Active = 1 and hhid.LSAProjectType in (1,2,8) 
 					and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				order by case when hhid.ExitDate is null then rpt.ReportEnd else hhid.ExitDate end desc
 					, hhid.EntryDate desc)
@@ -211,7 +211,7 @@ Date:  26 AUG 2021
 				from tlsa_HHID hhid
 				inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 				inner join lsa_ProjectCoC coc on coc.ProjectID = hhid.ProjectID 
-				where hhid.Active = 1 and hhid.ProjectType = 13 
+				where hhid.Active = 1 and hhid.LSAProjectType = 13 
 					and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				order by case when hhid.ExitDate is null then rpt.ReportEnd else hhid.ExitDate end desc
 					, hhid.EntryDate desc)
@@ -226,7 +226,7 @@ Date:  26 AUG 2021
 				from tlsa_HHID hhid
 				inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 				inner join lsa_ProjectCoC coc on coc.ProjectID = hhid.ProjectID 
-				where hhid.Active = 1 and hhid.ProjectType = 3 
+				where hhid.Active = 1 and hhid.LSAProjectType = 3 
 					and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				order by case when hhid.ExitDate is null then rpt.ReportEnd else hhid.ExitDate end desc
 					, hhid.EntryDate desc)
@@ -268,7 +268,7 @@ Date:  26 AUG 2021
 		or hn.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType in (1,2,8) 
+			 where hhid.LSAProjectType in (1,2,8) 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.EntryDate asc)
@@ -302,7 +302,7 @@ Date:  26 AUG 2021
 		or hn.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType = 13 
+			 where hhid.LSAProjectType = 13 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.EntryDate asc)
@@ -336,7 +336,7 @@ Date:  26 AUG 2021
 		or hn.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType = 3 
+			 where hhid.LSAProjectType = 3 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.EntryDate asc) 
@@ -358,7 +358,7 @@ Date:  26 AUG 2021
 		or hhid.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType in (1,2,8) 
+			 where hhid.LSAProjectType in (1,2,8) 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.ExitDate desc)
@@ -375,7 +375,7 @@ Date:  26 AUG 2021
 		or hhid.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType = 13 
+			 where hhid.LSAProjectType = 13 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.ExitDate desc)
@@ -392,7 +392,7 @@ Date:  26 AUG 2021
 		or hhid.EnrollmentID in 
 			(select top 1 hhid.EnrollmentID 
 			 from tlsa_HHID hhid
-			 where hhid.ProjectType = 3 
+			 where hhid.LSAProjectType = 3 
 				and hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.Active = 1
 			 order by hhid.ExitDate desc)
@@ -406,32 +406,32 @@ Date:  26 AUG 2021
 			(select max(hhid.AC3Plus)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTVet = coalesce (
 			(select max(hhid.HHVet)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTChronic = coalesce (
 			(select min(hhid.HHChronic)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.HHChronic > 0 and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.HHChronic > 0 and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTDisability = coalesce (
 			(select max(hhid.HHDisability)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTFleeingDV = coalesce (
 			(select max(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType in (1,2,8)), 0)
+				and hhid.LSAProjectType in (1,2,8)), 0)
 		, ESTAdultAge = coalesce (hh18.HHAdultAge,
 			hh24.HHAdultAge,
 			hh55.HHAdultAge,
@@ -441,16 +441,16 @@ Date:  26 AUG 2021
 	from tlsa_Household hh
 	left outer join tlsa_HHID hh18 on hh18.HHAdultAge = 18 
 		and hh18.HoHID = hh.HoHID and hh18.ActiveHHType = hh.HHType
-		and hh18.Active = 1 and hh18.ProjectType in (1,2,8)
+		and hh18.Active = 1 and hh18.LSAProjectType in (1,2,8)
 	left outer join tlsa_HHID hh24 on hh24.HHAdultAge = 24 
 		and hh24.HoHID = hh.HoHID and hh24.ActiveHHType = hh.HHType		
-		and hh24.Active = 1 and hh24.ProjectType in (1,2,8)
+		and hh24.Active = 1 and hh24.LSAProjectType in (1,2,8)
 	left outer join tlsa_HHID hh55 on hh55.HHAdultAge = 55 
 		and hh55.HoHID = hh.HoHID and hh55.ActiveHHType = hh.HHType
-		and hh55.Active = 1 and hh55.ProjectType in (1,2,8)
+		and hh55.Active = 1 and hh55.LSAProjectType in (1,2,8)
 	left outer join tlsa_HHID hh25 on hh25.HHAdultAge = 25 
 		and hh25.Active = 1 and hh25.HoHID = hh.HoHID and hh25.ActiveHHType = hh.HHType
-		and hh25.ProjectType in (1,2,8)
+		and hh25.LSAProjectType in (1,2,8)
 
 
 	update hh 
@@ -458,32 +458,32 @@ Date:  26 AUG 2021
 			(select max(hhid.AC3Plus)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 13), 0)
+				and hhid.LSAProjectType = 13), 0)
 		, RRHVet = coalesce (
 			(select max(hhid.HHVet)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 13), 0)
+				and hhid.LSAProjectType = 13), 0)
 		, RRHChronic = coalesce (
 			(select min(hhid.HHChronic)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.HHChronic > 0 and hhid.ProjectType = 13), 0)
+				and hhid.HHChronic > 0 and hhid.LSAProjectType = 13), 0)
 		, RRHDisability = coalesce (
 			(select max(hhid.HHDisability)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 13), 0)
+				and hhid.LSAProjectType = 13), 0)
 		, RRHFleeingDV = coalesce (
 			(select max(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 13), 0)
+				and hhid.LSAProjectType = 13), 0)
 		, RRHParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 13), 0)
+				and hhid.LSAProjectType = 13), 0)
 		, RRHAdultAge = coalesce (hh18.HHAdultAge,
 			hh24.HHAdultAge,
 			hh55.HHAdultAge,
@@ -493,48 +493,48 @@ Date:  26 AUG 2021
 	from tlsa_Household hh
 	left outer join tlsa_HHID hh18 on hh18.HHAdultAge = 18 
 		and hh18.HoHID = hh.HoHID and hh18.ActiveHHType = hh.HHType
-		and hh18.Active = 1 and hh18.ProjectType = 13
+		and hh18.Active = 1 and hh18.LSAProjectType = 13
 	left outer join tlsa_HHID hh24 on hh24.HHAdultAge = 24 
 		and hh24.HoHID = hh.HoHID and hh24.ActiveHHType = hh.HHType		
-		and hh24.Active = 1 and hh24.ProjectType = 13
+		and hh24.Active = 1 and hh24.LSAProjectType = 13
 	left outer join tlsa_HHID hh55 on hh55.HHAdultAge = 55 
 		and hh55.HoHID = hh.HoHID and hh55.ActiveHHType = hh.HHType
-		and hh55.Active = 1 and hh55.ProjectType = 13
+		and hh55.Active = 1 and hh55.LSAProjectType = 13
 	left outer join tlsa_HHID hh25 on hh25.HHAdultAge = 25 
 		and hh25.Active = 1 and hh25.HoHID = hh.HoHID and hh25.ActiveHHType = hh.HHType
-		and hh25.ProjectType = 13
+		and hh25.LSAProjectType = 13
 
 	update hh 
 	set PSHAC3Plus = coalesce (
 			(select max(hhid.AC3Plus)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 3), 0)
+				and hhid.LSAProjectType = 3), 0)
 		, PSHVet = coalesce (
 			(select max(hhid.HHVet)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 3), 0)
+				and hhid.LSAProjectType = 3), 0)
 		, PSHChronic = coalesce (
 			(select min(hhid.HHChronic)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.HHChronic > 0 and hhid.ProjectType = 3), 0)
+				and hhid.HHChronic > 0 and hhid.LSAProjectType = 3), 0)
 		, PSHDisability = coalesce (
 			(select max(hhid.HHDisability)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 3), 0)
+				and hhid.LSAProjectType = 3), 0)
 		, PSHFleeingDV = coalesce (
 			(select max(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 3), 0)
+				and hhid.LSAProjectType = 3), 0)
 		, PSHParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.ProjectType = 3), 0)
+				and hhid.LSAProjectType = 3), 0)
 		, PSHAdultAge = coalesce (hh18.HHAdultAge,
 			hh24.HHAdultAge,
 			hh55.HHAdultAge,
@@ -544,16 +544,16 @@ Date:  26 AUG 2021
 	from tlsa_Household hh
 	left outer join tlsa_HHID hh18 on hh18.HHAdultAge = 18 
 		and hh18.HoHID = hh.HoHID and hh18.ActiveHHType = hh.HHType
-		and hh18.Active = 1 and hh18.ProjectType = 3
+		and hh18.Active = 1 and hh18.LSAProjectType = 3
 	left outer join tlsa_HHID hh24 on hh24.HHAdultAge = 24 
 		and hh24.HoHID = hh.HoHID and hh24.ActiveHHType = hh.HHType		
-		and hh24.Active = 1 and hh24.ProjectType = 3
+		and hh24.Active = 1 and hh24.LSAProjectType = 3
 	left outer join tlsa_HHID hh55 on hh55.HHAdultAge = 55 
 		and hh55.HoHID = hh.HoHID and hh55.ActiveHHType = hh.HHType
-		and hh55.Active = 1 and hh55.ProjectType = 3
+		and hh55.Active = 1 and hh55.LSAProjectType = 3
 	left outer join tlsa_HHID hh25 on hh25.HHAdultAge = 25 
 		and hh25.Active = 1 and hh25.HoHID = hh.HoHID and hh25.ActiveHHType = hh.HHType
-		and hh25.ProjectType = 3
+		and hh25.LSAProjectType = 3
 
 /*
 	6.9	System Engagement Status and Return Time 
@@ -612,7 +612,7 @@ Date:  26 AUG 2021
 						-- line below corrected to use the ExitDate and not ExitDate - 1
 						, hhid.ExitDate
 						, rpt.ReportEnd)
-			where hhid.ProjectType = 13 
+			where hhid.LSAProjectType = 13 
 				and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
 				and hhid.Active = 1) 
 		, hh.Step = '6.10'
@@ -625,7 +625,7 @@ Date:  26 AUG 2021
 
 	insert into sys_Time (HoHID, HHType, sysDate, sysStatus, Step)
 	select distinct hhid.HoHID, hhid.ActiveHHType, cal.theDate
-		, min(case hhid.ProjectType
+		, min(case hhid.LSAProjectType
 				when 3 then 1
 				else 2 end)
 		, '6.11'
@@ -634,9 +634,9 @@ Date:  26 AUG 2021
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join ref_Calendar cal on cal.theDate >= hhid.MoveInDate
 		and (cal.theDate < hhid.ExitDate 
-			or (cal.theDate = hhid.MoveInDate and cal.theDate = hhid.ExitDate and hhid.ProjectType = 13)
+			or (cal.theDate = hhid.MoveInDate and cal.theDate = hhid.ExitDate and hhid.LSAProjectType = 13)
 			or (hhid.ExitDate is null and cal.theDate <= rpt.ReportEnd))
-	where hhid.ProjectType in (3,13) and hhid.Active = 1
+	where hhid.LSAProjectType in (3,13) and hhid.Active = 1
 	group by hhid.HoHID, hhid.ActiveHHType, cal.theDate
 /*
 	6.12  Get Last Inactive Date
@@ -669,7 +669,7 @@ Date:  26 AUG 2021
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 		and (hhid.Active = 1 or hhid.ExitDate < rpt.ReportStart) 
 	where hh.LastInactive is null 
-		and (hhid.ProjectType = 0)
+		and (hhid.LSAProjectType = 0)
 	union
 	select distinct hh.HoHID, hh.HHType, 1
 		, bn.DateProvided	
@@ -684,7 +684,7 @@ Date:  26 AUG 2021
 		and bn.DateProvided >= hhid.EntryDate
 		and (bn.DateProvided < hhid.ExitDate or hhid.ExitDate is null)
 		and bn.RecordType = 200 and bn.DateDeleted is null
-		and hhid.ProjectType = 3
+		and hhid.LSAProjectType = 3
 	where hh.LastInactive is null
 		
 	update hh
@@ -712,7 +712,7 @@ Date:  26 AUG 2021
 	--Transitional Housing (sysStatus = 3) and SafeHaven/Entry-Exit ES (sysStatus = 4)
 	insert into sys_Time (HoHID, HHType, sysDate, sysStatus, Step)
 	select distinct hh.HoHID, hh.HHType, cal.theDate
-		, min(case when hhid.ProjectType = 2 then 3 else 4 end)
+		, min(case when hhid.LSAProjectType = 2 then 3 else 4 end)
 		, '6.13.1'
 	from tlsa_Household hh 
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
@@ -724,7 +724,7 @@ Date:  26 AUG 2021
 	left outer join sys_Time housed on housed.HoHID = hh.HoHID and housed.HHType = hh.HHType
 		and housed.sysDate = cal.theDate
 	where housed.sysDate is null 
-		and (hhid.ProjectType in (2,8) or (hhid.ProjectType = 0))
+		and (hhid.LSAProjectType in (2,8) or (hhid.LSAProjectType = 0))
 	group by hh.HoHID, hh.HHType, cal.theDate
 
 	--Emergency Shelter (Night-by-Night) (sysStatus = 4)
@@ -742,12 +742,12 @@ Date:  26 AUG 2021
 		and cal.theDate between hhid.EntryDate and coalesce(dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
-	where other.sysDate is null and hhid.ProjectType = 1 
+	where other.sysDate is null and hhid.LSAProjectType = 1 
 	
 	--Homeless (Time prior to Move-In) in PSH and RRH (sysStatus = 5 and 6)
 	insert into sys_Time (HoHID, HHType, sysDate, sysStatus, Step)
 	select distinct hh.HoHID, hh.HHType, cal.theDate
-		, min (case when hhid.ProjectType = 3 then 5 else 6 end)
+		, min (case when hhid.LSAProjectType = 3 then 5 else 6 end)
 		, '6.13.3'
 	from tlsa_Household hh 
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
@@ -758,7 +758,7 @@ Date:  26 AUG 2021
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
 	where cal.theDate > hh.LastInactive
-		and other.sysDate is null and hhid.ProjectType in (3,13)
+		and other.sysDate is null and hhid.LSAProjectType in (3,13)
 	group by hh.HoHID, hh.HHType, cal.theDate
 
 /*
@@ -782,7 +782,7 @@ Date:  26 AUG 2021
 			where hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.EntryDate > hh.LastInactive
 				and hn.DateToStreetESSH <= hh.LastInactive 
-				and (hhid.ProjectType in (1,8)
+				and (hhid.LSAProjectType in (1,8)
 					or hn.LivingSituation in (1,18,16)
 					or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)
 					--5/14/2020 - correct 24 (deceased) to 25 (LTC/nursing home) 
@@ -813,7 +813,7 @@ Date:  26 AUG 2021
 			where hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType
 				and hhid.EntryDate > hh.LastInactive
 				and hn.DateToStreetESSH <= hh.LastInactive 
-				and (hhid.ProjectType in (1,8)
+				and (hhid.LSAProjectType in (1,8)
 					or hn.LivingSituation in (1,18,16)
 					or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)
 					or (hn.LivingSituation in (4,5,6,7,15,25) 

@@ -2,7 +2,7 @@
 
 LSA FY2021 Sample Code
 
-Name:  08 LSACalculated Averages .sql  
+Name:  08 LSACalculated Averages.sql  
 Date:  26 AUG 2021   
 	
 Uses static reference tables:

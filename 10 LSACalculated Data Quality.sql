@@ -85,10 +85,6 @@ Date:  20 AUG 2021
 				(hx.ExitDate >= rpt.ReportStart and hx.ExitDate > hn.EntryDate))
 	group by p.ProjectID, rpt.ReportID
 
-	select rpt.ReportStart, rpt.ReportEnd, hn.EnrollmentID
-	from lsa_Report rpt
-	inner join hmis_Enrollment hn on hn.EntryDate <= rpt.ReportEnd
-
 	/*
 		10.5 LSACalculated
 

@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  09 LSACalculated AHAR Counts .sql  
-Date:  26 AUG 2021   
+Date:  02 SEP 2021   
 
 	
 Uses static reference tables:
@@ -157,7 +157,7 @@ left outer join tlsa_CohortDates cd3 on cd3.CohortEnd >= n.EntryDate
 	and (cd3.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd3.Cohort = 12
 left outer join tlsa_CohortDates cd4 on cd4.CohortEnd >= n.EntryDate 
 	and (cd4.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd4.Cohort = 13
-where n.ProjectType in (0,2,8) 
+where n.LSAProjectType in (0,2,8) 
 	and n.AHAR = 1
 
 update n
@@ -172,7 +172,7 @@ left outer join tlsa_CohortDates cd1 on cd1.CohortStart = bn.DateProvided and cd
 left outer join tlsa_CohortDates cd2 on cd2.CohortStart = bn.DateProvided and cd2.Cohort = 11 
 left outer join tlsa_CohortDates cd3 on cd3.CohortStart = bn.DateProvided and cd2.Cohort = 12 
 left outer join tlsa_CohortDates cd4 on cd4.CohortStart = bn.DateProvided and cd2.Cohort = 13 
-where n.ProjectType = 1
+where n.LSAProjectType = 1
 	and n.AHAR = 1
 
 update n
@@ -190,7 +190,7 @@ left outer join tlsa_CohortDates cd3 on cd3.CohortEnd >= n.MoveInDate
 	and (cd3.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd3.Cohort = 12
 left outer join tlsa_CohortDates cd4 on cd4.CohortEnd >= n.MoveInDate 
 	and (cd4.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd4.Cohort = 13
-where n.ProjectType = 3 
+where n.LSAProjectType = 3 
 	and n.AHAR = 1
 
 update n
@@ -216,7 +216,7 @@ left outer join tlsa_CohortDates cd4 on cd4.CohortEnd >= n.MoveInDate
 	and (cd4.CohortStart < n.ExitDate  
 			or n.ExitDate is NULL
 			or (cd4.CohortStart = n.ExitDate and cd4.CohortStart = n.MoveInDate)) and cd4.Cohort = 13
-where n.ProjectType = 13 
+where n.LSAProjectType = 13 
 	and n.AHAR = 1
 	
 /*
@@ -240,12 +240,12 @@ where n.ProjectType = 13
 		and (hhid.ActiveHHType = ph.HHType or ph.HHType = 0)
 		and (
 				rv.Universe = 10 
-				or (rv.Universe = 11 and hhid.ProjectType in (0,1))
-				or (rv.Universe = 12 and hhid.ProjectType = 8)
-				or (rv.Universe = 13 and hhid.ProjectType = 2)
-				or (rv.Universe = 14 and hhid.ProjectType = 13)
-				or (rv.Universe = 15 and hhid.ProjectType = 3)
-				or (rv.Universe = 16 and hhid.ProjectType in (0,1,2,8))
+				or (rv.Universe = 11 and hhid.LSAProjectType in (0,1))
+				or (rv.Universe = 12 and hhid.LSAProjectType = 8)
+				or (rv.Universe = 13 and hhid.LSAProjectType = 2)
+				or (rv.Universe = 14 and hhid.LSAProjectType = 13)
+				or (rv.Universe = 15 and hhid.LSAProjectType = 3)
+				or (rv.Universe = 16 and hhid.LSAProjectType in (0,1,2,8))
 			)
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID
 			and case rv.Cohort	
@@ -282,12 +282,12 @@ where n.ProjectType = 13
 		and (hhid.ActiveHHType = ph.HHType or ph.HHType = 0)
 		and (
 				rv.Universe = 10 
-				or (rv.Universe = 11 and hhid.ProjectType in (0,1))
-				or (rv.Universe = 12 and hhid.ProjectType = 8)
-				or (rv.Universe = 13 and hhid.ProjectType = 2)
-				or (rv.Universe = 14 and hhid.ProjectType = 13)
-				or (rv.Universe = 15 and hhid.ProjectType = 3)
-				or (rv.Universe = 16 and hhid.ProjectType in (0,1,2,8))
+				or (rv.Universe = 11 and hhid.LSAProjectType in (0,1))
+				or (rv.Universe = 12 and hhid.LSAProjectType = 8)
+				or (rv.Universe = 13 and hhid.LSAProjectType = 2)
+				or (rv.Universe = 14 and hhid.LSAProjectType = 13)
+				or (rv.Universe = 15 and hhid.LSAProjectType = 3)
+				or (rv.Universe = 16 and hhid.LSAProjectType in (0,1,2,8))
 			)
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID
 			and (n.PersonalID = pop1.PersonalID or pop1.PopID = 0)
@@ -316,12 +316,12 @@ Missing counts for rows 56 and 57
 	inner join tlsa_HHID hhid on (rp.PopID = 0 or hhid.HoHID = pop.HoHID)
 		and (hhid.ActiveHHType = pop.HHType or ph.HHType = 0)
 		and (rv.Universe = 10 
-			or (rv.Universe = 11 and hhid.ProjectType in (0,1))
-			or (rv.Universe = 12 and hhid.ProjectType = 8)
-			or (rv.Universe = 13 and hhid.ProjectType = 2)
-			or (rv.Universe = 14 and hhid.ProjectType = 13)
-			or (rv.Universe = 15 and hhid.ProjectType = 3)
-			or (rv.Universe = 16 and hhid.ProjectType in (0,1,2,8))
+			or (rv.Universe = 11 and hhid.LSAProjectType in (0,1))
+			or (rv.Universe = 12 and hhid.LSAProjectType = 8)
+			or (rv.Universe = 13 and hhid.LSAProjectType = 2)
+			or (rv.Universe = 14 and hhid.LSAProjectType = 13)
+			or (rv.Universe = 15 and hhid.LSAProjectType = 3)
+			or (rv.Universe = 16 and hhid.LSAProjectType in (0,1,2,8))
 			)
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID
 	left outer join (select bn.EnrollmentID, count(distinct bn.DateProvided) as nights

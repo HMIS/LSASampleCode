@@ -28,7 +28,7 @@ Date:  26 AUG 2021
 	from tlsa_HHID HHID
 	where hhid.Active = 1 
 		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.ProjectType not in (3,13)
+		and hhid.LSAProjectType not in (3,13)
 		
 	update hhid
 	set hhid.AHAR = 1 
@@ -37,7 +37,7 @@ Date:  26 AUG 2021
 	where hhid.Active = 1 
 		and hhid.MoveInDate is not null
 		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.ProjectType = 3
+		and hhid.LSAProjectType = 3
 
 	update hhid
 	set hhid.AHAR = 1 
@@ -49,7 +49,7 @@ Date:  26 AUG 2021
 		and (hhid.ExitDate is null 
 				or hhid.ExitDate > rpt.ReportStart
 				or hhid.MoveInDate = rpt.ReportStart)
-		and hhid.ProjectType = 13
+		and hhid.LSAProjectType = 13
 
 /*
 	5.2  Identify Active and AHAR Enrollments
@@ -71,7 +71,7 @@ Date:  26 AUG 2021
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
 	where n.Active = 1
 		and (n.ExitDate is null or n.ExitDate > rpt.ReportStart)
-		and n.ProjectType not in (3,13)
+		and n.LSAProjectType not in (3,13)
 	
 	update n
 	set n.AHAR = 1 
@@ -81,7 +81,7 @@ Date:  26 AUG 2021
 	where n.Active = 1 
 		and n.MoveInDate is not null
 		and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report)) 
-		and n.ProjectType = 3
+		and n.LSAProjectType = 3
 
 	update n
 	set n.AHAR = 1 
@@ -93,7 +93,7 @@ Date:  26 AUG 2021
 		and (n.ExitDate is null 
 				or n.ExitDate > rpt.ReportStart
 				or n.MoveInDate = rpt.ReportStart)
-		and n.ProjectType = 13	
+		and n.LSAProjectType = 13	
 /*
 	5.3 Get Active Clients for LSAPerson 
 	5.4 LSAPerson Demographics 
@@ -234,13 +234,13 @@ Date:  26 AUG 2021
 	from tlsa_Person lp
 	inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 	inner join ref_Calendar cal on cal.theDate >=
-			case when chn.ProjectType in (3,13) then chn.MoveInDate  
+			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
 		and ((cal.theDate < chn.ExitDate 
-			or (chn.ProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
+			or (chn.LSAProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
 			or chn.ExitDate is null))
 			and cal.theDate between lp.CHStart and lp.LastActive
-	where chn.ProjectType in (2,3,13)
+	where chn.LSAProjectType in (2,3,13)
 
 /*
 	5.8 Get Dates to Include in Counts of ES/SH/Street Days 
@@ -263,7 +263,7 @@ Date:  26 AUG 2021
 			and cal.theDate between lp.CHStart and lp.LastActive
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
-	where chn.ProjectType in (0,8)
+	where chn.LSAProjectType in (0,8)
 		and chx.excludeDate is null
 
 	--ES nbn bed nights
@@ -284,7 +284,7 @@ Date:  26 AUG 2021
 			and chx.PersonalID = chn.PersonalID
 		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
 			and chi.PersonalID = chn.PersonalID
-	where chn.ProjectType = 1 and chx.excludeDate is null
+	where chn.LSAProjectType = 1 and chx.excludeDate is null
 		and chi.ESSHStreetDate is null
 
 	--ES/SH/Street dates from 3.917 DateToStreetESSH when EntryDates > CHStart.
@@ -305,17 +305,17 @@ Date:  26 AUG 2021
 	where chx.excludeDate is null
 		and chi.ESSHStreetDate is null
 		and (hn.LivingSituation in (1,18,16)
-			or (chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
-			or (chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+			or (chn.LSAProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+			or (chn.LSAProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
 					and hn.LivingSituation in (4,5,6,7,15,25)) 
 			)
 		and ( 
 			
 			(-- for ES/SH/TH, count dates prior to EntryDate
-				chn.ProjectType in (0,1,2,8) and cal.theDate < chn.EntryDate)
+				chn.LSAProjectType in (0,1,2,8) and cal.theDate < chn.EntryDate)
 			or (-- for PSH/RRH, dates prior to and after EntryDate are counted for 
 				-- as long as the client remains homeless in the project  
-				chn.ProjectType in (3,13)
+				chn.LSAProjectType in (3,13)
 				and (cal.theDate < chn.MoveInDate
 					 or (chn.MoveInDate is NULL and cal.theDate < chn.ExitDate)
 					 or (chn.MoveInDate is NULL and chn.ExitDate is NULL and cal.theDate <= lp.LastActive)
@@ -433,17 +433,17 @@ Date:  26 AUG 2021
 		and (hn.DateToStreetESSH > chn.EntryDate 
 				or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
-				or (chn.ProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+				or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 						and hn.LengthOfStay in (2,3)
 						and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
-				or (chn.ProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
+				or (chn.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
 							and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
-				or ((chn.ProjectType in (0,1,8)
+				or ((chn.LSAProjectType in (0,1,8)
 					  or hn.LivingSituation in (1,16,18)
-					  or (chn.ProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+					  or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
 							and hn.LengthOfStay in (2,3)
 							and hn.PreviousStreetESSH = 1)
-					  or (chn.ProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
+					  or (chn.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
 							and hn.PreviousStreetESSH = 1)
 					)
 					and (
@@ -463,7 +463,7 @@ Date:  26 AUG 2021
 	set ESTAgeMin = coalesce(
 		(select min(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType in (0,1,2,8) and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType in (0,1,2,8) and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.1'
 	from tlsa_Person lp
@@ -472,7 +472,7 @@ Date:  26 AUG 2021
 	set ESTAgeMax = coalesce(
 		(select max(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType in (0,1,2,8) and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType in (0,1,2,8) and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.2'
 	from tlsa_Person lp
@@ -481,7 +481,7 @@ Date:  26 AUG 2021
 	set RRHAgeMin = coalesce(
 		(select min(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType = 13 and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 13 and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.3'
 	from tlsa_Person lp
@@ -490,7 +490,7 @@ Date:  26 AUG 2021
 	set RRHAgeMax = coalesce(
 		(select max(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType = 13 and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 13 and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.4'
 	from tlsa_Person lp
@@ -499,7 +499,7 @@ Date:  26 AUG 2021
 	set PSHAgeMin = coalesce(
 		(select min(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType = 3 and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 3 and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.5'
 	from tlsa_Person lp
@@ -508,7 +508,7 @@ Date:  26 AUG 2021
 	set PSHAgeMax = coalesce(
 		(select max(n.ActiveAge) 
 		 from tlsa_Enrollment n
-		 where n.PersonalID = lp.PersonalID and n.ProjectType = 3 and n.Active = 1)
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 3 and n.Active = 1)
 		 , -1)
 		, lp.Step = '5.11.6'
 	from tlsa_Person lp

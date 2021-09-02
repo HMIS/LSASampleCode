@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  07 LSAExit.sql  
-Date:  26 AUG 2021   
+Date:  02 SEP 2021   
 					
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
@@ -77,12 +77,12 @@ from tlsa_Exit ex
 
 update ex
 set ex.ExitFrom = case 
-              when qx.ProjectType = 1 then 2
-              when qx.ProjectType = 2 then 3 
-              when qx.ProjectType = 8 then 4
-              when qx.ProjectType = 13 and qx.MoveInDate is not null then 5
-              when qx.ProjectType = 3 and qx.MoveInDate is not null then 6
-              when qx.ProjectType = 13 then 7
+              when qx.LSAProjectType = 1 then 2
+              when qx.LSAProjectType = 2 then 3 
+              when qx.LSAProjectType = 8 then 4
+              when qx.LSAProjectType = 13 and qx.MoveInDate is not null then 5
+              when qx.LSAProjectType = 3 and qx.MoveInDate is not null then 6
+              when qx.LSAProjectType = 13 then 7
               else 8 end
 		, ex.ExitTo = qx.ExitDest
 		, ex.Step = '7.2.3'
@@ -165,13 +165,13 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID and chn.EntryDate < ha.LastActive
 		and chn.ExitDate > ha.CHStart
 	inner join ref_Calendar cal on cal.theDate >=
-			case when chn.ProjectType in (3,13) then chn.MoveInDate  
+			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
 		and ((cal.theDate < chn.ExitDate 
-			or (chn.ProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
+			or (chn.LSAProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
 			or chn.ExitDate is null))
 			and cal.theDate between ha.CHStart and ha.LastActive
-	where chn.ProjectType in (2,3,13) and ha.CHTime is null
+	where chn.LSAProjectType in (2,3,13) and ha.CHTime is null
 
 /*
 	7.6 Get Dates to Include in Counts of ES/SH/Street Days 
@@ -191,7 +191,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			and cal.theDate between ha.CHStart and ha.LastActive
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
-	where chn.ProjectType in (0,8)
+	where chn.LSAProjectType in (0,8)
 		and chx.excludeDate is null
 		and ha.CHTime is null
 
@@ -213,7 +213,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			and chx.PersonalID = chn.PersonalID
 		left outer join ch_Include chi on chi.ESSHStreetDate = cal.theDate 
 			and chi.PersonalID = chn.PersonalID
-	where chn.ProjectType = 1 and chx.excludeDate is null
+	where chn.LSAProjectType = 1 and chx.excludeDate is null
 		and chi.ESSHStreetDate is null
 		and ha.CHTime is null
 
@@ -236,17 +236,17 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		and chi.ESSHStreetDate is null
 		and ha.CHTime is null
 		and (hn.LivingSituation in (1,18,16)
-			or (chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
-			or (chn.ProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
+			or (chn.LSAProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
+			or (chn.LSAProjectType not in (1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
 					and hn.LivingSituation in (4,5,6,7,15,25)) 
 			)
 		and ( 
 			
 			(-- for ES/SH/TH, count dates prior to EntryDate
-				chn.ProjectType in (1,2,8) and cal.theDate < chn.EntryDate)
+				chn.LSAProjectType in (1,2,8) and cal.theDate < chn.EntryDate)
 			or (-- for PSH/RRH, dates prior to and after EntryDate are counted for 
 				-- as long as the client remains homeless in the project  
-				chn.ProjectType in (3,13)
+				chn.LSAProjectType in (3,13)
 				and (cal.theDate < chn.MoveInDate
 					 or (chn.MoveInDate is NULL and cal.theDate < chn.ExitDate)
 					 or (chn.MoveInDate is NULL and chn.ExitDate is NULL and cal.theDate <= ha.LastActive)
@@ -531,7 +531,7 @@ from tlsa_Exit ex
 				else possible.ActiveHHType end = ex.HHType 
 			and possible.ExitDate <= hhid.ExitDate
 	where ex.LastInactive is null 
-		and possible.ProjectType in (0,2,3,8,13)
+		and possible.LSAProjectType in (0,2,3,8,13)
 	union
 	select distinct ex.HoHID, ex.HHType, ex.Cohort
 		, bn.DateProvided	
@@ -551,7 +551,7 @@ from tlsa_Exit ex
 		and bn.DateProvided >= possible.EntryDate and bn.DateProvided < possible.ExitDate
 		and bn.RecordType = 200 and bn.DateDeleted is null
 	where ex.LastInactive is null 
-		and possible.ProjectType = 1
+		and possible.LSAProjectType = 1
 		
 	update ex
 	set ex.LastInactive = coalesce(lastDay.inactive, '9/30/2012')
@@ -615,25 +615,25 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
-		left outer join tlsa_HHID es on es.ProjectType in (1,8)
+		left outer join tlsa_HHID es on es.LSAProjectType in (1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
 				)
 			and (es.ActiveHHType = ex.HHType)
-		left outer join tlsa_HHID th on th.ProjectType = 2
+		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
 				)
 			and (th.ActiveHHType = ex.HHType)
-		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
+		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
 				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
 				)
 			and (rrh.ActiveHHType = ex.HHType)
-		left outer join tlsa_HHID psh on psh.ProjectType = 3
+		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))
@@ -667,25 +667,25 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
-		left outer join tlsa_HHID es on es.ProjectType in (1,8)
+		left outer join tlsa_HHID es on es.LSAProjectType in (1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
 				)
 			and (es.Exit1HHType = ex.HHType)
-		left outer join tlsa_HHID th on th.ProjectType = 2
+		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
 				)
 			and (th.Exit1HHType = ex.HHType)
-		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
+		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
 				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
 				)
 			and (rrh.Exit1HHType = ex.HHType)
-		left outer join tlsa_HHID psh on psh.ProjectType = 3
+		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))
@@ -719,25 +719,25 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 					as summary
 		from tlsa_Exit ex 
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
-		left outer join tlsa_HHID es on es.ProjectType in (1,8)
+		left outer join tlsa_HHID es on es.LSAProjectType in (1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
 				)
 			and (es.Exit2HHType = ex.HHType)
-		left outer join tlsa_HHID th on th.ProjectType = 2
+		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
 				)
 			and (th.Exit2HHType = ex.HHType)
-		left outer join tlsa_HHID rrh on rrh.ProjectType = 13
+		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
 				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
 				)
 			and (rrh.Exit2HHType = ex.HHType)
-		left outer join tlsa_HHID psh on psh.ProjectType = 3
+		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
 					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))

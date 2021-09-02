@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  03_02 to 03_06 HMIS Households and Enrollments.sql 
-Date:  19 AUG 2021
+Date:  02 SEP 2021
 
 
 	3.2 Cohort Dates 
@@ -63,7 +63,7 @@ delete from tlsa_HHID
 
 insert into tlsa_HHID (
 	  HouseholdID, HoHID, EnrollmentID
-	, ProjectID, ProjectType
+	, ProjectID, LSAProjectType
 	, EntryDate
 	, MoveInDate
 	, ExitDate
@@ -171,13 +171,13 @@ where hoh.DateDeleted is null
 	insert into tlsa_Enrollment 
 		(EnrollmentID, PersonalID, HouseholdID
 		, RelationshipToHoH
-		, ProjectID, ProjectType
+		, ProjectID, LSAProjectType
 		, EntryDate, ExitDate
 		, DisabilityStatus
 		, Step)
 	select distinct hn.EnrollmentID, hn.PersonalID, hn.HouseholdID
 		, hn.RelationshipToHoH
-		, hhid.ProjectID, hhid.ProjectType
+		, hhid.ProjectID, hhid.LSAProjectType
 		, case when hhid.EntryDate > hn.EntryDate then hhid.EntryDate else hn.EntryDate end
 		, case when hx.ExitDate >= hhid.ExitDate then hhid.ExitDate
 			when hx.ExitDate is NULL and hhid.ExitDate is not NULL then hhid.ExitDate
@@ -192,7 +192,7 @@ where hoh.DateDeleted is null
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID	
 		and hx.ExitDate <= rpt.ReportEnd
 		and hx.DateDeleted is null
-	where hhid.ProjectType in (0,2,3,8,13) 
+	where hhid.LSAProjectType in (0,2,3,8,13) 
 		and hn.RelationshipToHoH in (1,2,3,4,5)
 		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
 		and (hx.ExitDate is null or 
@@ -203,14 +203,14 @@ where hoh.DateDeleted is null
 	insert into tlsa_Enrollment 
 		(EnrollmentID, PersonalID, HouseholdID
 		, RelationshipToHoH
-		, ProjectID, ProjectType
+		, ProjectID, LSAProjectType
 		, EntryDate, ExitDate
 		, LastBednight
 		, DisabilityStatus
 		, Step)
 	select distinct svc.EnrollmentID, nbn.PersonalID, nbn.HouseholdID
 		, nbn.RelationshipToHoH
-		, hhid.ProjectID, hhid.ProjectType
+		, hhid.ProjectID, hhid.LSAProjectType
 		, min(svc.DateProvided) as EntryDate
 		, case when nbnx.ExitDate is null and hhid.ExitDate is null and dateadd(dd, 90, max(svc.DateProvided)) > rpt.ReportEnd then null
 			else dateadd(dd, 1, max(svc.DateProvided)) end as ExitDate				
@@ -224,14 +224,14 @@ where hoh.DateDeleted is null
 		and (hhid.ExitDate is null or svc.DateProvided < hhid.ExitDate)
 	left outer join hmis_Exit nbnx on nbnx.EnrollmentID = nbn.EnrollmentID and nbnx.DateDeleted is null
 	inner join lsa_Report rpt on svc.DateProvided between '10/1/2012' and rpt.ReportEnd
-	where hhid.ProjectType = 1 
+	where hhid.LSAProjectType = 1 
 		and svc.RecordType = 200 and svc.DateDeleted is null
 		and svc.DateProvided >= nbn.EntryDate 
 		and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		and nbn.RelationshipToHoH in (1,2,3,4,5)
 	group by svc.EnrollmentID, nbn.PersonalID, nbn.HouseholdID
 		, nbn.RelationshipToHoH
-		, hhid.ProjectID, hhid.ProjectType
+		, hhid.ProjectID, hhid.LSAProjectType
 		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition else null end
 		, nbnx.ExitDate, hhid.ExitDate, rpt.ReportEnd
 	update n 
@@ -242,7 +242,7 @@ where hoh.DateDeleted is null
 			else hhid.MoveInDate end 
 		, Step = '3.4.3'
 	from tlsa_Enrollment n
-	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.ProjectType in (3,13)
+	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.LSAProjectType in (3,13)
 
 	update n
 	set n.DVStatus = (select min(case when dv.DomesticViolenceVictim = 1 and dv.CurrentlyFleeing = 1 then 1
