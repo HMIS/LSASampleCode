@@ -2,9 +2,8 @@
 LSA FY2021 Sample Code
 
 Name:  05_01 to 05_11 LSAPerson.sql  
-Date:  26 AUG 2021   
+Date:  08 SEP 2021   
 
-	
 	5.1 Identify Active and AHAR HouseholdIDs
 */
 
@@ -37,19 +36,7 @@ Date:  26 AUG 2021
 	where hhid.Active = 1 
 		and hhid.MoveInDate is not null
 		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.LSAProjectType = 3
-
-	update hhid
-	set hhid.AHAR = 1 
-		, hhid.Step = '5.1.4'
-	from tlsa_HHID HHID
-	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
-	where hhid.Active = 1 
-		and hhid.MoveInDate is not null
-		and (hhid.ExitDate is null 
-				or hhid.ExitDate > rpt.ReportStart
-				or hhid.MoveInDate = rpt.ReportStart)
-		and hhid.LSAProjectType = 13
+		and hhid.LSAProjectType in (3,13)
 
 /*
 	5.2  Identify Active and AHAR Enrollments
@@ -81,19 +68,7 @@ Date:  26 AUG 2021
 	where n.Active = 1 
 		and n.MoveInDate is not null
 		and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report)) 
-		and n.LSAProjectType = 3
-
-	update n
-	set n.AHAR = 1 
-		, n.Step = '5.2.4'
-	from lsa_Report rpt
-	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	where n.Active = 1 
-		and n.MoveInDate is not null
-		and (n.ExitDate is null 
-				or n.ExitDate > rpt.ReportStart
-				or n.MoveInDate = rpt.ReportStart)
-		and n.LSAProjectType = 13	
+		and n.LSAProjectType in (3,13)
 /*
 	5.3 Get Active Clients for LSAPerson 
 	5.4 LSAPerson Demographics 
@@ -236,9 +211,8 @@ Date:  26 AUG 2021
 	inner join ref_Calendar cal on cal.theDate >=
 			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
-		and ((cal.theDate < chn.ExitDate 
-			or (chn.LSAProjectType = 13 and chn.MoveInDate = chn.ExitDate and cal.theDate = chn.MoveInDate)
-			or chn.ExitDate is null))
+		and (cal.theDate < chn.ExitDate 
+			or chn.ExitDate is null)
 			and cal.theDate between lp.CHStart and lp.LastActive
 	where chn.LSAProjectType in (2,3,13)
 
