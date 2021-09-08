@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  07 LSAExit.sql  
-Date:  02 SEP 2021   
+Date:  08 SEP 2021   
 					
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
@@ -128,11 +128,13 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	where (ex.ExitFrom = 3 and hhid.EntryDate <= dateadd(yy, -1, hhid.ExitDate))
 		or (ex.ExitFrom in (5,6) and hhid.MoveInDate <= dateadd(yy, -1, hhid.ExitDate))
 
+	truncate table tlsa_ExitHoHAdult
+
 	insert into tlsa_ExitHoHAdult (
 		PersonalID, QualifyingExitHHID,
 		Cohort, DisabilityStatus, CHStart, LastActive, 
 		CHTime, CHTimeStatus, Step)
-	select n.PersonalID, ex.QualifyingExitHHID,
+	select distinct n.PersonalID, ex.QualifyingExitHHID,
 		ex.Cohort, case when n.DisabilityStatus = 1 then 1 else 0 end,
 		dateadd(dd, -1, (dateadd(yy, -3, n.ExitDate))),
 		n.ExitDate, 
