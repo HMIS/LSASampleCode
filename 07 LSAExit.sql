@@ -3,7 +3,7 @@
 LSA FY2021 Sample Code
 
 Name:  07 LSAExit.sql  
-Date:  08 SEP 2021   
+Date:  09 SEP 2021   
 					
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
@@ -370,13 +370,13 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			when (hoh.AmIndAkNative = 1 
 					or hoh.Asian = 1
 					or hoh.BlackAfAmerican = 1
-					or hoh.NativeHIOtherPacific = 1
+					or hoh.NativeHIPacific = 1
 					or hoh.White = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
 							+ case when r.Asian = 1 then '2' else '' end
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
-							+ case when r.NativeHIOtherPacific = 1 then '4' else '' end
+							+ case when r.NativeHIPacific = 1 then '4' else '' end
 							+ case when r.White = 1 then '5' else '' end) as int)
 						from hmis_Client r
 						where r.PersonalID = hoh.PersonalID) 
