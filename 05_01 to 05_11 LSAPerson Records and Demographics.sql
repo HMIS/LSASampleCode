@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  05_01 to 05_11 LSAPerson.sql  
-Date:  08 SEP 2021   
+Date:  09 SEP 2021   
 
 	5.1 Identify Active and AHAR HouseholdIDs
 */
@@ -115,13 +115,13 @@ Date:  08 SEP 2021
 			when (c.AmIndAkNative = 1 
 					or c.Asian = 1
 					or c.BlackAfAmerican = 1
-					or c.NativeHIOtherPacific = 1
+					or c.NativeHIPacific = 1
 					or c.White = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
 							+ case when r.Asian = 1 then '2' else '' end
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
-							+ case when r.NativeHIOtherPacific = 1 then '4' else '' end
+							+ case when r.NativeHIPacific = 1 then '4' else '' end
 							+ case when r.White = 1 then '5' else '' end) as int)
 						from hmis_Client r
 						where r.PersonalID = c.PersonalID)
