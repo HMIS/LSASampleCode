@@ -1,6 +1,6 @@
 /*
 Name:  04_02 to 04_06 Get Other PDDEs.sql
-Date:	26 AUG 2021 
+Date:	16 SEP 2021 
 
 
 	4.2 Get Organization Records for Export
@@ -13,11 +13,11 @@ Date:	26 AUG 2021
 
 	insert into lsa_Organization
 		(OrganizationID, OrganizationName
-		, VictimServicesProvider
+		, VictimServiceProvider
 		, DateCreated, DateUpdated, ExportID)
 	select distinct ho.OrganizationID
 		, left(ho.OrganizationName, 100)
-		, ho.VictimServicesProvider	
+		, ho.VictimServiceProvider	
 		, format(ho.DateCreated, 'yyyy-MM-dd HH:mm:ss')
 		, format(ho.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
 		, lp.ExportID
