@@ -2,7 +2,7 @@
 LSA FY2021 Sample Code
 
 Name:  01 Temp Reporting and Reference Tables.sql
-Date:  6 OCT 2021
+Date:  13 OCT 2021
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -137,6 +137,7 @@ create table tlsa_Person (
 	HHTypeEST int default -1,
 	HoHEST int default -1,
 	AdultEST int default -1,
+	AHARAdultEST int default -1,
 	HHChronicEST int default -1,
 	HHVetEST int default -1,
 	HHDisabilityEST int default -1,
@@ -147,12 +148,12 @@ create table tlsa_Person (
 	AC3PlusEST int default -1,
 	AHAREST int default -1,
 	AHARHoHEST int default -1,
-	AHARAdultEST int default -1,
 	RRHAgeMin int default -1,
 	RRHAgeMax int default -1,
 	HHTypeRRH int default -1,
 	HoHRRH int default -1,
 	AdultRRH int default -1,
+	AHARAdultRRH int default -1,
 	HHChronicRRH int default -1,
 	HHVetRRH int default -1,
 	HHDisabilityRRH int default -1,
@@ -163,12 +164,12 @@ create table tlsa_Person (
 	AC3PlusRRH int default -1,
 	AHARRRH int default -1,
 	AHARHoHRRH int default -1,
-	AHARAdultRRH int default -1,
 	PSHAgeMin int default -1,
 	PSHAgeMax int default -1,
 	HHTypePSH int default -1,
 	HoHPSH int default -1,
 	AdultPSH int default -1,
+	AHARAdultPSH int default -1,
 	HHChronicPSH int default -1,
 	HHVetPSH int default -1,
 	HHDisabilityPSH int default -1,
@@ -179,7 +180,6 @@ create table tlsa_Person (
 	AC3PlusPSH int default -1,
 	AHARPSH int default -1,
 	AHARHoHPSH int default -1,
-	AHARAdultPSH int default -1,
 	ReportID int,
 	Step varchar(10) not NULL,
 	constraint pk_tlsa_Person primary key clustered (PersonalID) 
