@@ -467,7 +467,7 @@ create table tlsa_Household(
 		, constraint pk_ref_PopHHTypes primary key clustered (PopID, HHType)
 )
 ;
-insert into ref_PopHHTypes (PopID, HHType) values (1279,2);
+
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (1,1,-1,-1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (1,1,-1,1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (1,1,-1,3);
@@ -1190,10 +1190,10 @@ insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, 
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (53,54,NULL,NULL,35,0,35);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,50,0,50);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,53,0,53);
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1178,0,1178);
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1179,0,1179);
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1278,0,1278);
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1279,0,1279);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1176,0,1176);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1177,0,1177);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1276,0,1276);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1277,0,1277);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,50,0,50);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,51,0,51);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,52,0,52);
@@ -1556,9 +1556,9 @@ insert into ref_PopHHTypes (PopID, HHType) values (82,0);
 insert into ref_PopHHTypes (PopID, HHType) values (82,1);
 insert into ref_PopHHTypes (PopID, HHType) values (82,2);
 insert into ref_PopHHTypes (PopID, HHType) values (82,99);
-insert into ref_PopHHTypes (PopID, HHType) values (1178,1);
-insert into ref_PopHHTypes (PopID, HHType) values (1179,1);
-insert into ref_PopHHTypes (PopID, HHType) values (1278,2);
-
+insert into ref_PopHHTypes (PopID, HHType) values (1176,1);
+insert into ref_PopHHTypes (PopID, HHType) values (1177,1);
+insert into ref_PopHHTypes (PopID, HHType) values (1276,2);
+insert into ref_PopHHTypes (PopID, HHType) values (1277,2);
 
 
