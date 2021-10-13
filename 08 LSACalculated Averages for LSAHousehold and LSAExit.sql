@@ -287,7 +287,7 @@ Populates and references:
 	from tlsa_Exit ex 
 	inner join tlsa_AveragePops pop on (pop.PopID = 0 or (pop.HHType = ex.HHType and pop.HoHID = ex.HoHID and pop.Cohort = ex.Cohort)) 
 	inner join ref_RowPopulations rp on rp.PopID = pop.PopID 
-	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID and ph.HHType = 0 or ph.HHType = ex.HHType
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID and (ph.HHType = 0 or ph.HHType = ex.HHType)
 	inner join ref_RowValues rv on rv.RowID between rp.RowMin and rp.RowMax 
 			and (rv.SystemPath = -1 or rv.SystemPath = ex.SystemPath)
 			and rv.Cohort = ex.Cohort 
