@@ -23,31 +23,30 @@ Populates and references:
 	select 10, HouseholdID, '9.1.1' 
 	from tlsa_HHID
 	where ahar = 1 and HHAdultAge = 18 
-	and tlsa_HHID.ActiveHHType in (select HHType from ref_PopHHTypes where PopID = 10)
+		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 11, HouseholdID, '9.1.2' 
 	from tlsa_HHID
 	where ahar = 1 and HHAdultAge = 24 
-	and tlsa_HHID.ActiveHHType in (select HHType from ref_PopHHTypes where PopID = 11)
+		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 12, HouseholdID, '9.1.3' 
 	from tlsa_HHID
 	where ahar = 1 and HHParent = 1 and HHAdultAge in (18,24)
-	and tlsa_HHID.ActiveHHType = 2
+		and ActiveHHType = 2
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 13, HouseholdID, '9.1.4' 
 	from tlsa_HHID
 	where ahar = 1 and HHVet = 1
-	and tlsa_HHID.ActiveHHType in (select HHType from ref_PopHHTypes where PopID = 13)
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 14, HouseholdID, '9.1.5' 
 	from tlsa_HHID
 	where ahar = 1 and HHVet = 0 and HHAdultAge in (25,55)
-	and tlsa_HHID.ActiveHHType = 1
+	and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 15, HouseholdID, '9.1.6' 
@@ -63,13 +62,12 @@ Populates and references:
 	select 19, HouseholdID, '9.1.8'
 	from tlsa_HHID
 	where ahar = 1 and HHFleeingDV = 1
-	and tlsa_HHID.ActiveHHType in (select HHType from ref_PopHHTypes where PopID = 19)
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 34, HouseholdID, '9.1.9' 
 	from tlsa_HHID
 	where ahar = 1 and HHAdultAge = 55
-	and tlsa_HHID.ActiveHHType = 1
+		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 35, HouseholdID, '9.1.10' 
@@ -77,7 +75,7 @@ Populates and references:
 	where ahar = 1 and HHParent = 1 and ActiveHHType = 3
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select 50, n.PersonalID, '9.1.11' 
+	select distinct 50, n.PersonalID, '9.1.11' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.VetStatus = 1
@@ -93,7 +91,7 @@ Populates and references:
 	where hhid.AHAR = 1 and hhid.HHParent = 1 and hhid.ActiveHHType = 3
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select 53, n.PersonalID, '9.1.14' 
+	select distinct 53, n.PersonalID, '9.1.14' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DisabilityStatus = 1 and (
@@ -101,19 +99,19 @@ Populates and references:
 		or (lp.CHTime = 400 and lp.CHTimeStatus = 2))
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select 54, n.PersonalID, '9.1.15' 
+	select distinct 54, n.PersonalID, '9.1.15' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DisabilityStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select 55, n.PersonalID, '9.1.16' 
+	select distinct 55, n.PersonalID, '9.1.16' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DVStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select case when lp.Race = 5 and lp.Ethnicity <> 1 then 56
+	select distinct case when lp.Race = 5 and lp.Ethnicity <> 1 then 56
 		when lp.Race = 5 and lp.Ethnicity <> 1 then 57
 		when lp.Race = 5 and lp.Ethnicity = 1 then 58
 		when lp.Race = 3 and lp.Ethnicity <> 1 then 59
@@ -128,14 +126,14 @@ Populates and references:
 	where n.AHAR = 1 and lp.Race not in (-1,98,99) 
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select case when lp.Ethnicity = 0 then 65
+	select distinct case when lp.Ethnicity = 0 then 65
 		else 66 end, n.PersonalID, n.HouseholdID, '9.1.18' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.Ethnicity in (0,1)
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select case lp.Gender
+	select distinct case lp.Gender
 		when 1 then 67
 		when 2 then 68
 		when 3 then 69
@@ -164,7 +162,7 @@ Populates and references:
 	group by n.PersonalID
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step)
-	select case when hhid.ActiveHHType = 1 and n.ActiveAge = 21 then 1176
+	select distinct case when hhid.ActiveHHType = 1 and n.ActiveAge = 21 then 1176
 			when hhid.ActiveHHType = 1 and n.ActiveAge = 24 then 1177
 			when hhid.ActiveHHType = 2 and n.ActiveAge = 21 then 1276
 			else 1277 end
@@ -176,7 +174,7 @@ Populates and references:
 		and n.AHAR = 1
 
     insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step)
-	select rp.PopID, p1.PersonalID, p1.HouseholdID, '9.1.22'
+	select distinct rp.PopID, p1.PersonalID, p1.HouseholdID, '9.1.22'
 	from ref_RowPopulations rp
 	inner join tlsa_CountPops p1 on p1.PopID = rp.Pop1
 	inner join tlsa_CountPops p2 on p2.PopID = rp.Pop2 and (p2.PersonalID = p1.PersonalID or p1.PersonalID is NULL)
@@ -253,7 +251,7 @@ Populates and references:
 	inner join ref_RowPopulations rp on rv.RowID between rp.RowMin and rp.RowMax 
 	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID
 	inner join tlsa_CountPops pop on rp.PopID = pop.PopID 
-	inner join tlsa_HHID hhid on rp.PopID = 0 or hhid.HouseholdID = pop.HouseholdID
+	inner join tlsa_HHID hhid on (rp.PopID = 0 or hhid.HouseholdID = pop.HouseholdID)
 		and (hhid.ActiveHHType = ph.HHType or ph.HHType = 0)
 		and (
 				rv.Universe = 10 
