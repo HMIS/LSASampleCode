@@ -111,15 +111,16 @@ Populates and references:
 	where n.AHAR = 1 and lp.DVStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select distinct case when lp.Race = 5 and lp.Ethnicity <> 1 then 56
-		when lp.Race = 5 and lp.Ethnicity <> 1 then 57
-		when lp.Race = 5 and lp.Ethnicity = 1 then 58
-		when lp.Race = 3 and lp.Ethnicity <> 1 then 59
-		when lp.Race = 3 and lp.Ethnicity = 1 then 60
-		when lp.Race = 2 then 61
-		when lp.Race = 1 and lp.Ethnicity <> 1 then 62
-		when lp.Race = 1 and lp.Ethnicity = 1 then 63
-		else 64 end
+	select distinct 
+		case when lp.Race = 5 and lp.Ethnicity <> 1 then 56
+			when lp.Race = 5 and lp.Ethnicity = 1 then 57
+			when lp.Race = 3 and lp.Ethnicity <> 1 then 58
+			when lp.Race = 3 and lp.Ethnicity = 1 then 59
+			when lp.Race = 2 then 60
+			when lp.Race = 1 and lp.Ethnicity <> 1 then 61
+			when lp.Race = 1 and lp.Ethnicity = 1 then 62
+			when lp.Race = 4 then 63
+			else 64 end
 		, n.PersonalID, n.HouseholdID, '9.1.17' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
@@ -243,7 +244,7 @@ Populates and references:
 	
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID
 		, ReportRow, ReportID, Step)
-	select distinct case when rv.RowID = 53 then count(distinct n.PersonalID) else count(distinct n.HouseholdID) end
+	select distinct case when rv.RowID = 53 then count(distinct n.PersonalID) else count(distinct hhid.HoHID + hhid.ActiveHHType) end
 		, rv.Cohort, rv.Universe, hhid.ActiveHHType, rp.PopID, rv.SystemPath
 		, case when rv.Universe = 10 then hhid.ProjectID else null end
 		, rv.RowID, (select ReportID from lsa_Report), '9.3.1'
@@ -272,7 +273,7 @@ Populates and references:
 		where rv.RowID in (53,54)
 		group by rv.RowID, rv.Cohort, rv.Universe, hhid.ActiveHHType, rp.PopID, rv.SystemPath
 			, case when rv.Universe = 10 then hhid.ProjectID else null end
-			, case when rv.RowID = 53 then hhid.HouseholdID else null end
+
 
 /*
 	9.4 Counts of People by Project and Personal Characteristics
