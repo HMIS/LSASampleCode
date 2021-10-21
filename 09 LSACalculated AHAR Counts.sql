@@ -352,11 +352,12 @@ Populates and references:
 			, (select ReportID from lsa_Report), '9.5.1'
 		from hmis_Services bn
 		inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
+				and (n.ExitDate is null or n.ExitDate > bn.DateProvided)
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
 		inner join tlsa_CountPops pop on (pop.HouseholdID = n.HouseholdID and pop.PopID in (10,11))
 			or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
 			or (pop.PopID = 0)
-		inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd > bn.DateProvided
+		inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd >= bn.DateProvided
 		where hhid.LSAProjectType = 1 and bn.RecordType = 200 and bn.DateDeleted is NULL and n.AHAR = 1
 		group by hhid.ActiveHHType, hhid.ProjectID, pop.PopID
 
@@ -396,11 +397,12 @@ Populates and references:
 		(select distinct n.PersonalID + cast(bn.DateProvided as varchar) as bn, hhid.ActiveHHType as HHType, pop.PopID
 			from hmis_Services bn
 			inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
+				and (n.ExitDate is null or n.ExitDate > bn.DateProvided)
 			inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
 			inner join tlsa_CountPops pop on (pop.HouseholdID = n.HouseholdID and pop.PopID in (10,11))
 				or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
 				or (pop.PopID = 0)
-			inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd > bn.DateProvided
+			inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd >= bn.DateProvided
 			where hhid.LSAProjectType = 1 and bn.RecordType = 200 and bn.DateDeleted is NULL and n.AHAR = 1
 		union all
 		select distinct n.PersonalID + cast(cal.theDate as varchar), hhid.ActiveHHType, pop.PopID
@@ -459,12 +461,13 @@ Populates and references:
 	from 
 		(select distinct n.PersonalID + cast(bn.DateProvided as varchar) as bn, hhid.ActiveHHType as HHType, pop.PopID
 			from hmis_Services bn
-			inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
+			inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID and n.EntryDate <= bn.DateProvided 
+				and (n.ExitDate is null or n.ExitDate > bn.DateProvided)
 			inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
 			inner join tlsa_CountPops pop on (pop.HouseholdID = n.HouseholdID and pop.PopID in (10,11))
 				or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
 				or (pop.PopID = 0)
-			inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd > bn.DateProvided
+			inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd >= bn.DateProvided
 			where hhid.LSAProjectType = 1 and bn.RecordType = 200 and bn.DateDeleted is NULL and n.AHAR = 1
 		union all
 		select distinct n.PersonalID + cast(cal.theDate as varchar), hhid.ActiveHHType, pop.PopID
