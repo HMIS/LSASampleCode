@@ -358,7 +358,7 @@ Populates and references:
 			or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
 			or (pop.PopID = 0)
 		inner join lsa_Report rpt on rpt.ReportStart <= bn.DateProvided and rpt.ReportEnd >= bn.DateProvided
-		where hhid.LSAProjectType = 1 and bn.RecordType = 200 and bn.DateDeleted is NULL and n.AHAR = 1
+		where n.LSAProjectType = 1 and bn.RecordType = 200 and bn.DateDeleted is NULL and n.AHAR = 1
 		group by hhid.ActiveHHType, hhid.ProjectID, pop.PopID
 
 	-- By ProjectID (Universe 10) - entry-exit ES, SH, TH, RRH, and PSH 
@@ -385,7 +385,7 @@ Populates and references:
 		and cal.theDate >= rpt.ReportStart
 		and cal.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 		and n.LSAProjectType in (0,2,3,8,13)
-	where hhid.AHAR = 1 
+	where n.AHAR = 1 
 	group by n.ProjectID, rpt.ReportID, hhid.ActiveHHType, pop.PopID
 	
 	-- All ES (Universe 11) 
@@ -416,7 +416,7 @@ Populates and references:
 			and cal.theDate >= rpt.ReportStart
 			and cal.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 			and n.LSAProjectType = 0
-		where hhid.AHAR = 1) es
+		where n.AHAR = 1) es
 	group by es.HHType, es.PopID
 
 		
@@ -447,7 +447,7 @@ Populates and references:
 		and cal.theDate >= rpt.ReportStart
 		and cal.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 		and n.LSAProjectType in (2,3,8,13)
-	where hhid.AHAR = 1 
+	where n.AHAR = 1 
 	group by case n.LSAProjectType 
 				when 8 then 12
 				when 2 then 13
@@ -457,7 +457,7 @@ Populates and references:
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
 	select count(distinct est.bn), 1, 11, est.HHType, est.PopID, -1, NULL
 		, case when est.popID in (0,10,11) then 56 else 57 end 
-		, (select ReportID from lsa_Report), '9.5.7'
+		, (select ReportID from lsa_Report), '9.5.5'
 	from 
 		(select distinct n.PersonalID + cast(bn.DateProvided as varchar) as bn, hhid.ActiveHHType as HHType, pop.PopID
 			from hmis_Services bn
@@ -481,6 +481,6 @@ Populates and references:
 			and cal.theDate >= rpt.ReportStart
 			and cal.theDate < coalesce(n.ExitDate, dateadd(dd, 1, rpt.ReportEnd))
 			and n.LSAProjectType in (0,2,8)
-		where hhid.AHAR = 1) est
+		where n.AHAR = 1) est
 	group by est.HHType, est.PopID
 	
