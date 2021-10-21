@@ -187,53 +187,72 @@ Populates and references:
 */
 
 	update n
-	set PITOctober = case when cd1.Cohort is null then 0 else 1 end
-	  , PITJanuary = case when cd2.Cohort is null then 0 else 1 end
-	  , PITApril = case when cd3.Cohort is null then 0 else 1 end
-	  , PitJuly = case when cd4.Cohort is null then 0 else 1 end
+	set PITOctober = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.EntryDate <= cd.CohortStart and cd.Cohort = 10)
+	  , PITJanuary = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.EntryDate <= cd.CohortStart and cd.Cohort = 11)
+	  , PITApril = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.EntryDate <= cd.CohortStart and cd.Cohort = 12)
+	  , PITJuly = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.EntryDate <= cd.CohortStart and cd.Cohort = 13)
 	  , Step = '9.2.1'
 	from tlsa_Enrollment n
-	left outer join tlsa_CohortDates cd1 on cd1.CohortEnd >= n.EntryDate 
-		and (cd1.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd1.Cohort = 10
-	left outer join tlsa_CohortDates cd2 on cd2.CohortEnd >= n.EntryDate 
-		and (cd2.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd2.Cohort = 11
-	left outer join tlsa_CohortDates cd3 on cd3.CohortEnd >= n.EntryDate 
-		and (cd3.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd3.Cohort = 12
-	left outer join tlsa_CohortDates cd4 on cd4.CohortEnd >= n.EntryDate 
-		and (cd4.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd4.Cohort = 13
 	where n.LSAProjectType in (0,2,8) 
 		and n.AHAR = 1
 
 	update n
-	set PITOctober = case when cd1.Cohort is null then 0 else 1 end
-	  , PITJanuary = case when cd2.Cohort is null then 0 else 1 end
-	  , PITApril = case when cd3.Cohort is null then 0 else 1 end
-	  , PitJuly = case when cd4.Cohort is null then 0 else 1 end
-	  , Step = '9.2.2'
+	set n.PITOctober = PIT.PITOctober
+		, n.PITJanuary = PIT.PITJanuary
+		, n.PITApril = PIT.PITApril
+		, n.PITJuly = PIT.PITJuly
+		, n.Step = '9.2.2'
 	from tlsa_Enrollment n
-	inner join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID
-	left outer join tlsa_CohortDates cd1 on cd1.CohortStart = bn.DateProvided and cd1.Cohort = 10
-	left outer join tlsa_CohortDates cd2 on cd2.CohortStart = bn.DateProvided and cd2.Cohort = 11 
-	left outer join tlsa_CohortDates cd3 on cd3.CohortStart = bn.DateProvided and cd2.Cohort = 12 
-	left outer join tlsa_CohortDates cd4 on cd4.CohortStart = bn.DateProvided and cd2.Cohort = 13 
-	where n.LSAProjectType = 1
-		and n.AHAR = 1
+	inner join (select nbn.EnrollmentID 
+		  , PITOctober = max(case when cd1.Cohort is null then 0 else 1 end)
+		  , PITJanuary = max(case when cd2.Cohort is null then 0 else 1 end)
+		  , PITApril = max(case when cd3.Cohort is null then 0 else 1 end)
+		  , PITJuly = max(case when cd4.Cohort is null then 0 else 1 end)
+		from tlsa_Enrollment nbn
+		inner join tlsa_CohortDates cd on cd.CohortEnd >= nbn.EntryDate 
+			and (nbn.ExitDate is NULL or nbn.ExitDate > cd.CohortStart) 
+		inner join hmis_Services bn on bn.EnrollmentID = nbn.EnrollmentID
+			and nbn.EntryDate <= bn.DateProvided
+			and (nbn.ExitDate is NULL or nbn.ExitDate > bn.DateProvided)
+		left outer join tlsa_CohortDates cd1 on cd1.CohortStart = bn.DateProvided and cd1.Cohort = 10 
+		left outer join tlsa_CohortDates cd2 on cd2.CohortStart = bn.DateProvided and cd2.Cohort = 11 
+		left outer join tlsa_CohortDates cd3 on cd3.CohortStart = bn.DateProvided and cd3.Cohort = 12 
+		left outer join tlsa_CohortDates cd4 on cd4.CohortStart = bn.DateProvided and cd4.Cohort = 13 
+		where nbn.LSAProjectType = 1
+			and nbn.AHAR = 1
+		group by nbn.EnrollmentID) PIT on PIT.EnrollmentID = n.EnrollmentID
 
 	update n
-	set PITOctober = case when cd1.Cohort is null then 0 else 1 end
-	  , PITJanuary = case when cd2.Cohort is null then 0 else 1 end
-	  , PITApril = case when cd3.Cohort is null then 0 else 1 end
-	  , PitJuly = case when cd4.Cohort is null then 0 else 1 end
+	set PITOctober = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.MoveInDate <= cd.CohortStart and cd.Cohort = 10)
+	  , PITJanuary = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.MoveInDate <= cd.CohortStart and cd.Cohort = 11)
+	  , PITApril = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.MoveInDate <= cd.CohortStart and cd.Cohort = 12)
+	  , PITJuly = (select case when cd.Cohort is null then 0 else 1 end
+						from tlsa_CohortDates cd
+						where (cd.CohortStart < n.ExitDate or n.ExitDate is NULL) 
+							and n.MoveInDate <= cd.CohortStart and cd.Cohort = 13)
 	  , Step = '9.2.3'
 	from tlsa_Enrollment n
-	left outer join tlsa_CohortDates cd1 on cd1.CohortEnd >= n.MoveInDate 
-		and (cd1.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd1.Cohort = 10
-	left outer join tlsa_CohortDates cd2 on cd2.CohortEnd >= n.MoveInDate 
-		and (cd2.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd2.Cohort = 11
-	left outer join tlsa_CohortDates cd3 on cd3.CohortEnd >= n.MoveInDate 
-		and (cd3.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd3.Cohort = 12
-	left outer join tlsa_CohortDates cd4 on cd4.CohortEnd >= n.MoveInDate 
-		and (cd4.CohortStart < n.ExitDate or n.ExitDate is NULL) and cd4.Cohort = 13
 	where n.LSAProjectType in (3,13) 
 		and n.AHAR = 1
 
@@ -244,7 +263,8 @@ Populates and references:
 	
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID
 		, ReportRow, ReportID, Step)
-	select distinct case when rv.RowID = 53 then count(distinct n.PersonalID) else count(distinct hhid.HoHID + hhid.ActiveHHType) end
+	select distinct case when rv.RowID = 53 then count(distinct n.PersonalID) 
+			else count(distinct hhid.HoHID + cast(hhid.ActiveHHType as varchar)) end
 		, rv.Cohort, rv.Universe, hhid.ActiveHHType, rp.PopID, rv.SystemPath
 		, case when rv.Universe = 10 then hhid.ProjectID else null end
 		, rv.RowID, (select ReportID from lsa_Report), '9.3.1'
@@ -406,7 +426,7 @@ Populates and references:
 		, 1, case n.LSAProjectType 
 				when 8 then 12
 				when 2 then 13
-				when 3 then 14 else 15 end 
+				when 13 then 14 else 15 end 
 		, hhid.ActiveHHType
 		, pop.PopID, -1
 		, case when pop.popID in (0,10,11) then 56 else 57 end 
@@ -429,7 +449,7 @@ Populates and references:
 	group by case n.LSAProjectType 
 				when 8 then 12
 				when 2 then 13
-				when 3 then 14 else 15 end, rpt.ReportID, hhid.ActiveHHType, pop.PopID
+				when 13 then 14 else 15 end, rpt.ReportID, hhid.ActiveHHType, pop.PopID
 
 	-- Unduplicated ES/SH/TH (Universe 16) 
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
