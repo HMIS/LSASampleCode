@@ -289,11 +289,11 @@ update rpt
 				and (n.LSAProjectType in (0,1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
-						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
-						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (10,11))
+						-- ... or when LOS is < 7 days and PreviousStreetESSH <> 0
+						or ((hn.PreviousStreetESSH <> 0 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (10,11))
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
-							-- and PreviousStreetESSH = 1 
-						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
+							-- and PreviousStreetESSH <> 0 
+						or ((hn.PreviousStreetESSH <> 0 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
 							and hn.LivingSituation in (4,5,6,7,15,25))
 					))))
 	,	HomelessDate3 = (select count(distinct n.EnrollmentID)
@@ -308,11 +308,11 @@ update rpt
 				and (n.LSAProjectType in (0,1,8)
 						-- ... or when LivingSituation is ES/SH/street/interim housing
 						or hn.LivingSituation in (1,16,18,27) 
-						-- ... or when LOS is < 7 days and PreviousStreetESSH = 1
-						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (10,11))
+						-- ... or when LOS is < 7 days and PreviousStreetESSH <> 0
+						or ((hn.PreviousStreetESSH <> 0 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (10,11))
 						-- ... or when LivingSituation is institutional, LOS is < 90 days
-							-- and PreviousStreetESSH = 1 
-						or ((hn.PreviousStreetESSH = 1 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
+							-- and PreviousStreetESSH <> 0 
+						or ((hn.PreviousStreetESSH <> 0 or hn.PreviousStreetESSH is NULL) and hn.LengthOfStay in (2,3)
 							and hn.LivingSituation in (4,5,6,7,15,25))
 					))))
 	,	TimesHomeless1 = (select count(distinct n.EnrollmentID)
