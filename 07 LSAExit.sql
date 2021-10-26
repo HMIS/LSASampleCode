@@ -169,8 +169,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	inner join ref_Calendar cal on cal.theDate >=
 			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
-		and ((cal.theDate < chn.ExitDate 
-			or chn.ExitDate is null))
+		and cal.theDate < chn.ExitDate
 			and cal.theDate between ha.CHStart and ha.LastActive
 	where chn.LSAProjectType in (2,3,13) and ha.CHTime is null
 
@@ -188,7 +187,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID 
 		inner join ref_Calendar cal on 
 			cal.theDate >= chn.EntryDate 
-		and (cal.theDate < chn.ExitDate or chn.ExitDate is null)
+		and cal.theDate < chn.ExitDate
 			and cal.theDate between ha.CHStart and ha.LastActive
 		left outer join ch_Exclude chx on chx.excludeDate = cal.theDate
 			and chx.PersonalID = chn.PersonalID
@@ -205,7 +204,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		inner join hmis_Services bn on bn.EnrollmentID = hhid.EnrollmentID
 			and bn.RecordType = 200 
 			and bn.DateProvided >= chn.EntryDate 
-			and (bn.DateProvided < chn.ExitDate or chn.ExitDate is null)
+			and bn.DateProvided < chn.ExitDate
 			and bn.DateDeleted is null
 		inner join ref_Calendar cal on 
 			cal.theDate = bn.DateProvided 
@@ -250,7 +249,6 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 				chn.LSAProjectType in (3,13)
 				and (cal.theDate < chn.MoveInDate
 					 or (chn.MoveInDate is NULL and cal.theDate < chn.ExitDate)
-					 or (chn.MoveInDate is NULL and chn.ExitDate is NULL and cal.theDate <= ha.LastActive)
 					)
 				)
 			)						
