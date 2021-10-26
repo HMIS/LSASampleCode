@@ -260,7 +260,7 @@ Populates and references:
 		rv.Cohort, rv.Universe, ph.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
 		hh.ReportID, '8.4-8.7'
-	from tlsa_household hh 
+	from tlsa_Household hh 
 	inner join tlsa_AveragePops pop on (pop.PopID = 0 or (pop.HHType = hh.HHType and pop.HoHID = hh.HoHID)) and pop.Cohort = 1
 	inner join ref_RowPopulations rp on rp.PopID = pop.PopID 
 	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID and (ph.HHType = hh.HHType or ph.HHType = 0)
