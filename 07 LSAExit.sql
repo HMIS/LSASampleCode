@@ -136,7 +136,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		CHTime, CHTimeStatus, Step)
 	select distinct n.PersonalID, ex.QualifyingExitHHID,
 		ex.Cohort, case when n.DisabilityStatus = 1 then 1 else 0 end,
-		dateadd(dd, -1, (dateadd(yy, -3, n.ExitDate))),
+		dateadd(dd, 1, (dateadd(yy, -3, n.ExitDate))),
 		n.ExitDate, 
 		case when hn.MonthsHomelessPastThreeYears in (112,113) 
 			and hn.TimesHomelessPastThreeYears = 4
@@ -164,8 +164,9 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	insert into ch_Exclude (PersonalID, excludeDate, Step)
 	select distinct ha.PersonalID, cal.theDate, '7.5'
 	from tlsa_ExitHoHAdult ha
-	inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID and chn.EntryDate < ha.LastActive
-		and chn.ExitDate > ha.CHStart
+	inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID 
+		and chn.EntryDate < (select max(latest.LastActive) from tlsa_ExitHoHAdult latest where latest.PersonalID = ha.PersonalID) 
+		and chn.ExitDate > (select min(earliest.CHStart) from tlsa_ExitHoHAdult earliest where earliest.PersonalID = ha.PersonalID)
 	inner join ref_Calendar cal on cal.theDate >=
 			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
 				else chn.EntryDate end
