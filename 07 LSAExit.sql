@@ -150,10 +150,10 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	inner join tlsa_Enrollment n on n.HouseholdID = ex.QualifyingExitHHID 
 		and n.ExitDate between cd.CohortStart and cd.CohortEnd
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
-	where ex.HHChronic is null and n.RelationshipToHoH = 1 
+	where ex.HHChronic is null and (n.RelationshipToHoH = 1 
 		or (cd.Cohort = 0 and n.ActiveAge between 18 and 65)
 		or (cd.Cohort = -1 and n.Exit1Age between 18 and 65)
-		or (cd.Cohort = -2 and n.Exit2Age between 18 and 65)
+		or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
 
 /*
 	7.5 Get Dates to Exclude from Counts of ES/SH/Street Days
