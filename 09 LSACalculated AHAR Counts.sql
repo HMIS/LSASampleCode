@@ -353,6 +353,7 @@ Populates and references:
 		from hmis_Services bn
 		inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
 				and (n.ExitDate is null or n.ExitDate > bn.DateProvided)
+				and n.EntryDate <= bn.DateProvided
 		inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
 		inner join tlsa_CountPops pop on (pop.HouseholdID = n.HouseholdID and pop.PopID in (10,11))
 			or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
@@ -398,6 +399,7 @@ Populates and references:
 			from hmis_Services bn
 			inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
 				and (n.ExitDate is null or n.ExitDate > bn.DateProvided)
+				and n.EntryDate <= bn.DateProvided
 			inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
 			inner join tlsa_CountPops pop on (pop.HouseholdID = n.HouseholdID and pop.PopID in (10,11))
 				or (pop.PersonalID = n.PersonalID and pop.PopID in (50,53))
