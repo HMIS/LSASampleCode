@@ -121,13 +121,6 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	7.4 HoH and Adult Members of Exit Cohorts
 */
 
-	update ex
-	set ex.HHChronic = 0, ex.Step = '7.4.1'
-	from tlsa_Exit ex
-	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
-	where (ex.ExitFrom = 3 and hhid.EntryDate <= dateadd(yy, -1, hhid.ExitDate))
-		or (ex.ExitFrom in (5,6) and hhid.MoveInDate <= dateadd(yy, -1, hhid.ExitDate))
-
 	truncate table tlsa_ExitHoHAdult
 
 	insert into tlsa_ExitHoHAdult (
@@ -144,16 +137,19 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		case when hn.MonthsHomelessPastThreeYears in (112,113) 
 			and hn.TimesHomelessPastThreeYears = 4
 			and hn.EntryDate > dateadd(yyyy, -1, n.ExitDate) then 2 else null end
-		, '7.4.2'
+		, '7.4'
 	from tlsa_Exit ex
+	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
 	inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
 	inner join tlsa_Enrollment n on n.HouseholdID = ex.QualifyingExitHHID 
 		and n.ExitDate between cd.CohortStart and cd.CohortEnd
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
-	where ex.HHChronic is null and (n.RelationshipToHoH = 1 
-		or (cd.Cohort = 0 and n.ActiveAge between 18 and 65)
-		or (cd.Cohort = -1 and n.Exit1Age between 18 and 65)
-		or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
+	where (n.RelationshipToHoH = 1 
+			or (cd.Cohort = 0 and n.ActiveAge between 18 and 65)
+			or (cd.Cohort = -1 and n.Exit1Age between 18 and 65)
+			or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
+		and (ex.ExitFrom <> 3 or hhid.EntryDate > dateadd(yy, -1, hhid.ExitDate))
+		and (ex.ExitFrom not in (5,6) or hhid.MoveInDate > dateadd(yy, -1, hhid.ExitDate))
 
 /*
 	7.5 Get Dates to Exclude from Counts of ES/SH/Street Days
