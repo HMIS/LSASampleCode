@@ -22,57 +22,57 @@ Populates and references:
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 10, HouseholdID, '9.1.1' 
 	from tlsa_HHID
-	where ahar = 1 and HHAdultAge = 18 
+	where AHAR = 1 and HHAdultAge = 18 
 		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 11, HouseholdID, '9.1.2' 
 	from tlsa_HHID
-	where ahar = 1 and HHAdultAge = 24 
+	where AHAR = 1 and HHAdultAge = 24 
 		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 12, HouseholdID, '9.1.3' 
 	from tlsa_HHID
-	where ahar = 1 and HHParent = 1 and HHAdultAge in (18,24)
+	where AHAR = 1 and HHParent = 1 and HHAdultAge in (18,24)
 		and ActiveHHType = 2
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 13, HouseholdID, '9.1.4' 
 	from tlsa_HHID
-	where ahar = 1 and HHVet = 1
+	where AHAR = 1 and HHVet = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 14, HouseholdID, '9.1.5' 
 	from tlsa_HHID
-	where ahar = 1 and HHVet = 0 and HHAdultAge in (25,55)
+	where AHAR = 1 and HHVet = 0 and HHAdultAge in (25,55)
 	and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 15, HouseholdID, '9.1.6' 
 	from tlsa_HHID
-	where ahar = 1 and HHChronic = 1
+	where AHAR = 1 and HHChronic = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 18, HouseholdID, '9.1.7' 
 	from tlsa_HHID
-	where ahar = 1 and HHDisability = 1
+	where AHAR = 1 and HHDisability = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 19, HouseholdID, '9.1.8'
 	from tlsa_HHID
-	where ahar = 1 and HHFleeingDV = 1
+	where AHAR = 1 and HHFleeingDV = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 34, HouseholdID, '9.1.9' 
 	from tlsa_HHID
-	where ahar = 1 and HHAdultAge = 55
+	where AHAR = 1 and HHAdultAge = 55
 		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
 	select 35, HouseholdID, '9.1.10' 
 	from tlsa_HHID
-	where ahar = 1 and HHParent = 1 and ActiveHHType = 3
+	where AHAR = 1 and HHParent = 1 and ActiveHHType = 3
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
 	select distinct 50, n.PersonalID, '9.1.11' 
@@ -348,7 +348,7 @@ Populates and references:
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
 	select count(distinct n.PersonalID + cast(bn.DateProvided as varchar)), 1, 10, hhid.ActiveHHType, pop.PopID, -1
 			, hhid.ProjectID
-			, case when pop.popID in (0,10,11) then 56 else 57 end 
+			, case when pop.PopID in (0,10,11) then 56 else 57 end 
 			, (select ReportID from lsa_Report), '9.5.1'
 		from hmis_Services bn
 		inner join tlsa_Enrollment n on n.EnrollmentID = bn.EnrollmentID
@@ -368,7 +368,7 @@ Populates and references:
 	select count (distinct n.PersonalID + cast(cal.theDate as nvarchar))
 		, 1, 10, hhid.ActiveHHType
 		, pop.PopID, -1 
-		, case when pop.popID in (0,10,11) then 56 else 57 end 
+		, case when pop.PopID in (0,10,11) then 56 else 57 end 
 		, n.ProjectID
 		, rpt.ReportID, '9.5.2'
 	from tlsa_Enrollment n 
@@ -391,7 +391,7 @@ Populates and references:
 	-- All ES (Universe 11) 
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
 	select count(distinct es.bn), 1, 11, es.HHType, es.PopID, -1, NULL
-		, case when es.popID in (0,10,11) then 56 else 57 end 
+		, case when es.PopID in (0,10,11) then 56 else 57 end 
 		, (select ReportID from lsa_Report), '9.5.3'
 	from 
 		(select distinct n.PersonalID + cast(bn.DateProvided as varchar) as bn, hhid.ActiveHHType as HHType, pop.PopID
@@ -431,7 +431,7 @@ Populates and references:
 				when 13 then 14 else 15 end 
 		, hhid.ActiveHHType
 		, pop.PopID, -1
-		, case when pop.popID in (0,10,11) then 56 else 57 end 
+		, case when pop.PopID in (0,10,11) then 56 else 57 end 
 		, rpt.ReportID, '9.5.4'
 	from tlsa_Enrollment n 
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
@@ -456,7 +456,7 @@ Populates and references:
 	-- Unduplicated ES/SH/TH (Universe 16) 
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
 	select count(distinct est.bn), 1, 11, est.HHType, est.PopID, -1, NULL
-		, case when est.popID in (0,10,11) then 56 else 57 end 
+		, case when est.PopID in (0,10,11) then 56 else 57 end 
 		, (select ReportID from lsa_Report), '9.5.5'
 	from 
 		(select distinct n.PersonalID + cast(bn.DateProvided as varchar) as bn, hhid.ActiveHHType as HHType, pop.PopID

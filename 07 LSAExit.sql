@@ -96,7 +96,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	update ex
 	set ex.ReturnTime = coalesce (
 			(select datediff(dd, qx.ExitDate, min(rn.EntryDate))
-			from tlsa_hhid qx
+			from tlsa_HHID qx
 			inner join tlsa_HHID rn on rn.HoHID = qx.HoHID 
 				and case qx.ExitCohort 
 						when -2 then rn.Exit2HHType
