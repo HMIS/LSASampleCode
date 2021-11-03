@@ -420,7 +420,6 @@ Populates and references:
 			and n.LSAProjectType = 0
 		where n.AHAR = 1) es
 	group by es.HHType, es.PopID
-
 		
 	-- By Project Type SH/TH/RRH/PSH (Universe 12-15)
 	insert into lsa_Calculated
@@ -457,7 +456,7 @@ Populates and references:
 
 	-- Unduplicated ES/SH/TH (Universe 16) 
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
-	select count(distinct est.bn), 1, 11, est.HHType, est.PopID, -1, NULL
+	select count(distinct est.bn), 1, 16, est.HHType, est.PopID, -1, NULL
 		, case when est.PopID in (0,10,11) then 56 else 57 end 
 		, (select ReportID from lsa_Report), '9.5.5'
 	from 
