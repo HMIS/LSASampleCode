@@ -38,7 +38,7 @@ create table lsa_Project(
 	ProjectID nvarchar(32) not NULL,
 	OrganizationID nvarchar(32) not NULL,
 	ProjectName nvarchar(100) not NULL,
-	ProjectCommonName nvarchar(100),
+	ProjectCommonName nvarchar(50),
 	OperatingStartDate nvarchar(10) not NULL,	--HMIS: date
 	OperatingEndDate nvarchar(10),				--HMIS: date
 	ContinuumProject int not NULL,
@@ -65,9 +65,9 @@ if object_id ('lsa_Organization') is not NULL drop table lsa_Organization
 
 create table lsa_Organization(
 	OrganizationID nvarchar(32) not NULL,
-	OrganizationName nvarchar(100) not NULL,
+	OrganizationName nvarchar(50) not NULL,
 	VictimServiceProvider int not NULL,
-	OrganizationCommonName nvarchar(100),
+	OrganizationCommonName nvarchar(50),
 	DateCreated nvarchar(19) not NULL,			--HMIS: datetime
 	DateUpdated nvarchar(19) not NULL,			--HMIS: datetime
 	UserID nvarchar(32),						--HMIS: not NULL
