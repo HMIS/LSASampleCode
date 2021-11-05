@@ -325,9 +325,9 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	update ha
 	set ha.CHTime = case when time_sum.count_days >= 365 then 365
 			when time_sum.count_days >= 270 then 270
-			else 0 end
+			else NULL end
 		, ha.CHTimeStatus = case when time_sum.count_eps >= 4 then 2
-			else 3 end 
+			else NULL end 
 	    , ha.Step = '7.8.2'
 	from tlsa_ExitHoHAdult ha
 	inner join (select hoha.PersonalID, hoha.Cohort
