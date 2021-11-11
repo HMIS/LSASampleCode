@@ -159,7 +159,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
 		and hn.MonthsHomelessPastThreeYears in (112,113) 
 		and hn.TimesHomelessPastThreeYears = 4
-		and hn.EntryDate > dateadd(yyyy, -1, n.ExitDate) 
+		and hn.EntryDate = n.EntryDate 
 /*
 	7.5 Get Dates to Exclude from Counts of ES/SH/Street Days
 */
@@ -327,6 +327,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			when time_sum.count_days >= 270 then 270
 			else NULL end
 		, ha.CHTimeStatus = case when time_sum.count_eps >= 4 then 2
+			when time_sum.count_eps < 4 then 3
 			else NULL end 
 	    , ha.Step = '7.8.2'
 	from tlsa_ExitHoHAdult ha
