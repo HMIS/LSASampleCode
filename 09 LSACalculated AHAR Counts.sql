@@ -293,7 +293,6 @@ Populates and references:
 				when 12 then n.PITApril
 				else n.PITJuly end = 1 
 		where rv.RowID in (53,54)
-			and (rv.Universe = 10 or rp.ByProject is NULL)
 		group by rv.RowID, rv.Cohort, rv.Universe, hhid.ActiveHHType, rp.PopID, rv.SystemPath
 			, case when rv.Universe = 10 then hhid.ProjectID else null end
 
