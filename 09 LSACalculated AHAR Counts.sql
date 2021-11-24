@@ -179,7 +179,7 @@ Populates and references:
 	from ref_RowPopulations rp
 	inner join tlsa_CountPops p1 on p1.PopID = rp.Pop1
 	inner join tlsa_CountPops p2 on p2.PopID = rp.Pop2 and (p2.PersonalID = p1.PersonalID or p1.PersonalID is NULL)
-		and (p2.HouseholdID = p1.HouseholdID or p1.HouseholdID is null)
+		and (p2.HouseholdID = p1.HouseholdID or p1.HouseholdID is null or p2.HouseholdID is NULL)
 	where rp.RowMin >= 53 and rp.RowMax <> 64
 
 /*
