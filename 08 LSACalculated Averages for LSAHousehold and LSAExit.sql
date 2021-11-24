@@ -241,6 +241,9 @@ Populates and references:
 /*
 	8.4-8.7 Average Days from LSAHousehold 
  */
+
+	delete from lsa_Calculated where ReportRow between 1 and 16
+
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
 	select case rv.RowID 
@@ -302,10 +305,12 @@ Populates and references:
 	8.8-8.11 Average Days from LSAExit 
 */
 
+	delete from lsa_Calculated where ReportRow between 18 and 52 or ReportRow in (63,64) 
+
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ReportID, Step)
 	select avg(ex.ReturnTime),
-		rv.Cohort, rv.Universe, ex.HHType,
+		rv.Cohort, rv.Universe, ph.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
 		ex.ReportID, '8.8-8.11'
 	from tlsa_Exit ex 
@@ -327,6 +332,6 @@ Populates and references:
 		and (rv.RowID <> 36 or ex.SystemPath <> -1)
 		and (rv.RowID not between 37 and 51 or ex.ExitTo = (rv.RowID - 36))
 		and (rv.RowID <> 52 or ex.ExitTo = 99)
-	group by rv.RowID, rv.Cohort, rv.Universe, ex.HHType,
+	group by rv.RowID, rv.Cohort, rv.Universe, ph.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
 		ex.ReportID
