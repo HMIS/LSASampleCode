@@ -178,8 +178,7 @@ Populates and references:
 	select distinct rp.PopID, p1.PersonalID, p1.HouseholdID, '9.1.22'
 	from ref_RowPopulations rp
 	inner join tlsa_CountPops p1 on p1.PopID = rp.Pop1
-	inner join tlsa_CountPops p2 on p2.PopID = rp.Pop2 and (p2.PersonalID = p1.PersonalID or p1.PersonalID is NULL)
-		and (p2.HouseholdID = p1.HouseholdID or p1.HouseholdID is null or p2.HouseholdID is NULL)
+	inner join tlsa_CountPops p2 on p2.PopID = rp.Pop2 and p2.PersonalID = p1.PersonalID
 	where rp.RowMin >= 53 and rp.RowMax <> 64
 
 /*
