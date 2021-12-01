@@ -1198,6 +1198,10 @@ insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, 
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (53,54,NULL,NULL,35,0,35);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,50,0,50);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,53,0,53);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,1176,0,1176);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,1177,0,1177);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,1276,0,1276);
+insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,NULL,1277,0,1277);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1176,0,1176);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1177,0,1177);
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (55,55,NULL,1,1276,0,1276);

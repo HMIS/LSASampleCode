@@ -330,7 +330,7 @@ Populates and references:
 				or (rv.Universe = 16 and hhid.LSAProjectType in (0,1,2,8))
 			)
 		where rv.RowID = 55 
-			and (rv.Universe = 10 or rp.ByProject is NULL)
+			and ((rv.Universe = 10 and rp.ByProject = 1) or rp.ByProject is NULL)
 		group by rv.Cohort, rv.Universe, ph.HHType, rp.PopID, rv.SystemPath
 			, case when rv.Universe = 10 then hhid.ProjectID else null end
 			, rv.RowID
