@@ -304,13 +304,12 @@ Populates and references:
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID
 		, ReportRow, ReportID, Step)
 	select distinct count(distinct n.PersonalID) 
-		, rv.Cohort, rv.Universe, ph1.HHType, rp.PopID, rv.SystemPath
+		, rv.Cohort, rv.Universe, ph.HHType, rp.PopID, rv.SystemPath
 		, case when rv.Universe = 10 then hhid.ProjectID else null end
 		, rv.RowID, (select ReportID from lsa_Report), '9.4.1'
 	from ref_RowValues rv
 	inner join ref_RowPopulations rp on rv.RowID between rp.RowMin and rp.RowMax 
-	inner join ref_PopHHTypes ph1 on ph1.PopID = rp.Pop1
-	inner join ref_PopHHTypes ph2 on ph2.PopID = rp.Pop2 and ph2.HHType = ph1.HHType
+	inner join ref_PopHHTypes ph on ph.PopID = rp.PopID
 	inner join tlsa_CountPops pop on rp.PopID = pop.PopID
 	inner join tlsa_Enrollment n on n.PersonalID = pop.PersonalID
 			and case rv.Cohort	
@@ -320,7 +319,7 @@ Populates and references:
 				when 12 then n.PITApril
 				else n.PITJuly end = 1 
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID 
-		and (hhid.ActiveHHType = ph1.HHType or ph1.HHType = 0)
+		and (hhid.ActiveHHType = ph.HHType or ph.HHType = 0)
 		and (
 				rv.Universe = 10 
 				or (rv.Universe = 11 and hhid.LSAProjectType in (0,1))
@@ -332,7 +331,7 @@ Populates and references:
 			)
 		where rv.RowID = 55 
 			and (rv.Universe = 10 or rp.ByProject is NULL)
-		group by rv.Cohort, rv.Universe, ph1.HHType, rp.PopID, rv.SystemPath
+		group by rv.Cohort, rv.Universe, ph.HHType, rp.PopID, rv.SystemPath
 			, case when rv.Universe = 10 then hhid.ProjectID else null end
 			, rv.RowID
 
