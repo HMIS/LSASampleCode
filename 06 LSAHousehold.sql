@@ -1,8 +1,12 @@
 /*
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  06 LSAHousehold.sql  
-Date:  6 OCT 2021
+
+FY2022 Changes
+
+		None
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -13,8 +17,7 @@ Date:  6 OCT 2021
 		, HoHRace, HoHEthnicity
 		, HHParent, ReportID, Step)
 	select distinct hhid.HoHID, hhid.ActiveHHType
-		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 
-			else min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) end
+		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 else min(hhid.HHChronic) end
 		, max(hhid.HHVet)
 		, max(hhid.HHDisability)
 		, max(hhid.HHFleeingDV)

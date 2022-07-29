@@ -1,8 +1,12 @@
 /*
-
-LSA FY2021 Sample Code
+LSA FY2022 Sample Code
 Name:  09 LSACalculated AHAR Counts.sql  
-Date:  24 SEP 2021   
+
+FY2022 Changes
+
+		None
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 	
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID

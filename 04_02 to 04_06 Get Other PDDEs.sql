@@ -1,7 +1,11 @@
 /*
+LSA FY2022 Sample Code
 Name:  04_02 to 04_06 Get Other PDDEs.sql
-Date:	16 SEP 2021 
 
+FY2022 Changes
+		None 
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 	4.2 Get Organization Records for Export
 		Export organization records for all projects selected in 4.1.

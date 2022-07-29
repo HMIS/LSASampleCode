@@ -1,12 +1,17 @@
 /*
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  02 LSA Output Tables.sql 
-Date:  14 OCT 2021
- 
 
-There are some deliberate differences from data typing and nullability as defined by 
-the HMIS CSV/LSA specs and the CREATE statements here. 
+FY2022 Changes
+		lsa_Report
+			- Revise DQ columns (all 3 year DQ counts have been removed)
+			- Add LookbackDate
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+
+
+	There are some deliberate differences from data typing and nullability as defined by 
+	the HMIS CSV/LSA specs and the CREATE statements here. 
 
 	Columns which may be NULL in the HMIS CSV under some circumstances that do not
 	apply to the LSA upload are created as NOT NULL here.  For example, ProjectType 
@@ -170,8 +175,7 @@ if object_id ('lsa_Report') is not NULL drop table lsa_Report
 
 --	The NULL/NOT NULL requirements for this table as it is created here
 --	differ from those for the LSAReport.csv file because the values are not
---	populated in a single step. All of the data quality columns 
---	(UnduplicatedClient1 through MoveInDate3) must be non-NULL in the upload.
+--	populated in a single step. All columns must be non-NULL in the upload.
 create table lsa_Report(
 	ReportID int not NULL,
 	ReportDate datetime,
@@ -183,57 +187,27 @@ create table lsa_Report(
 	VendorContact nvarchar(50) not NULL,
 	VendorEmail nvarchar(50) not NULL,
 	LSAScope int not NULL,
-	UnduplicatedClient1 int,
-	UnduplicatedClient3 int,
-	UnduplicatedAdult1 int,
-	UnduplicatedAdult3 int,
-	AdultHoHEntry1 int,
-	AdultHoHEntry3 int,
-	ClientEntry1 int,
-	ClientEntry3 int,
-	ClientExit1 int,
-	ClientExit3 int,
-	Household1 int,
-	Household3 int,
-	HoHPermToPH1 int,
-	HoHPermToPH3 int,
+	LookbackDate date not NULL,
 	NoCoC int,
+	NotOneHoH int,
+	RelationshipToHoH int,
+	MoveInDate int,
+	UnduplicatedClient int,
+	HouseholdEntry int,
+	ClientEntry int,
+	AdultHoHEntry int,
+	ClientExit int,
 	SSNNotProvided int,
 	SSNMissingOrInvalid int,
 	ClientSSNNotUnique int,
 	DistinctSSNValueNotUnique int,
-	DOB1 int,
-	DOB3 int,
-	Gender1 int,
-	Gender3 int,
-	Race1 int,
-	Race3 int,
-	Ethnicity1 int,
-	Ethnicity3 int,
-	VetStatus1 int,
-	VetStatus3 int,
-	RelationshipToHoH1 int,
-	RelationshipToHoH3 int,
-	DisablingCond1 int,
-	DisablingCond3 int,
-	LivingSituation1 int,
-	LivingSituation3 int,
-	LengthOfStay1 int,
-	LengthOfStay3 int,
-	HomelessDate1 int,
-	HomelessDate3 int,
-	TimesHomeless1 int,
-	TimesHomeless3 int,
-	MonthsHomeless1 int,
-	MonthsHomeless3 int,
-	DV1 int,
-	DV3 int,
-	Destination1 int,
-	Destination3 int,
-	NotOneHoH1 int,
-	NotOneHoH3 int,
-	MoveInDate1 int,
-	MoveInDate3 int
+	DisablingCond int,
+	LivingSituation int,
+	LengthOfStay int,
+	HomelessDate int,
+	TimesHomeless int,
+	MonthsHomeless int,
+	Destination int
 	) 
 
 /*

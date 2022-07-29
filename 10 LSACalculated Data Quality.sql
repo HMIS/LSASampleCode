@@ -1,8 +1,12 @@
 /*
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  10 LSACalculated Data Quality.sql
-Date:  20 AUG 2021
+
+FY2022 Changes
+
+		Change cohort from 20 to 10 where relevant (3 year DQ cohort has been eliminated).
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
 
 
 	10.2 Get Counts of Enrollments Active after Operating End Date by ProjectID
@@ -13,7 +17,7 @@ Date:  20 AUG 2021
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct n.EnrollmentID), 20, 10, 0, 0, -1
+	select count (distinct n.EnrollmentID), 10, 10, 0, 0, -1
 		, case when hx.ExitDate is null then 58
 			else 59 end 
 		, p.ProjectID, cd.ReportID, '10.2'
@@ -21,7 +25,7 @@ Date:  20 AUG 2021
 	left outer join hmis_Exit hx on hx.EnrollmentID = n.EnrollmentID 
 		and hx.DateDeleted is null
 	inner join hmis_Project p on p.ProjectID = n.ProjectID 
-	inner join tlsa_CohortDates cd on cd.Cohort = 20 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
+	inner join tlsa_CohortDates cd on cd.Cohort = 10 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
 	where (hx.ExitDate is null or hx.ExitDate > p.OperatingEndDate)
 		and p.ProjectType in (1,2,3,8,13)
 	group by case when hx.ExitDate is null then 58
@@ -37,12 +41,12 @@ Date:  20 AUG 2021
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct hn.EnrollmentID), 20, 10, 0, 0, -1
+	select count (distinct hn.EnrollmentID), 10, 10, 0, 0, -1
 		, case when hx.ExitDate is null or hx.ExitDate > cd.CohortEnd then 60
 			else 61 end 
 		, p.ProjectID, cd.ReportID, '10.3'
 	from tlsa_Enrollment n
-	inner join tlsa_CohortDates cd on cd.Cohort = 20
+	inner join tlsa_CohortDates cd on cd.Cohort = 10
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
@@ -54,7 +58,7 @@ Date:  20 AUG 2021
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
 			and p.ProjectType = 1 and p.TrackingMethod = 3 
 			and (p.OperatingEndDate is null or p.OperatingEndDate >= DateProvided)
-		inner join tlsa_CohortDates cd on cd.Cohort = 20 
+		inner join tlsa_CohortDates cd on cd.Cohort = 10 
 			and svc.DateProvided between cd.CohortStart and cd.CohortEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
 		group by svc.EnrollmentID

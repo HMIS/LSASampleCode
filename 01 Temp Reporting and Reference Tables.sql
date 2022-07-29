@@ -1,8 +1,21 @@
 /*
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  01 Temp Reporting and Reference Tables.sql
-Date:  13 OCT 2021
+
+FY2022 Changes
+		tlsa_CohortDates - add column LookbackDate (to avoid repeating the dateadd function every time the date is required)
+
+		tlsa_Person 
+			- Add column SSNValid (was formerly in dq_Enrollment, which is no longer needed as DQ reporting is limited 
+				to the active cohort)
+
+		tlsa_HHID 
+			- Delete columns DQ1, DQ3 
+
+		dq_Enrollment
+			- Deleted -- DQ now limited to the active cohort
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 This script drops (if tables exist) and creates the following temp reporting tables:
 
@@ -26,8 +39,6 @@ This script drops (if tables exist) and creates the following temp reporting tab
 		based on LSAHousehold and LSAExit.
 	tlsa_CountPops - used to identify people/households in various populations for AHAR counts in section 9.
 
-	dq_Enrollment - Enrollments included in LSAReport data quality reporting 
-
 This script drops (if tables exist), creates, and populates the following 
 reference tables used in the sample code:  
 	ref_Calendar - table of dates between 10/1/2012 and 9/30/2022
@@ -43,6 +54,7 @@ create table tlsa_CohortDates (
 	Cohort int
 	, CohortStart date
 	, CohortEnd date
+	, LookbackDate date
 	, ReportID int
 	, constraint pk_tlsa_CohortDates primary key clustered (Cohort)
 	)
@@ -72,8 +84,6 @@ create table tlsa_HHID (
 	, PITApril bit default 0
 	, PITJuly bit default 0
 	, ExitCohort int
-	, DQ1 int default 0
-	, DQ3 int default 0
 	, HHChronic int default 0
 	, HHVet int default 0
 	, HHDisability int default 0
@@ -180,6 +190,7 @@ create table tlsa_Person (
 	AC3PlusPSH int default -1,
 	AHARPSH int default -1,
 	AHARHoHPSH int default -1,
+	SSNValid int,
 	ReportID int,
 	Step varchar(10) not NULL,
 	constraint pk_tlsa_Person primary key clustered (PersonalID) 
@@ -318,27 +329,6 @@ create table tlsa_Household(
 		, constraint pk_sys_Time primary key clustered (HoHID, HHType, sysDate)
 		)
 		;
-
-
-	if object_id ('dq_Enrollment') is not null drop table dq_Enrollment
-	
-	create table dq_Enrollment(
-	EnrollmentID varchar(32) not null
-	, PersonalID varchar(32) not null
-	, HouseholdID varchar(32) not null
-	, RelationshipToHoH int
-	, LSAProjectType int
-	, EntryDate date
-	, MoveInDate date
-	, ExitDate date
-	, Status1 int
-	, Status3 int
-	, SSNValid int
-	, Step varchar(10) not NULL
-    constraint pk_dq_Enrollment primary key clustered (EnrollmentID) 
-	)
-	;
-		
 
 	if object_id ('tlsa_Exit') is not NULL drop table tlsa_Exit
  

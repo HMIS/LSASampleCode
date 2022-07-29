@@ -1,35 +1,43 @@
 /*
-LSA FY2021 Sample Code
+LSA FY2022 Sample Code
+Name:	03_02 to 03_06 HMIS Households and Enrollments.sql 
 
-Name:  03_02 to 03_06 HMIS Households and Enrollments.sql 
-Date:  13 OCT 2021
+FY2022 Changes
+		Use LookbackDate instead of 10/1/2012 where relevant
+		Do not create a record for the 3 year DQ cohort (formerly Cohort = 20) in tlsa_CohortDates as DQ reporting will be limited to the report period
+		Exclude enrollment data from VictimServiceProvider = 1 and HMISParticipatingProject = 0 
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 
 	3.2 Cohort Dates 
 */
 	delete from tlsa_CohortDates
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, ReportID)
-	select 1, rpt.ReportStart, rpt.ReportEnd, rpt.ReportID
+	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
+	select 1, rpt.ReportStart, rpt.ReportEnd, rpt.LookbackDate, rpt.ReportID
 	from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, ReportID)
+	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
 	select 0, rpt.ReportStart,
 		case when dateadd(mm, -6, rpt.ReportEnd) <= rpt.ReportStart 
 			then rpt.ReportEnd
 			else dateadd(mm, -6, rpt.ReportEnd) end
+		, rpt.LookbackDate
 		, rpt.ReportID
 	from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, ReportID)
+	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
 	select -1, dateadd(yyyy, -1, rpt.ReportStart)
 		, dateadd(yyyy, -1, rpt.ReportEnd)
+		, rpt.LookbackDate
 		, rpt.ReportID
 	from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, ReportID)
+	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
 	select -2, dateadd(yyyy, -2, rpt.ReportStart)
 		, dateadd(yyyy, -2, rpt.ReportEnd)
+		, rpt.LookbackDate
 		, rpt.ReportID
 	from lsa_Report rpt
 
@@ -49,10 +57,6 @@ Date:  13 OCT 2021
 		or (cal.mm = 1 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
 		or (cal.mm = 4 and cal.dd = 30 and cal.yyyy = year(rpt.ReportEnd))
 		or (cal.mm = 7 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
-
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, ReportID)
-	select 20, dateadd(dd, 1, dateadd(yyyy, -3, rpt.ReportEnd)), rpt.ReportEnd, rpt.ReportID
-	from lsa_Report rpt
 
 /*
 	3.3 HMIS HouseholdIDs 
@@ -104,14 +108,19 @@ inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID
 	and coc.CoCCode = rpt.ReportCoC and coc.InformationDate <= rpt.ReportEnd
 	and coc.DateDeleted is null
 inner join (select hp.ProjectID,  case when hp.ProjectType = 1 and hp.TrackingMethod = 0 then 0
-				when hp.ProjectType = 1 and hp.TrackingMethod = 3 then 1
-				else hp.ProjectType end as ProjectType, 
-			hp.OperatingStartDate, hp.OperatingEndDate
-		from hmis_Project hp
-		where hp.DateDeleted is null
-			and hp.ContinuumProject = 1 
-	and (hp.OperatingEndDate is null 
-		or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > '10/1/2012' )))  p on p.ProjectID = hoh.ProjectID
+						when hp.ProjectType = 1 and hp.TrackingMethod = 3 then 1
+						else hp.ProjectType end as ProjectType, 
+					hp.OperatingStartDate, hp.OperatingEndDate
+				from hmis_Project hp
+				inner join hmis_Organization ho on ho.OrganizationID = hp.OrganizationID
+				inner join tlsa_CohortDates cd on cd.Cohort = 1
+				where hp.DateDeleted is null
+					and hp.ContinuumProject = 1 
+					and ho.VictimServiceProvider = 0
+					and hp.HMISParticipatingProject = 1
+					and (hp.OperatingEndDate is null 
+						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
+			) p on p.ProjectID = hoh.ProjectID
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd 
 	and (hx.ExitDate <= p.OperatingEndDate or p.OperatingEndDate is null)
@@ -126,7 +135,7 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
 			and p.ProjectType = 1 and p.TrackingMethod = 3 
 			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
-		inner join lsa_Report rpt on svc.DateProvided between '10/1/2012' and rpt.ReportEnd
+		inner join lsa_Report rpt on svc.DateProvided between dateadd(yyyy, -7, rpt.ReportStart) and rpt.ReportEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
@@ -137,7 +146,7 @@ where hoh.DateDeleted is null
 	and hohCheck.EnrollmentID is null 
 	and (hoh.EntryDate < p.OperatingEndDate or p.OperatingEndDate is null)
 	and	(hx.ExitDate is null or 
-			(hx.ExitDate >= '10/1/2012' and hx.ExitDate > hoh.EntryDate) 
+			(hx.ExitDate >= dateadd(yyyy, -7, rpt.ReportStart) and hx.ExitDate > hoh.EntryDate) 
 		)
 	and ((p.ProjectType in (0,2,3,8,13))
      		or (p.ProjectType = 1 and bn.LastBednight is not null)
@@ -206,7 +215,7 @@ where hoh.DateDeleted is null
 		and hn.RelationshipToHoH in (1,2,3,4,5)
 		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
 		and (hx.ExitDate is null or 
-				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= '10/1/2012'
+				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= rpt.LookbackDate
 					and hx.ExitDate > hn.EntryDate)) 
 
 	-- ES night-by-night
@@ -233,7 +242,7 @@ where hoh.DateDeleted is null
 	inner join tlsa_HHID hhid on hhid.HouseholdID = nbn.HouseholdID and svc.DateProvided >= hhid.EntryDate 
 		and (hhid.ExitDate is null or svc.DateProvided < hhid.ExitDate)
 	left outer join hmis_Exit nbnx on nbnx.EnrollmentID = nbn.EnrollmentID and nbnx.DateDeleted is null
-	inner join lsa_Report rpt on svc.DateProvided between '10/1/2012' and rpt.ReportEnd
+	inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
 	where hhid.LSAProjectType = 1 
 		and svc.RecordType = 200 and svc.DateDeleted is null
 		and svc.DateProvided >= nbn.EntryDate 

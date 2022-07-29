@@ -1,8 +1,11 @@
 /*
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  05_01 to 05_11 LSAPerson.sql  
-Date:  13 OCT 2021   
+
+FY2022 Changes
+		None
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 
 	5.1 Identify Active and AHAR HouseholdIDs
 */

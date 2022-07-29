@@ -1,10 +1,11 @@
 /*
-
-LSA FY2021 Sample Code
-
+LSA FY2022 Sample Code
 Name:  07 LSAExit.sql  
-Date:  13 OCT 2021   
-					
+
+	FY2022 Changes
+		Use LookbackDate instead of 10/1/2012 where relevant
+		
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 	7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -503,11 +504,12 @@ from tlsa_Exit ex
 	--  active in the six days prior to the qualifying exit EntryDate. 
 	update ex
 	set ex.LastInactive = case 
-		when dateadd(dd, -1, hhid.EntryDate) < '9/30/2012' then '9/30/2012' 
+		when hhid.EntryDate < cd.LookbackDate then dateadd(dd, -1, cd.LookbackDate) 
 		else dateadd(dd, -1, hhid.EntryDate) end
 		, ex.Step = '7.11.1'
 	from tlsa_Exit ex
 	inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
+	inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
 	where ex.Stat <> 5 
 		or (select top 1 prior.EnrollmentID 
 			from tlsa_HHID prior
@@ -560,16 +562,17 @@ from tlsa_Exit ex
 		and possible.LSAProjectType = 1
 		
 	update ex
-	set ex.LastInactive = coalesce(lastDay.inactive, '9/30/2012')
+	set ex.LastInactive = coalesce(lastDay.inactive, dateadd(dd, -1, cd.LookbackDate))
 		, ex.Step = '7.11.3'
 	from tlsa_Exit ex
+	inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
 	left outer join 
 		(select ex.HoHID, ex.HHType, ex.Cohort, max(cal.theDate) as inactive
 		  from tlsa_Exit ex
 		  inner join tlsa_HHID hhid on hhid.HouseholdID = ex.QualifyingExitHHID
 		  inner join tlsa_CohortDates cd on cd.Cohort = ex.Cohort
 		  inner join ref_Calendar cal on cal.theDate <= cd.CohortEnd
-			and cal.theDate >= '10/1/2012'
+			and cal.theDate >= cd.LookbackDate
 		  left outer join
 			 sys_TimePadded stp on stp.HoHID = ex.HoHID and stp.HHType = ex.HHType
 			  and stp.Cohort = ex.Cohort
@@ -620,29 +623,30 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
+		inner join tlsa_CohortDates cd on cd.ReportID = ex.ReportID and cd.Cohort = ex.Cohort
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		left outer join tlsa_HHID es on es.LSAProjectType in (0,1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (es.ExitDate > dateadd(dd, -1, cd.LookbackDate) or es.ExitDate is NULL))
 				)
 			and (es.ActiveHHType = ex.HHType)
 		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (th.ExitDate > dateadd(dd, -1, cd.LookbackDate) or th.ExitDate is NULL))
 				)
 			and (th.ActiveHHType = ex.HHType)
 		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
-				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
+				or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (rrh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or rrh.ExitDate is NULL))
 				)
 			and (rrh.ActiveHHType = ex.HHType)
 		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (psh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or psh.ExitDate is NULL))
 				)
 			and (psh.ActiveHHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
@@ -672,29 +676,30 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
+		inner join tlsa_CohortDates cd on cd.ReportID = ex.ReportID and cd.Cohort = ex.Cohort
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		left outer join tlsa_HHID es on es.LSAProjectType in (0,1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (es.ExitDate > dateadd(dd, -1, cd.LookbackDate) or es.ExitDate is NULL))
 				)
 			and (es.Exit1HHType = ex.HHType)
 		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (th.ExitDate > dateadd(dd, -1, cd.LookbackDate) or th.ExitDate is NULL))
 				)
 			and (th.Exit1HHType = ex.HHType)
 		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
-				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
+				or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (rrh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or rrh.ExitDate is NULL))
 				)
 			and (rrh.Exit1HHType = ex.HHType)
 		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (psh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or psh.ExitDate is NULL))
 				)
 			and (psh.Exit1HHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
@@ -724,29 +729,30 @@ inner join (select distinct ex.HoHID, ex.HHType, ex.Cohort
 				+ case when psh.HoHID is not null then 1000 else 0 end
 					as summary
 		from tlsa_Exit ex 
+		inner join tlsa_CohortDates cd on cd.ReportID = ex.ReportID and cd.Cohort = ex.Cohort
 		inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		left outer join tlsa_HHID es on es.LSAProjectType in (0,1,8)
 			and es.HoHID = ex.HoHID and es.EntryDate <= qx.ExitDate 
 			and (es.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (es.ExitDate > '9/30/2012' or es.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (es.ExitDate > dateadd(dd, -1, cd.LookbackDate) or es.ExitDate is NULL))
 				)
 			and (es.Exit2HHType = ex.HHType)
 		left outer join tlsa_HHID th on th.LSAProjectType = 2
 			and th.HoHID = ex.HoHID and th.EntryDate <= qx.ExitDate 
 			and (th.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (th.ExitDate > '9/30/2012' or th.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (th.ExitDate > dateadd(dd, -1, cd.LookbackDate) or th.ExitDate is NULL))
 				)
 			and (th.Exit2HHType = ex.HHType)
 		left outer join tlsa_HHID rrh on rrh.LSAProjectType = 13
 			and rrh.HoHID = ex.HoHID and rrh.EntryDate <= qx.ExitDate 
 			and (rrh.EntryDate > ex.LastInactive
-				or (ex.LastInactive = '9/30/2012' and (rrh.ExitDate > '9/30/2012' or rrh.ExitDate is NULL))
+				or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (rrh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or rrh.ExitDate is NULL))
 				)
 			and (rrh.Exit2HHType = ex.HHType)
 		left outer join tlsa_HHID psh on psh.LSAProjectType = 3
 			and psh.HoHID = ex.HoHID and psh.EntryDate <= qx.ExitDate 
 			and (psh.EntryDate > ex.LastInactive
-					or (ex.LastInactive = '9/30/2012' and (psh.ExitDate > '9/30/2012' or psh.ExitDate is NULL))
+					or (ex.LastInactive = dateadd(dd, -1, cd.LookbackDate) and (psh.ExitDate > dateadd(dd, -1, cd.LookbackDate) or psh.ExitDate is NULL))
 				)
 			and (psh.Exit2HHType = ex.HHType)
 		) ptype on ptype.HoHID = ex.HoHID and ptype.HHType = ex.HHType 
