@@ -17,7 +17,8 @@ FY2022 Changes
 		, HoHRace, HoHEthnicity
 		, HHParent, ReportID, Step)
 	select distinct hhid.HoHID, hhid.ActiveHHType
-		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 else min(hhid.HHChronic) end
+		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 
+			else min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) end
 		, max(hhid.HHVet)
 		, max(hhid.HHDisability)
 		, max(hhid.HHFleeingDV)
