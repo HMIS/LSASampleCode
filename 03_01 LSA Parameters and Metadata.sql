@@ -23,7 +23,7 @@ insert into lsa_Report (
 		, VendorContact		--name of vendor contact
 		, VendorEmail		--email address of vendor contact
 		, LSAScope			--user-selected 1=systemwide, 2=project-focused
-		, LookBackDate		--ReportStart - 7 years
+		, LookbackDate		--ReportStart - 7 years
 		)
 	select
 		  12345
