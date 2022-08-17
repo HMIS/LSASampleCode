@@ -27,10 +27,10 @@ set rpt.NoCoC = (select count (distinct n.HouseholdID)
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null
 			where n.EntryDate <= rpt.ReportEnd 
-				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart
+				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.RelationshipToHoH = 1 
 				and coc.CoCCode is null
-				and n.DateDeleted is null) 
+				and n.DateDeleted is null 
 			)
 from lsa_Report rpt
 
