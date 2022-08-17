@@ -135,7 +135,7 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
 			and p.ProjectType = 1 and p.TrackingMethod = 3 
 			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
-		inner join lsa_Report rpt on svc.DateProvided between dateadd(yyyy, -7, rpt.ReportStart) and rpt.ReportEnd
+		inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
@@ -146,7 +146,7 @@ where hoh.DateDeleted is null
 	and hohCheck.EnrollmentID is null 
 	and (hoh.EntryDate < p.OperatingEndDate or p.OperatingEndDate is null)
 	and	(hx.ExitDate is null or 
-			(hx.ExitDate >= dateadd(yyyy, -7, rpt.ReportStart) and hx.ExitDate > hoh.EntryDate) 
+			(hx.ExitDate >= rpt.LookbackDate and hx.ExitDate > hoh.EntryDate) 
 		)
 	and ((p.ProjectType in (0,2,3,8,13))
      		or (p.ProjectType = 1 and bn.LastBednight is not null)
