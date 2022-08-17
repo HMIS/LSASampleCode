@@ -114,7 +114,7 @@ set rpt.UnduplicatedClient = (select count(distinct PersonalID)
 	, rpt.AdultHoHEntry = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
 		where Active = 1
-		and (ActiveAge between 18 and 65) or RelationshipToHoH = 1)
+		and (ActiveAge between 18 and 65 or RelationshipToHoH = 1))
 	, rpt.ClientExit = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
 		where Active = 1 and ExitDate is not NULL)
