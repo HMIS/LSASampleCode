@@ -125,6 +125,24 @@ from lsa_Report rpt
 /*
 	11.6 SSN Issues 
 */
+
+update lp
+set lp.SSNValid = case when c.SSNDataQuality in (8,9) then 9
+		when SUBSTRING(c.SSN,1,3) in ('000','666')
+				or LEN(c.SSN) <> 9
+				or SUBSTRING(c.SSN,4,2) = '00'
+				or SUBSTRING(c.SSN,6,4) ='0000'
+				or c.SSN is null
+				or c.SSN = ''
+				or c.SSN like '%[^0-9]%'
+				--5/14/2020 changed below from ">= '9'"  to "= '9'")
+				or left(c.SSN,1) = '9'
+				or c.SSN in ('123456789','111111111','222222222','333333333','444444444'
+						,'555555555','777777777','888888888')
+			then 0 else 1 end 
+from tlsa_Person lp
+inner join hmis_Client c on c.PersonalID = lp.PersonalID
+
 update rpt
 set SSNNotProvided = (select count(distinct PersonalID)
 	from tlsa_Person
@@ -135,8 +153,8 @@ set SSNNotProvided = (select count(distinct PersonalID)
 from lsa_Report rpt
 
 update rpt
-set rpt.ClientSSNNotUnique = ssn.people
-	, rpt.DistinctSSNValueNotUnique = ssn.SSNs 
+set rpt.ClientSSNNotUnique = case when ssn.people is null then 0 else ssn.people end
+	, rpt.DistinctSSNValueNotUnique = case when ssn.SSNs is null then 0 else ssn.SSNs end 
 from lsa_Report rpt
 inner join 
 	(select lp.ReportID, count(distinct lp.PersonalID) as people, count(distinct c.SSN) as SSNs
