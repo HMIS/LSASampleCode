@@ -42,15 +42,10 @@ update rpt
 set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			inner join lsa_Project p on p.ProjectID = n.ProjectID
-				and p.ContinuumProject = 1 and p.ProjectType in (1,2,3,8,13)
+				and p.ProjectType in (1,2,3,8,13)
 				and p.HMISParticipatingProject = 1
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
-			inner join hmis_EnrollmentCoC coc on 
-				coc.HouseholdID = n.HouseholdID
-				and coc.InformationDate <= rpt.ReportEnd
-				and coc.CoCCode = rpt.ReportCoC
-				and coc.DateDeleted is null 
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null
 			left outer join (select hn.HouseholdID, count(distinct hn.EnrollmentID) as hoh
@@ -59,9 +54,15 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				group by hn.HouseholdID
 				) hoh on hoh.HouseholdID = n.HouseholdID
 			where n.EntryDate <= rpt.ReportEnd 
-				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart
+				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.DateDeleted is null
-				and (hoh.hoh <> 1 or hoh.HouseholdID is null)) 
+				and (hoh.hoh <> 1 or hoh.HouseholdID is null)
+				and (select top 1 coc.CoCCode
+					from hmis_EnrollmentCoC coc
+					where coc.HouseholdID = n.HouseholdID
+						and coc.InformationDate <= rpt.ReportEnd
+						and coc.DateDeleted is null
+					order by coc.InformationDate desc) = rpt.ReportCoC
 			)
 from lsa_Report rpt
 
