@@ -148,15 +148,15 @@ inner join
 	group by lp.ReportID) ssn on ssn.ReportID = rpt.ReportID
 
 /*
-	11.6 Enrollment Data Issues 
+	11.7 Enrollment Data Issues 
 */
 
 update rpt
 set rpt.DisablingCond = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
-	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
 	where n.Active = 1
-	and hn.DisablingCondition is null or hn.DisablingCondition not in (0,1))
+	and n.DisabilityStatus = 99
+	)
 from lsa_Report rpt
 
 update rpt
@@ -164,7 +164,7 @@ set rpt.LivingSituation = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
 	where n.Active = 1
-	and hn.LivingSituation is null or hn.LivingSituation in (8,9,99)
+	and (hn.LivingSituation is null or hn.LivingSituation in (8,9,99))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
 
@@ -173,7 +173,7 @@ set rpt.LengthOfStay = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
 	where n.Active = 1
-	and hn.LengthOfStay is null or hn.LengthOfStay in (8,9,99)
+	and (hn.LengthOfStay is null or hn.LengthOfStay in (8,9,99))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
 
@@ -182,12 +182,16 @@ set rpt.HomelessDate = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
 	where n.Active = 1
-	and (hn.DateToStreetESSH >  hn.EntryDate)
-		or (hn.DateToStreetESSH is null 
-		and (n.LSAProjectType in (0,1,8)
-			or hn.LivingSituation in (1,16,18)
-			or hn.PreviousStreetESSH = 1))
-		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
+	and (hn.DateToStreetESSH > hn.EntryDate
+		 or (hn.DateToStreetESSH is null 
+				and (n.LSAProjectType in (0,1,8)
+					 or hn.LivingSituation in (1,16,18)
+					 or hn.PreviousStreetESSH = 1
+					)
+			)
+		)
+		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
+	)
 from lsa_Report rpt
 
 update rpt
@@ -197,10 +201,10 @@ set rpt.TimesHomeless = (select count(distinct n.EnrollmentID)
 	where n.Active = 1
 	and (hn.TimesHomelessPastThreeYears is NULL
 		or hn.TimesHomelessPastThreeYears not in (1,2,3,4)) 
-		and (n.LSAProjectType in (0,1,8)
+	and (n.LSAProjectType in (0,1,8)
 			or hn.LivingSituation in (1,16,18)
 			or hn.PreviousStreetESSH = 1)
-		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
+	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
 
 update rpt
@@ -209,11 +213,11 @@ set rpt.MonthsHomeless = (select count(distinct n.EnrollmentID)
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
 	where n.Active = 1
 	and (hn.MonthsHomelessPastThreeYears is NULL
-		or hn.MonthsHomelessPastThreeYears not in (1,2,3,4)) 
-		and (n.LSAProjectType in (0,1,8)
-			or hn.LivingSituation in (1,16,18)
-			or hn.PreviousStreetESSH = 1)
-		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
+		or hn.MonthsHomelessPastThreeYears not between 101 and 113) 
+	and (n.LSAProjectType in (0,1,8)
+		or hn.LivingSituation in (1,16,18)
+		or hn.PreviousStreetESSH = 1)
+	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
 
 update rpt
