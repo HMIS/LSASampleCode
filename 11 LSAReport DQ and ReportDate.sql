@@ -75,7 +75,8 @@ set rpt.RelationshipToHoH = (select count(distinct hn.EnrollmentID)
 			inner join tlsa_HHID hhid on hhid.HouseholdID = hn.HouseholdID	
 			left outer join hmis_Exit x on x.EnrollmentID = hn.EnrollmentID 
 					and x.DateDeleted is null
-			where hn.EntryDate <= rpt.ReportEnd 
+			where hhid.Active = 1 
+				and hn.EntryDate <= rpt.ReportEnd 
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and hn.DateDeleted is null
 				and (hn.RelationshipToHoH is null or hn.RelationshipToHoH not in (1,2,3,4,5))
