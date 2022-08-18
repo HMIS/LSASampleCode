@@ -7,6 +7,10 @@ FY2022 Changes
 		-Remove counts and DQ columns for 3 year period 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
+	Please note that if this code is used in production, the first statement in section 11.6 
+	should be reviewed and updated if necessary to set SSNValid to 0 include any system default 
+	for missing SSN values that would not be identified by the existing code.
+	
 	11.1 HMIS HouseholdIDs With No CoC Identifier Active in LSA Projects During Report Period
 */
 update rpt
@@ -135,7 +139,6 @@ set lp.SSNValid = case when c.SSNDataQuality in (8,9) then 9
 				or c.SSN is null
 				or c.SSN = ''
 				or c.SSN like '%[^0-9]%'
-				--5/14/2020 changed below from ">= '9'"  to "= '9'")
 				or left(c.SSN,1) = '9'
 				or c.SSN in ('123456789','111111111','222222222','333333333','444444444'
 						,'555555555','777777777','888888888')
@@ -156,7 +159,7 @@ update rpt
 set rpt.ClientSSNNotUnique = case when ssn.people is null then 0 else ssn.people end
 	, rpt.DistinctSSNValueNotUnique = case when ssn.SSNs is null then 0 else ssn.SSNs end 
 from lsa_Report rpt
-inner join 
+left outer join 
 	(select lp.ReportID, count(distinct lp.PersonalID) as people, count(distinct c.SSN) as SSNs
 	from tlsa_Person lp
 	inner join hmis_Client c on c.PersonalID = lp.PersonalID
