@@ -247,6 +247,7 @@ update rpt
 set rpt.Destination = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID
+		and x.DateDeleted is null
 	where n.Active = 1 and n.ExitDate is not null
 		and (x.Destination is null
 			or x.Destination in (8,9,17,27,30,99))
