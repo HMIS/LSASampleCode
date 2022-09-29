@@ -96,6 +96,9 @@ create table tlsa_HHID (
 	, Step varchar(10) not NULL
 	, constraint pk_tlsa_HHID primary key clustered (HouseholdID)
 	)
+	;
+
+	create index ix_tlsa_HHID_HoHID_ActiveHHType on tlsa_HHID (HoHID, ActiveHHType) include (EntryDate, EnrollmentID)
 
 if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment 
 
