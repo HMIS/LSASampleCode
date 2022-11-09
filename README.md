@@ -23,7 +23,7 @@ The sample code is SQL, and written in SQL Server. Originally, it was not intend
 
 # Dependencies
 In order to run the code as is, a user must have access to a SQL Server (or SQL Server Express) database with:
-* Permissions that allow creating and populating tables.  
+* Permissions that allow creating tables, inserting records, and exporting CSV files.  
 * HMIS data in tables modeled after [HMIS CSV FY2022 v1.3](https://www.hudhdx.info/Resources/Vendors/HMIS_CSV_Specifications_FY2022_v1.3.pdf).  Naming conventions for tables use an hmis_ prefix with the CSV file name -- e.g., hmis_Project.
 
 Specifically, the LSA sample code requires the tables listed below. Only records where DateDeleted is NULL are relevant.
