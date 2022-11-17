@@ -100,7 +100,7 @@ set rpt.MoveInDate =
 		where hhid.LSAProjectType in (3,13)
 			and hhid.Active = 1 
 			and hhid.MoveInDate is null 
-			and hn.MoveInDate is not NULL
+			and hn.MoveInDate <= rpt.ReportEnd
 	)
 from lsa_Report rpt
 
