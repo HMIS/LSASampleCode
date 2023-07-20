@@ -1,10 +1,13 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:  06 LSAHousehold.sql  
 
-FY2022 Changes
+FY2023 Changes
 
-		None
+		- RaceEthnicity and HHFleeingDV changes in 6.1
+		- Set RRHSOStatus and RRHSOMoveIn values in 6.3.4 and 6.4.3
+		- LivingSituation list changes in 6.6.1-6.6.3
+		- HoHRaceEthnicity, RRHSOStatus, and RRHSOMoveIn columns in select statement in 6.19
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -14,15 +17,16 @@ FY2022 Changes
 
 	insert into tlsa_Household (HoHID, HHType
 		, HHChronic, HHVet, HHDisability, HHFleeingDV
-		, HoHRace, HoHEthnicity
+		, HoHRaceEthnicity
 		, HHParent, ReportID, Step)
 	select distinct hhid.HoHID, hhid.ActiveHHType
 		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 
 			else min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) end
 		, max(hhid.HHVet)
 		, max(hhid.HHDisability)
-		, max(hhid.HHFleeingDV)
-		, lp.Race, lp.Ethnicity
+		, case when min(case hhid.HHFleeingDV when 0 then 99 else hhid.HHFleeingDV end) = 99 then 0 
+			else min(case hhid.HHFleeingDV when 0 then 99 else hhid.HHFleeingDV end) end
+		, lp.RaceEthnicity
 		, max(hhid.HHParent)
 		, lp.ReportID
 		, '6.1'
@@ -30,7 +34,7 @@ FY2022 Changes
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join tlsa_Person lp on lp.PersonalID = hhid.HoHID 
 	where hhid.Active = 1
-	group by hhid.HoHID, hhid.ActiveHHType, lp.Race, lp.Ethnicity
+	group by hhid.HoHID, hhid.ActiveHHType, lp.RaceEthnicity
 		, lp.ReportID
 
 /*
@@ -153,7 +157,22 @@ FY2022 Changes
 		where hhid.Active = 1 and hhid.LSAProjectType = 3
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
-	       
+
+	update hh
+	set hh.RRHSOStatus = case when n.nStat is null then 0 
+			else n.nStat + n.xStat end
+		, hh.Step = '6.3.4'
+	from tlsa_Household hh
+	left outer join 
+		(select hhid.HoHID, hhid.ActiveHHType as HHType
+			, min(case when hhid.EntryDate < rpt.ReportStart then 10 else 20 end) as nStat
+			, min(case when hhid.ExitDate is null then 1 else 2 end) as xStat
+		from tlsa_HHID hhid
+		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
+		where hhid.Active = 1 and hhid.LSAProjectType = 15
+		group by hhid.HoHID, hhid.ActiveHHType
+		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
+		
 /*
 	6.4 Set tlsa_Household RRH and PSH Move-In Status Indicators
 */
@@ -185,6 +204,21 @@ FY2022 Changes
 		from tlsa_HHID hhid
 		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
 		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.LSAProjectType = 3
+		group by hhid.HoHID, hhid.ActiveHHType
+		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
+
+	update hh
+	set hh.RRHSOMoveIn = case when hh.RRHSOStatus = 0 then -1
+		when n.MoveInStat is null then 0 
+		else n.MoveInStat end
+		, hh.Step = '6.4.3'
+	from tlsa_Household hh
+	left outer join 
+		(select hhid.HoHID, hhid.ActiveHHType as HHType
+			, min(case when hhid.MoveInDate >= rpt.ReportStart then 1 else 2 end) as MoveInStat
+		from tlsa_HHID hhid
+		inner join lsa_Report rpt on hhid.EntryDate <= rpt.ReportEnd
+		where hhid.Active = 1 and hhid.MoveInDate is not null and hhid.LSAProjectType = 15
 		group by hhid.HoHID, hhid.ActiveHHType
 		) n on n.HoHID = hh.HoHID and n.HHType = hh.HHType
 
@@ -248,23 +282,8 @@ FY2022 Changes
 	set hh.ESTLivingSit = 
 		case when hh.ESTStatus = 0 then -1
 			when hn.EntryDate <> n.EntryDate then 99
-			when hn.LivingSituation = 16 then 1 --Homeless - Street
-			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
-			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
-			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
-			when hn.LivingSituation = 29 then 6	--Residential project
-			when hn.LivingSituation = 35 then 7	--Family		
-			when hn.LivingSituation = 36 then 8	--Friends
-			when hn.LivingSituation = 3 then 9	--PSH
-			when hn.LivingSituation in (21,11) then 10	--PH - own
-			when hn.LivingSituation = 10 then 11	--PH - rent no subsidy
-			when hn.LivingSituation in (19,28,20,31,33,34) then 12	--PH - rent with subsidy
-			when hn.LivingSituation = 15 then 13	--Foster care
-			when hn.LivingSituation = 25 then 14	--Long-term care
-			when hn.LivingSituation = 7 then 15	--Institutions - incarceration
-			when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
-			else 99	end
+			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			else hn.LivingSituation	end
 		, hh.Step = '6.6.1'
 	from tlsa_Household hh
 	inner join hmis_Enrollment hn on hn.PersonalID = hh.HoHID
@@ -282,24 +301,9 @@ FY2022 Changes
 	set hh.RRHLivingSit = 
 		case when hh.RRHStatus = 0 then -1 
 			when hn.EntryDate <> n.EntryDate then 99
-			when hn.LivingSituation = 16 then 1 --Homeless - Street
-			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
-			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
-			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
-			when hn.LivingSituation = 29 then 6	--Residential project
-			when hn.LivingSituation = 35 then 7	--Family		
-			when hn.LivingSituation = 36 then 8	--Friends
-			when hn.LivingSituation = 3 then 9	--PSH
-			when hn.LivingSituation in (21,11) then 10	--PH - own
-			when hn.LivingSituation = 10 then 11	--PH - rent no subsidy
-			when hn.LivingSituation in (19,28,20,33,34) then 12	--PH - rent with subsidy
-			when hn.LivingSituation = 15 then 13	--Foster care
-			when hn.LivingSituation = 25 then 14	--Long-term care
-			when hn.LivingSituation = 7 then 15	--Institutions - incarceration
-			when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
-			else 99	end	
-		, hh.Step = '6.6.2'
+			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			else hn.LivingSituation	end
+	, hh.Step = '6.6.2'
 	from tlsa_Household hh
 	inner join hmis_Enrollment hn on hn.PersonalID = hh.HoHID
 	inner join tlsa_Enrollment n on n.EnrollmentID = hn.EnrollmentID
@@ -316,23 +320,8 @@ FY2022 Changes
 	set hh.PSHLivingSit = 
 		case when hh.PSHStatus = 0 then -1 
 			when hn.EntryDate <> n.EntryDate then 99
-			when hn.LivingSituation = 16 then 1 --Homeless - Street
-			when hn.LivingSituation in (1,18) then 2	--Homeless - ES/SH
-			when hn.LivingSituation = 27 then 3	--Interim Housing
-			when hn.LivingSituation in (2,32) then 4	--Homeless - TH or host home
-			when hn.LivingSituation = 14 then 5	--Hotel/Motel - no voucher
-			when hn.LivingSituation = 29 then 6	--Residential project
-			when hn.LivingSituation = 35 then 7	--Family		
-			when hn.LivingSituation = 36 then 8	--Friends
-			when hn.LivingSituation = 3 then 9	--PSH
-			when hn.LivingSituation in (21,11) then 10	--PH - own
-			when hn.LivingSituation = 10 then 11	--PH - rent no subsidy
-			when hn.LivingSituation in (19,28,20,33,34) then 12	--PH - rent with subsidy
-			when hn.LivingSituation = 15 then 13	--Foster care
-			when hn.LivingSituation = 25 then 14	--Long-term care
-			when hn.LivingSituation = 7 then 15	--Institutions - incarceration
-			when hn.LivingSituation in (4,5,6) then 16	--Institutions - medical
-			else 99	end	
+			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			else hn.LivingSituation	end
 		, hh.Step = '6.6.3'
 	from tlsa_Household hh
 	inner join hmis_Enrollment hn on hn.PersonalID = hh.HoHID
@@ -985,14 +974,14 @@ from tlsa_Household hh
 truncate table lsa_Household
 insert into lsa_Household(RowTotal
 	, Stat, ReturnTime
-	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdult, HHChild, HHNoDOB
 	, HHAdultAge, HHParent
 	, ESTStatus, ESTGeography, ESTLivingSit, ESTDestination, ESTChronic, ESTVet, ESTDisability, ESTFleeingDV, ESTAC3Plus, ESTAdultAge, ESTParent
 	, RRHStatus, RRHMoveIn, RRHGeography, RRHLivingSit, RRHDestination, RRHPreMoveInDays, RRHChronic, RRHVet, RRHDisability, RRHFleeingDV, RRHAC3Plus, RRHAdultAge, RRHParent
 	, PSHStatus, PSHMoveIn, PSHGeography, PSHLivingSit, PSHDestination, PSHHousedDays, PSHChronic, PSHVet, PSHDisability, PSHFleeingDV, PSHAC3Plus, PSHAdultAge, PSHParent
 	, ESDays, THDays, ESTDays, RRHPSHPreMoveInDays, RRHHousedDays, SystemDaysNotPSHHoused, SystemHomelessDays, Other3917Days, TotalHomelessDays
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, ReportID 
+	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
 )
 select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 	, case when Stat in (1,5) then -1
@@ -1004,7 +993,7 @@ select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 		when ReturnTime between 366 and 547 then 547
 		when ReturnTime >= 548 then 730
 		else ReturnTime end
-	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdult, HHChild, HHNoDOB
 	, HHAdultAge, HHParent
 	, ESTStatus, ESTGeography, ESTLivingSit, ESTDestination, ESTChronic, ESTVet, ESTDisability, ESTFleeingDV, ESTAC3Plus, ESTAdultAge, ESTParent
@@ -1134,7 +1123,7 @@ select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 		when TotalHomelessDays between 731 and 1094 then 1094 
 		when TotalHomelessDays > 1094 then 1095
 		else TotalHomelessDays end 
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, ReportID 
+	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
 from tlsa_Household
 group by Stat	
 	, case when Stat in (1,5) then -1
@@ -1146,7 +1135,7 @@ group by Stat
 		when ReturnTime between 366 and 547 then 547
 		when ReturnTime >= 548 then 730
 		else ReturnTime end
-	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHType, HHChronic, HHVet, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdult, HHChild, HHNoDOB
 	, HHAdultAge, HHParent
 	, ESTStatus, ESTGeography, ESTLivingSit, ESTDestination, ESTChronic, ESTVet, ESTDisability, ESTFleeingDV, ESTAC3Plus, ESTAdultAge, ESTParent
@@ -1275,7 +1264,7 @@ group by Stat
 		when TotalHomelessDays between 731 and 1094 then 1094 
 		when TotalHomelessDays > 1094 then 1095
 		else TotalHomelessDays end 
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, ReportID 
+	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
 
 /*
 	End LSAHousehold

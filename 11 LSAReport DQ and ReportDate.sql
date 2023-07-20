@@ -1,10 +1,14 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name: 11 LSAReport DQ and ReportDate.sql
 
-FY2022 Changes
-		-Limit DQ to reporting period / active cohort
-		-Remove counts and DQ columns for 3 year period 
+FY2023 Changes
+		11.1, 11.2
+		- EnrollmentCoC, HMIS participation data standards changes
+
+		11.7 Homeless Date, TimesHomeless, MonthsHomeless
+		- LivingSituation data standards changes
+
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 	Please note that if this code is used in production, the first statement in section 11.6 
@@ -18,22 +22,14 @@ set rpt.NoCoC = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			inner join lsa_Project p on p.ProjectID = n.ProjectID
 				and p.ProjectType in (1,2,3,8,13)
-				and p.HMISParticipatingProject = 1
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
-			left outer join hmis_EnrollmentCoC coc on 
-				coc.HouseholdID = n.HouseholdID
-				and coc.InformationDate <= rpt.ReportEnd
-				and coc.DateDeleted is null 
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null
-			left outer join hmis_ProjectCoC pcoc on pcoc.ProjectID = p.ProjectID
-				and pcoc.CoCCode = coc.CoCCode
-				and pcoc.DateDeleted is null 
 			where n.EntryDate <= rpt.ReportEnd 
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.RelationshipToHoH = 1 
-				and pcoc.CoCCode is null
+				and n.EnrollmentCoC is null
 				and n.DateDeleted is null 
 			)
 from lsa_Report rpt
@@ -47,7 +43,6 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			inner join lsa_Project p on p.ProjectID = n.ProjectID
 				and p.ProjectType in (1,2,3,8,13)
-				and p.HMISParticipatingProject = 1
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
@@ -61,12 +56,6 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.DateDeleted is null
 				and (hoh.hoh <> 1 or hoh.HouseholdID is null)
-				and (select top 1 coc.CoCCode
-					from hmis_EnrollmentCoC coc
-					where coc.HouseholdID = n.HouseholdID
-						and coc.InformationDate <= rpt.ReportEnd
-						and coc.DateDeleted is null
-					order by coc.InformationDate desc) = rpt.ReportCoC
 			)
 from lsa_Report rpt
 
@@ -208,7 +197,7 @@ set rpt.HomelessDate = (select count(distinct n.EnrollmentID)
 	and (hn.DateToStreetESSH > hn.EntryDate
 		 or (hn.DateToStreetESSH is null 
 				and (n.LSAProjectType in (0,1,8)
-					 or hn.LivingSituation in (1,16,18)
+					 or hn.LivingSituation in (101,116,118)
 					 or hn.PreviousStreetESSH = 1
 					)
 			)
@@ -225,7 +214,7 @@ set rpt.TimesHomeless = (select count(distinct n.EnrollmentID)
 	and (hn.TimesHomelessPastThreeYears is NULL
 		or hn.TimesHomelessPastThreeYears not in (1,2,3,4)) 
 	and (n.LSAProjectType in (0,1,8)
-			or hn.LivingSituation in (1,16,18)
+			or hn.LivingSituation in (101,116,118)
 			or hn.PreviousStreetESSH = 1)
 	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
@@ -238,7 +227,7 @@ set rpt.MonthsHomeless = (select count(distinct n.EnrollmentID)
 	and (hn.MonthsHomelessPastThreeYears is NULL
 		or hn.MonthsHomelessPastThreeYears not between 101 and 113) 
 	and (n.LSAProjectType in (0,1,8)
-		or hn.LivingSituation in (1,16,18)
+		or hn.LivingSituation in (101,116,118)
 		or hn.PreviousStreetESSH = 1)
 	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt

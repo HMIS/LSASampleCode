@@ -1,10 +1,17 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:  09 LSACalculated AHAR Counts.sql  
 
-FY2022 Changes
+FY2023 Changes
 
-		None
+	9.1.11
+		New PopID 48 for DV Survivors not Identified as Currently Fleeing
+	9.1.18 - 9.1.25
+		Update RaceEthnicity logic and popIDs 
+	9.1.26
+		Update Gender logic and popIDs 
+	9.1.27 and 9.1.28
+		Update Age popIDs 
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 	
@@ -78,24 +85,29 @@ Populates and references:
 	from tlsa_HHID
 	where AHAR = 1 and HHParent = 1 and ActiveHHType = 3
 
+	insert into tlsa_CountPops (PopID, HouseholdID, Step)
+	select 48, HouseholdID, '9.1.11'
+	from tlsa_HHID
+	where AHAR = 1 and HHFleeingDV = 2
+
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select distinct 50, n.PersonalID, '9.1.11' 
+	select distinct 50, n.PersonalID, '9.1.12' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.VetStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select 51, hhid.HoHID, hhid.HouseholdID, '9.1.12'
+	select 51, hhid.HoHID, hhid.HouseholdID, '9.1.13'
 	from tlsa_HHID hhid 
 	where hhid.AHAR = 1 and hhid.HHAdultAge in (18,24) and hhid.HHParent = 1 and hhid.ActiveHHType = 2
 
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step) 
-	select 52, hhid.HoHID, hhid.HouseholdID, '9.1.13' 
+	select 52, hhid.HoHID, hhid.HouseholdID, '9.1.14' 
 	from tlsa_HHID hhid 
 	where hhid.AHAR = 1 and hhid.HHParent = 1 and hhid.ActiveHHType = 3
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select distinct 53, n.PersonalID, '9.1.14' 
+	select distinct 53, n.PersonalID, '9.1.15' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DisabilityStatus = 1 and (
@@ -103,75 +115,127 @@ Populates and references:
 		or (lp.CHTime = 400 and lp.CHTimeStatus = 2))
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select distinct 54, n.PersonalID, '9.1.15' 
+	select distinct 54, n.PersonalID, '9.1.16' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DisabilityStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select distinct 55, n.PersonalID, '9.1.16' 
+	select distinct 55, n.PersonalID, '9.1.17' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
 	where n.AHAR = 1 and lp.DVStatus = 1
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
 	select distinct 
-		case when lp.Race = 5 and lp.Ethnicity <> 1 then 56
-			when lp.Race = 5 and lp.Ethnicity = 1 then 57
-			when lp.Race = 3 and lp.Ethnicity <> 1 then 58
-			when lp.Race = 3 and lp.Ethnicity = 1 then 59
-			when lp.Race = 2 then 60
-			when lp.Race = 1 and lp.Ethnicity <> 1 then 61
-			when lp.Race = 1 and lp.Ethnicity = 1 then 62
-			when lp.Race = 4 then 63
-			else 64 end
-		, n.PersonalID, '9.1.17' 
+	  case when lp.RaceEthnicity = 1 then 56
+			when lp.RaceEthnicity = 16 then 57
+			when lp.RaceEthnicity = 2 then 58
+			when lp.RaceEthnicity = 26 then 59
+			when lp.RaceEthnicity = 3 then 60
+			when lp.RaceEthnicity = 36 then 61
+			when lp.RaceEthnicity = 6 then 62
+			when lp.RaceEthnicity = 7 then 63
+			when lp.RaceEthnicity = 67 then 64
+			when lp.RaceEthnicity = 4 then 65
+			when lp.RaceEthnicity = 46 then 66
+			when lp.RaceEthnicity = 5 then 67
+			when lp.RaceEthnicity = 56 then 68
+			when lp.RaceEthnicity >= 12 and cast(lp.RaceEthnicity as nvarchar) not like '%6%' then 69
+			when lp.RaceEthnicity >= 126 and cast(lp.RaceEthnicity as nvarchar) like '%6%' then 70 else null end
+		, n.PersonalID, '9.1.18' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
-	where n.AHAR = 1 and lp.Race not in (-1,98,99) 
+	where n.AHAR = 1 and lp.RaceEthnicity not in (98,99) 
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
-	select distinct case when lp.Ethnicity = 0 then 65
-		else 66 end, n.PersonalID, '9.1.18' 
+	select 71, n.PersonalID, '9.1.19' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
-	where n.AHAR = 1 and lp.Ethnicity in (0,1)
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%1%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 72, n.PersonalID, '9.1.20' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%2%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 73, n.PersonalID, '9.1.21' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%3%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 74, n.PersonalID, '9.1.22' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%6%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 75, n.PersonalID, '9.1.23' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%7%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 76, n.PersonalID, '9.1.24' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%4%' 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select 77, n.PersonalID, '9.1.25' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and cast(lp.RaceEthnicity as nvarchar) like '%5%' 
+
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
 	select distinct case lp.Gender
-		when 1 then 67
-		when 2 then 68
-		when 3 then 69
-		when 4 then 70
-		else 71 end, n.PersonalID, '9.1.19' 
+		when 0 then 78
+		when 1 then 79
+		when 2 then 80
+		when 5 then 81
+		when 4 then 82
+		when 6 then 83
+		when 3 then 84
+		else 85 end, n.PersonalID, '9.1.26' 
 	from tlsa_Enrollment n 
 	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
-	where n.AHAR = 1 and lp.Gender between 1 and 5
+	where n.AHAR = 1 and lp.Gender not in (98, 99)
 
 	insert into tlsa_CountPops (PopID, PersonalID, Step) 
 	select case max(n.ActiveAge)
-		when 0 then 72
-		when 2 then 73
-		when 5 then 74
-		when 17 then 75
-		when 21 then 76
-		when 24 then 77
-		when 34 then 78
-		when 44 then 79
-		when 54 then 80
-		when 64 then 81
-		else 82 end
-		, n.PersonalID, '9.1.20'
+		when 0 then 86
+		when 2 then 87
+		when 5 then 88
+		when 17 then 89
+		when 21 then 90
+		when 24 then 91
+		when 34 then 92
+		when 44 then 93
+		when 54 then 94
+		when 64 then 95
+		else 96 end
+		, n.PersonalID, '9.1.27'
 	from tlsa_Enrollment n 
 	where n.ActiveAge not in (98,99) and n.AHAR = 1 
 	group by n.PersonalID
 
+
+	insert into tlsa_CountPops (PopID, PersonalID, Step) 
+	select distinct 97, n.PersonalID, '9.1.28' 
+	from tlsa_Enrollment n 
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID 
+	where n.AHAR = 1 and lp.DVStatus in (2,3)
+
 	insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step)
-	select distinct case when hhid.ActiveHHType = 1 and n.ActiveAge = 21 then 1176
-			when hhid.ActiveHHType = 1 and n.ActiveAge = 24 then 1177
-			when hhid.ActiveHHType = 2 and n.ActiveAge = 21 then 1276
-			else 1277 end
-		, n.PersonalID, hhid.HouseholdID, '9.1.21'
+	select distinct case when hhid.ActiveHHType = 1 and n.ActiveAge = 21 then 1190
+			when hhid.ActiveHHType = 1 and n.ActiveAge = 24 then 1191
+			when hhid.ActiveHHType = 2 and n.ActiveAge = 21 then 1290
+			else 1291 end
+		, n.PersonalID, hhid.HouseholdID, '9.1.29'
 	from tlsa_Enrollment n
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	where hhid.HHAdultAge in (18,24)
@@ -180,7 +244,7 @@ Populates and references:
 		and n.AHAR = 1
 
     insert into tlsa_CountPops (PopID, PersonalID, HouseholdID, Step)
-	select distinct rp.PopID, p1.PersonalID, p1.HouseholdID, '9.1.22'
+	select distinct rp.PopID, p1.PersonalID, p1.HouseholdID, '9.1.30'
 	from ref_RowPopulations rp
 	inner join tlsa_CountPops p1 on p1.PopID = rp.Pop1
 	inner join tlsa_CountPops p2 on p2.PopID = rp.Pop2 and p2.PersonalID = p1.PersonalID

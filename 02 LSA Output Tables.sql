@@ -1,11 +1,33 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:  02 LSA Output Tables.sql 
 
-FY2022 Changes
-		lsa_Report
-			- Revise DQ columns (all 3 year DQ counts have been removed)
-			- Add LookbackDate
+FY2023 Changes
+		
+		lsa_Project
+		- Remove columns TrackingMethod and HMISParticipatingProject
+		- Add column RRHSubType
+		- Expand character count for ProjectName and ProjectCommonName to 200 
+
+		lsa_Organization
+		- Expand character count for OrganizationName and OrganizationCommonName to 200 
+
+		lsa_Funder
+		- Expand character limits for OtherFunder and GrantID to 100
+
+		lsa_Person 
+		- Remove columns Race and Ethnicity
+		- Add columns RaceEthnicity, RRHSOMinAge, RRHSOMaxAge, RRHSONoMoveIn, RRHSOWithMoveIn, HIV, SMI, SUD
+
+		lsa_Household 
+		- Remove columns HoHRace and HoHEthnicity
+		- Add columns HoHRaceEthnicity, RRHSOStatus, RRHSOMoveIn
+
+		lsa_Exit
+		- Remove columns HoHRace and HoHEthnicity
+		- Add column HoHRaceEthnicity
+
+		lsa_HMISParticipation and lsa_Affiliation added
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -46,16 +68,15 @@ if object_id ('lsa_Project') is not NULL drop table lsa_Project
 create table lsa_Project(
 	ProjectID nvarchar(32) not NULL,
 	OrganizationID nvarchar(32) not NULL,
-	ProjectName nvarchar(100) not NULL,
-	ProjectCommonName nvarchar(50),
+	ProjectName nvarchar(200) not NULL,
+	ProjectCommonName nvarchar(200),
 	OperatingStartDate nvarchar(10) not NULL,	--HMIS: date
 	OperatingEndDate nvarchar(10),				--HMIS: date
 	ContinuumProject int not NULL,
 	ProjectType int not NULL,					--HMIS: may be NULL
 	HousingType int not NULL,					--HMIS: may be NULL
+	RRHSubType int,
 	ResidentialAffiliation int,
-	TrackingMethod int,
-	HMISParticipatingProject int not NULL,
 	TargetPopulation int,
 	HOPWAMedAssistedLivingFac int,
 	PITCount int,
@@ -74,9 +95,9 @@ if object_id ('lsa_Organization') is not NULL drop table lsa_Organization
 
 create table lsa_Organization(
 	OrganizationID nvarchar(32) not NULL,
-	OrganizationName nvarchar(50) not NULL,
+	OrganizationName nvarchar(200) not NULL,
 	VictimServiceProvider int not NULL,
-	OrganizationCommonName nvarchar(50),
+	OrganizationCommonName nvarchar(200),
 	DateCreated nvarchar(19) not NULL,			--HMIS: datetime
 	DateUpdated nvarchar(19) not NULL,			--HMIS: datetime
 	UserID nvarchar(32),						--HMIS: not NULL
@@ -97,8 +118,8 @@ create table lsa_Funder(
 	FunderID nvarchar(32) not NULL,
 	ProjectID nvarchar(32) not NULL,
 	Funder int not NULL,
-	OtherFunder nvarchar(50),
-	GrantID nvarchar(32),						--HMIS: not NULL
+	OtherFunder nvarchar(100),
+	GrantID nvarchar(100),						--HMIS: not NULL
 	StartDate nvarchar(10) not NULL,			--HMIS: date
 	EndDate nvarchar(10),						--HMIS: date
 	DateCreated nvarchar(19) not NULL,			--HMIS: datetime
@@ -173,7 +194,47 @@ create table lsa_Inventory(
 	)
 
 /*
-	2.6 LSAReport.csv / lsa_Report
+	2.6 HMISParticipation.csv / lsa_HMISParticipation
+*/
+if object_id ('lsa_HMISParticipation') is not NULL drop table lsa_HMISParticipation
+
+create table lsa_HMISParticipation (
+	ParticipationID nvarchar(32) not NULL,
+	ProjectID nvarchar(32) not NULL,
+	HMISParticipationType int not NULL, 
+	HMISParticipationStatusStartDate nvarchar(10) not NULL,		--HMIS: date
+	HMISParticipationStatusEndDate nvarchar(10),				--HMIS: date
+	DateCreated nvarchar(19) not NULL,							--HMIS: datetime
+	DateUpdated nvarchar(19) not NULL,							--HMIS: datetime
+	UserID nvarchar(32),										--HMIS: not NULL
+	DateDeleted datetime,
+	ExportID int not NULL,										--HMIS: string(32)
+	CONSTRAINT pk_lsa_HMISParticipation PRIMARY KEY CLUSTERED (ParticipationID)
+	)
+
+/*
+	2.7 Affiliation.csv / lsa_Affiliation
+*/
+if object_id ('lsa_Affiliation') is not NULL drop table lsa_Affiliation
+
+create table lsa_Affiliation (
+	AffiliationID nvarchar(32) not NULL,
+	ProjectID nvarchar(32) not NULL,
+	ResProjectID nvarchar(32) not NULL,
+	HMISParticipationType int not NULL, 
+	HMISParticipationStatusStartDate nvarchar(10) not NULL,		--HMIS: date
+	HMISParticipationStatusEndDate nvarchar(10),				--HMIS: date
+	DateCreated nvarchar(19) not NULL,							--HMIS: datetime
+	DateUpdated nvarchar(19) not NULL,							--HMIS: datetime
+	UserID nvarchar(32),										--HMIS: not NULL
+	DateDeleted datetime,
+	ExportID int not NULL,										--HMIS: string(32)
+	CONSTRAINT pk_lsa_Affiliation PRIMARY KEY CLUSTERED (AffiliationID)
+	)
+
+
+/*
+	2.8 LSAReport.csv / lsa_Report
 */
 if object_id ('lsa_Report') is not NULL drop table lsa_Report
 
@@ -215,7 +276,7 @@ create table lsa_Report(
 	) 
 
 /*
-	2.7 LSAPerson.csv / lsa_Person
+	2.9 LSAPerson.csv / lsa_Person
 */
 
 if object_id ('lsa_Person') is not NULL drop table lsa_Person
@@ -223,8 +284,7 @@ if object_id ('lsa_Person') is not NULL drop table lsa_Person
 create table lsa_Person (
 	RowTotal int not NULL,
 	Gender int not NULL,
-	Race int not NULL,
-	Ethnicity int not NULL,
+	RaceEthnicity int not NULL,
 	VetStatus int not NULL,
 	DisabilityStatus int not NULL,
 	CHTime int not NULL,
@@ -278,11 +338,21 @@ create table lsa_Person (
 	AC3PlusPSH int not NULL,
 	AHARPSH int not NULL,
 	AHARHoHPSH int not NULL,
+	RRHSOAgeMin int not NULL, 
+	RRHSOAgeMax int not NULL, 
+	RRHSONoMoveIn int not NULL,
+	RRHSOWithMoveIn int not NULL,
+	HHTypeES int not null,
+	HHTypeSH int not null,
+	HHTypeTH int not null,
+	HIV int not NULL,
+	SMI int not NULL,
+	SUD int not NULL,
 	ReportID int not NULL
 	)
 
 /*
-	2.8 LSAHousehold.csv / lsa_Household
+	2.10 LSAHousehold.csv / lsa_Household
 */
 if object_id ('lsa_Household') is not NULL drop table lsa_Household
 
@@ -295,8 +365,7 @@ create table lsa_Household(
 	HHVet int not NULL,
 	HHDisability int not NULL,
 	HHFleeingDV int not NULL,
-	HoHRace int not NULL,
-	HoHEthnicity int not NULL,
+	HoHRaceEthnicity int not NULL,
 	HHAdult int not NULL,
 	HHChild int not NULL,
 	HHNoDOB int not NULL,
@@ -352,11 +421,13 @@ create table lsa_Household(
 	ESTAHAR int not NULL,
 	RRHAHAR int not NULL,
 	PSHAHAR int not NULL,
+	RRHSOStatus int not NULL,
+	RRHSOMoveIn int not NULL,
 	ReportID int not NULL
 	)
 
 /*
-	2.9 LSAExit.csv / lsa_Exit
+	2.11 LSAExit.csv / lsa_Exit
 */
 if object_id ('lsa_Exit') is not NULL drop table lsa_Exit
  
@@ -364,18 +435,15 @@ create table lsa_Exit(
 	RowTotal int not NULL,
 	Cohort int not NULL,
 	Stat int not NULL,
-
 	ExitFrom int not NULL,
 	ExitTo int not NULL,
 	ReturnTime int not NULL,
-
 	HHType int not NULL,
 	HHVet int not NULL,
 	HHChronic int not NULL,
 	HHDisability int not NULL,
 	HHFleeingDV int not NULL,
-	HoHRace int not NULL,
-	HoHEthnicity int not NULL,
+	HoHRaceEthnicity int not NULL,
 	HHAdultAge int not NULL,
 	HHParent int not NULL,
 	AC3Plus int not NULL,
@@ -384,7 +452,7 @@ create table lsa_Exit(
 	)
 
 /*
-	2.10 LSACalculated.csv / lsa_Calculated
+	2.12 LSACalculated.csv / lsa_Calculated
 */
 
 if object_id ('lsa_Calculated') is not NULL drop table lsa_Calculated 

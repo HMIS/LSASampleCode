@@ -1,11 +1,22 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:	03_02 to 03_06 HMIS Households and Enrollments.sql 
 
-FY2022 Changes
-		Use LookbackDate instead of 10/1/2012 where relevant
-		Do not create a record for the 3 year DQ cohort (formerly Cohort = 20) in tlsa_CohortDates as DQ reporting will be limited to the report period
-		Exclude enrollment data from VictimServiceProvider = 1 and HMISParticipatingProject = 0 
+FY2023 Changes
+
+		3.3.1
+		- Data standards changes:
+			Remove reference to hmis_EnrollmentCoC; filter by the new EnrollmentCoC field in hmis_Enrollment
+			Include enrollments regardless of HMIS participation status
+			Use LSAProjectType = 15 for RRH Services Only (ProjectType = 13 and RRHSubType = 1)
+			Remove references to TrackingMethod for ES project types
+
+		3.3.2
+		- Remove crosswalking of HMIS destination values to LSA-specific categories to use 
+			HMIS value for Destination (unless Destination = 435, in which case, use DestinationSubsidyType)
+
+		3.4.1 and 3.4.3
+		- Incorporate logic for RRH-SO / LSAProjectType 15
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -64,9 +75,8 @@ FY2022 Changes
 */
 truncate table tlsa_HHID
 -- Note:  Code here and elsewhere 
-			-- Uses LSAProjectType = 0 when ProjectType = 1 and TrackingMethod = 0 (ES entry/exit)	
---				and LSAProjectType = 1 when ProjectType = 1 and TrackingMethod = 3 (ES night-by-night); this differs from the
---				specs, which reference the HMIS project types.
+			-- Uses LSAProjectType = 13 when ProjectType = 13 and RRHSubType = 2 (RRH: Housing with or without services)	
+--				and LSAProjectType = 15 when ProjectType = 13 and RRHSubType = 1 (RRH: Services Only)
 			-- When RRH MoveInDate = ExitDate, uses an effective ExitDate of MoveIn + 1 day so that subsequent
 --				sections can use the same logic for RRH and PSH.
 
@@ -79,38 +89,35 @@ insert into tlsa_HHID (
 	, LastBedNight
 	, Step)
 select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
-	, hoh.ProjectID, p.ProjectType
+	, hoh.ProjectID, p.LSAProjectType
 	, case when hoh.EntryDate < bn.FirstBednight then bn.FirstBednight
 		else hoh.EntryDate end
 	, case when hoh.MoveInDate > rpt.ReportEnd 
-			or p.ProjectType not in (3,13) 
+			or p.LSAProjectType not in (3,13) 
 			or hoh.MoveInDate < hoh.EntryDate 
 			or hoh.MoveInDate > p.OperatingEndDate then null
-		when p.ProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null) 
+		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null) 
 			then hoh.MoveInDate
-		when p.ProjectType = 13 and (hoh.MoveInDate <= hx.ExitDate or hx.ExitDate is null) 
+		when p.LSAProjectType in (13,15) and (hoh.MoveInDate <= hx.ExitDate or hx.ExitDate is null) 
 			then hoh.MoveInDate
 		else null end
-	, case when p.ProjectType = 1 
+	, case when p.LSAProjectType = 1 
 				and dateadd(dd, 1, bn.LastBednight) >= p.OperatingEndDate then p.OperatingEndDate
-	    when p.ProjectType = 1 and hx.ExitDate > dateadd(dd, 1, bn.LastBednight)
+	    when p.LSAProjectType = 1 and hx.ExitDate > dateadd(dd, 1, bn.LastBednight)
 			then dateadd(dd, 1, bn.LastBednight)
-		when p.ProjectType = 1 and hx.ExitDate is null 
+		when p.LSAProjectType = 1 and hx.ExitDate is null 
 			and dateadd(dd, 90, bn.LastBednight) <= rpt.ReportEnd then dateadd(dd, 1, bn.LastBednight) 
 		when p.OperatingEndDate <= rpt.ReportEnd and hx.ExitDate is null then p.OperatingEndDate
-		when p.ProjectType = 13 and hoh.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
-		when p.ProjectType = 13 and hoh.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
+		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
+		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
 		else hx.ExitDate end
 	, bn.LastBednight
 	, '3.3.1'
 from hmis_Enrollment hoh
-inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate
-inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = hoh.EnrollmentID 
-	and coc.CoCCode = rpt.ReportCoC and coc.InformationDate <= rpt.ReportEnd
-	and coc.DateDeleted is null
-inner join (select hp.ProjectID,  case when hp.ProjectType = 1 and hp.TrackingMethod = 0 then 0
-						when hp.ProjectType = 1 and hp.TrackingMethod = 3 then 1
-						else hp.ProjectType end as ProjectType, 
+inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate and rpt.ReportCoC = hoh.EnrollmentCoC
+inner join (select hp.ProjectID
+			,  case when hp.ProjectType = 13 and hp.RRHSubType = 1 then 15
+						else hp.ProjectType end as LSAProjectType, 
 					hp.OperatingStartDate, hp.OperatingEndDate
 				from hmis_Project hp
 				inner join hmis_Organization ho on ho.OrganizationID = hp.OrganizationID
@@ -118,10 +125,11 @@ inner join (select hp.ProjectID,  case when hp.ProjectType = 1 and hp.TrackingMe
 				where hp.DateDeleted is null
 					and hp.ContinuumProject = 1 
 					and ho.VictimServiceProvider = 0
-					and hp.HMISParticipatingProject = 1
+					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
 					and (hp.OperatingEndDate is null 
 						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
 			) p on p.ProjectID = hoh.ProjectID
+-- Enrollments must be active (no exit date) or exited during the relevant period 
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd 
 	and (hx.ExitDate <= p.OperatingEndDate or p.OperatingEndDate is null)
@@ -134,7 +142,7 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 		inner join hmis_Enrollment nbn on nbn.EnrollmentID = svc.EnrollmentID
 		left outer join hmis_Exit nbnx on nbnx.EnrollmentID = nbn.EnrollmentID
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
-			and p.ProjectType = 1 and p.TrackingMethod = 3 
+			and p.ProjectType = 1 
 			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
 		inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
@@ -149,8 +157,8 @@ where hoh.DateDeleted is null
 	and	(hx.ExitDate is null or 
 			(hx.ExitDate >= rpt.LookbackDate and hx.ExitDate > hoh.EntryDate) 
 		)
-	and ((p.ProjectType in (0,2,3,8,13))
-     		or (p.ProjectType = 1 and bn.LastBednight is not null)
+	and (p.LSAProjectType in (0,2,3,8,13,15)
+   		or (p.LSAProjectType = 1 and bn.LastBednight is not null)
 		)
 
 		update hhid
@@ -158,22 +166,8 @@ where hoh.DateDeleted is null
 				when hx.ExitDate is null or 
 					(hx.ExitDate <> hhid.ExitDate 
 						and (hhid.MoveInDate is NULL or hhid.MoveInDate <> hx.ExitDate)) then 99
-				when hx.Destination = 3 then 1 --PSH
-				when hx.Destination = 31 then 2	--PH - rent/temp subsidy
-				when hx.Destination in (19,20,21,26,28,33,34) then 3	--PH - rent/own with subsidy
-				when hx.Destination in (10,11) then 4	--PH - rent/own no subsidy
-				when hx.Destination = 22 then 5	--Family - perm
-				when hx.Destination = 23 then 6	--Friends - perm
-				when hx.Destination in (15,25) then 7	--Institutions - group/assisted
-				when hx.Destination in (4,5,6) then 8	--Institutions - medical
-				when hx.Destination = 7 then 9	--Institutions - incarceration
-				when hx.Destination in (14,29) then 10	--Temporary - not homeless
-				when hx.Destination in (1,2,18,27,32) then 11	--Homeless - ES/SH/TH/host home
-				when hx.Destination = 16 then 12	--Homeless - Street
-				when hx.Destination = 12 then 13	--Family - temp
-				when hx.Destination = 13 then 14	--Friends - temp
-				when hx.Destination = 24 then 15	--Deceased
-				else 99	end
+				when hx.Destination = 435 then hx.DestinationSubsidyType 
+				else hx.Destination	end
 			, hhid.Step = '3.3.2'
 		from tlsa_HHID hhid
 		left outer join hmis_Exit hx on hx.EnrollmentID = hhid.EnrollmentID
@@ -199,8 +193,8 @@ where hoh.DateDeleted is null
 		, case when hhid.EntryDate > hn.EntryDate then hhid.EntryDate else hn.EntryDate end
 		, case when hx.ExitDate >= hhid.ExitDate then hhid.ExitDate
 			when hx.ExitDate is NULL and hhid.ExitDate is not NULL then hhid.ExitDate
-			when hhid.LSAProjectType = 13 and hhid.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
-			when hhid.LSAProjectType = 13 and hhid.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
+			when hhid.LSAProjectType in (13,15) and hhid.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
+			when hhid.LSAProjectType in (13,15) and hhid.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
 			else hx.ExitDate end
 		, case when hn.DisablingCondition in (0,1) then hn.DisablingCondition 
 			else null end
@@ -212,7 +206,7 @@ where hoh.DateDeleted is null
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID	
 		and hx.ExitDate <= rpt.ReportEnd
 		and hx.DateDeleted is null
-	where hhid.LSAProjectType in (0,2,3,8,13) 
+	where hhid.LSAProjectType in (0,2,3,8,13,15) 
 		and hn.RelationshipToHoH in (1,2,3,4,5)
 		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
 		and (hx.ExitDate is null or 
@@ -254,6 +248,8 @@ where hoh.DateDeleted is null
 		, hhid.ProjectID, hhid.LSAProjectType
 		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition else null end
 		, nbnx.ExitDate, hhid.ExitDate, rpt.ReportEnd
+
+
 	update n 
 	set n.MoveInDate = 	case when hhid.MoveInDate < n.EntryDate then n.EntryDate
 			when hhid.MoveInDate > n.ExitDate then NULL
@@ -262,7 +258,7 @@ where hoh.DateDeleted is null
 			else hhid.MoveInDate end 
 		, Step = '3.4.3'
 	from tlsa_Enrollment n
-	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.LSAProjectType in (3,13)
+	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.LSAProjectType in (3,13,15)
 
 	update n
 	set n.DVStatus = (select min(case when dv.DomesticViolenceVictim = 1 and dv.CurrentlyFleeing = 1 then 1
@@ -277,7 +273,7 @@ where hoh.DateDeleted is null
 				 and dv.InformationDate <= rpt.ReportEnd
 				 and dv.InformationDate >= n.EntryDate
 				 and (dv.InformationDate <= n.ExitDate or n.ExitDate is null))
-		, n.Step = '3.4.5'
+		, n.Step = '3.4.4'
 	from tlsa_Enrollment n
 
 /*

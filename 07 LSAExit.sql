@@ -1,9 +1,21 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:  07 LSAExit.sql  
 
-	FY2022 Changes
-		Use LookbackDate instead of 10/1/2012 where relevant
+	FY2023 Changes
+		7.2.3
+			- ExitFrom values for RRHSO  
+		7.3
+			- EnrollmentCoC updates
+		7.6.3
+			- include RRHSO ES/SH/Street dates from 3.917 DateToStreetESSH for CH
+		7.9.1
+			- HHChronic category updates
+		7.9.2
+			- RaceEthnicity updates
+			- HHFleeingDV category updates
+		7.13
+			- HoHRaceEthnicity column update
 		
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -26,20 +38,8 @@ Name:  07 LSAExit.sql
 		and	disqualify.EnrollmentID <> hhid.EnrollmentID 
 		and disqualify.EntryDate < dateadd(dd, 14, hhid.ExitDate)
 		and (disqualify.ExitDate is null or disqualify.ExitDate > hhid.ExitDate)
-		and (select top 1 CoCCode 
-			 from hmis_EnrollmentCoC 
-			 where DateDeleted is null 
-				and EnrollmentID = disqualify.EnrollmentID 
-				and InformationDate <= dateadd(dd, 14, hhid.ExitDate)
-			 order by InformationDate desc) = rpt.ReportCoC
 	where disqualify.EnrollmentID is null
 		and (rpt.LSAScope = 1 or p.ProjectID is not null)
-		and (select top 1 coc.CoCCode
-			from hmis_EnrollmentCoC coc
-			where coc.EnrollmentID = hhid.EnrollmentID
-				and coc.InformationDate <= rpt.ReportEnd
-				and coc.DateDeleted is null
-			order by coc.InformationDate desc) = rpt.ReportCoC
 
 /*
 	7.2 Select Reportable Exits
@@ -65,8 +65,8 @@ set ex.QualifyingExitHHID = (select top 1 qx.HouseholdID
 					when -1 then qx.Exit1HHType
 					else qx.ActiveHHType end
 					= ex.HHType
-			order by case when qx.ExitDest between 1 and 6 then 2
-                      when qx.ExitDest between 7 and 14 then 3
+			order by case when qx.ExitDest between 400 and 499 then 2
+                      when qx.ExitDest between 100 and 399 then 3
                       else 4 end asc
 					 , qx.ExitDate asc
 					 , qx.ExitDest asc
@@ -84,7 +84,9 @@ set ex.ExitFrom = case
               when qx.LSAProjectType = 13 and qx.MoveInDate is not null then 5
               when qx.LSAProjectType = 3 and qx.MoveInDate is not null then 6
               when qx.LSAProjectType = 13 then 7
-              else 8 end
+              when qx.LSAProjectType = 3 then 8 
+              when qx.LSAProjectType = 15 and qx.MoveInDate is not null then 9
+			  else 10  end
 		, ex.ExitTo = qx.ExitDest
 		, ex.Step = '7.2.3'
 from tlsa_Exit ex
@@ -108,10 +110,8 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 						when -1 then qx.Exit1HHType
 						else qx.ActiveHHType end 
 				and rn.EntryDate between dateadd(dd, 15, qx.ExitDate) and dateadd(dd, 730, qx.ExitDate)
-			inner join hmis_EnrollmentCoC coc on coc.EnrollmentID = rn.EnrollmentID 
-					and coc.InformationDate = rn.EntryDate 
-					and coc.DateDeleted is null
-			inner join lsa_Report rpt on coc.CoCCode = rpt.ReportCoC
+			inner join hmis_Enrollment coc on coc.EnrollmentID = rn.EnrollmentID 
+			inner join lsa_Report rpt on coc.EnrollmentCoC = rpt.ReportCoC
 			where qx.HouseholdID = ex.QualifyingExitHHID
 			group by qx.ExitDate)
 		, -1)
@@ -258,7 +258,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 				chn.LSAProjectType in (0,1,2,8) and cal.theDate < chn.EntryDate)
 			or (-- for PSH/RRH, dates prior to and after EntryDate are counted for 
 				-- as long as the client remains homeless in the project  
-				chn.LSAProjectType in (3,13)
+				chn.LSAProjectType in (3,13,15)
 				and (cal.theDate < chn.MoveInDate
 					 or (chn.MoveInDate is NULL and cal.theDate < chn.ExitDate)
 					)
@@ -354,11 +354,16 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	from tlsa_Exit ex
 	left outer join 
 		(select ha.QualifyingExitHHID, min(
-			case when ha.CHTime = 400 and ha.CHTimeStatus = 2 and ha.DisabilityStatus = 1 then 1
-				when ha.CHTime = 365 and ha.CHTimeStatus in (1,2) and ha.DisabilityStatus = 1 then 1
-				when ha.CHTime in (365,400) then 2
-				when ha.CHTime = 270 and ha.DisabilityStatus = 1 then 3
-				else 4 end) as ch
+			case when ((ha.CHTime = 365 and ha.CHTimeStatus in (1,2))
+							or (ha.CHTime = 400 and ha.CHTimeStatus = 2))
+							and ha.DisabilityStatus = 1 then 1
+						when ha.CHTime in (365, 400) and ha.DisabilityStatus = 1 then 2
+						when ha.CHTime in (365, 400) and ha.DisabilityStatus = 99 then 3
+						when ha.CHTime in (365, 400) and ha.DisabilityStatus = 0 then 4
+						when ha.CHTime = 270 and ha.DisabilityStatus = 1 and ha.CHTimeStatus = 99 then 5
+						when ha.CHTime = 270 and ha.DisabilityStatus = 1 and ha.CHTimeStatus <> 99 then 6
+						when ha.CHTimeStatus = 99 and ha.DisabilityStatus <> 0 then 9
+						else null end) as ch
 		from tlsa_ExitHoHAdult ha
 		group by ha.QualifyingExitHHID) ch on ch.QualifyingExitHHID = ex.QualifyingExitHHID
 
@@ -367,29 +372,34 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		, HHDisability = (select max(case when disability.DisabilityStatus = 1 then 1 else 0 end)
 			from tlsa_Enrollment disability
 			where disability.HouseholdID = hh.HouseholdID)
-		, HHFleeingDV = (select max(case when dv.DVStatus = 1 then 1 else 0 end)
-			from tlsa_Enrollment dv
-			where dv.HouseholdID = hh.HouseholdID)
-		, HoHRace =  case when hoh.RaceNone in (8,9) then 98
-			when hoh.RaceNone = 99 then 99
-			when (hoh.AmIndAkNative = 1 
-					or hoh.Asian = 1
-					or hoh.BlackAfAmerican = 1
-					or hoh.NativeHIPacific = 1
-					or hoh.White = 1) then 
+		, HHFleeingDV = coalesce((select min(
+				case when dv.DVStatus = 1 
+						and (dv.ActiveAge between 18 and 65 or dv.RelationshipToHoH = 1) then 1
+					when dv.DVStatus in (2,3) 
+						and (dv.ActiveAge between 18 and 65 or dv.RelationshipToHoH = 1) then 2
+					else null end)
+				from tlsa_Enrollment dv
+				where dv.HouseholdID = hh.HouseholdID), 0)
+		, HoHRaceEthnicity =  (select case when r.RaceNone in (8,9) then 98
+			when r.RaceNone = 99 then 99
+			when (r.AmIndAkNative = 1 
+					or r.Asian = 1
+					or r.BlackAfAmerican = 1
+					or r.NativeHIPacific = 1
+					or r.White = 1
+					or r.HispanicLatinaeo = 1
+					or r.MidEastNAfrican = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
 							+ case when r.Asian = 1 then '2' else '' end
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
 							+ case when r.NativeHIPacific = 1 then '4' else '' end
-							+ case when r.White = 1 then '5' else '' end) as int)
-						from hmis_Client r
-						where r.PersonalID = hoh.PersonalID) 
-			else 99 end
-		, HoHEthnicity = case 
-			when hoh.Ethnicity in (8,9) then 98
-			when hoh.Ethnicity in (0,1) then hoh.Ethnicity
+							+ case when r.White = 1 then '5' else '' end
+							+ case when r.HispanicLatinaeo = 1 then '6' else '' end
+							+ case when r.MidEastNAfrican = 1 then '7' else '' end) as int))
 			else 99 end 
+			from hmis_Client r
+			where r.PersonalID = hoh.PersonalID) 
 		, HHParent = (select max(case when parent.RelationshipToHoH = 2 then 1 else 0 end)
 			from tlsa_Enrollment parent
 			where parent.HouseholdID = hh.HouseholdID)
@@ -413,15 +423,15 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			when -2 then n.Exit2Age end between 18 and 65
 		group by n.HouseholdID, hhid.ExitCohort) vet on vet.HouseholdID = ex.QualifyingExitHHID and vet.ExitCohort = ex.Cohort
 
-update ex
-set ex.HHAdultAge = case when ages.MaxAge not between 18 and 65 then -1
-	when ages.MaxAge = 21 then 18
-	when ages.MaxAge = 24 then 24
-	when ages.MinAge between 55 and 65 then 55
-	else 25 end
-	, ex.Step = '7.9.3'
-from tlsa_Exit ex
-inner join (select hhid.HoHID, case hhid.ExitCohort 
+	update ex
+	set ex.HHAdultAge = case when ages.MaxAge not between 18 and 65 then -1
+		when ages.MaxAge = 21 then 18
+		when ages.MaxAge = 24 then 24
+		when ages.MinAge between 55 and 65 then 55
+		else 25 end
+		, ex.Step = '7.9.3'
+	from tlsa_Exit ex
+	inner join (select hhid.HoHID, case hhid.ExitCohort 
 			when 0 then hhid.ActiveHHType
 			when -1 then hhid.Exit1HHType
 			when -2 then hhid.Exit2HHType end as HHType
@@ -766,7 +776,7 @@ where ex.Cohort = -2 and ex.SystemPath is null
 truncate table lsa_Exit
 insert into lsa_Exit (RowTotal
 	, Cohort, Stat, ExitFrom, ExitTo, ReturnTime, HHType
-	, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdultAge, HHParent, AC3Plus, SystemPath, ReportID)
 select count (distinct HoHID + cast(HHType as nvarchar))
 	, Cohort, Stat, ExitFrom, ExitTo
@@ -778,7 +788,7 @@ select count (distinct HoHID + cast(HHType as nvarchar))
 		when ReturnTime between 366 and 547 then 547
 		when ReturnTime between 548 and 730 then 730
 		else ReturnTime end
-	, HHType, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHType, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdultAge, HHParent, AC3Plus, SystemPath, ReportID
 from tlsa_Exit
 group by Cohort, Stat, ExitFrom, ExitTo
@@ -790,5 +800,5 @@ group by Cohort, Stat, ExitFrom, ExitTo
 		when ReturnTime between 366 and 547 then 547
 		when ReturnTime between 548 and 730 then 730
 		else ReturnTime end
-	, HHType, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRace, HoHEthnicity
+	, HHType, HHVet, HHChronic, HHDisability, HHFleeingDV, HoHRaceEthnicity
 	, HHAdultAge, HHParent, AC3Plus, SystemPath, ReportID

@@ -1,10 +1,9 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:	03_01 LSA Parameters and Metadata.sql 
 
-FY2022 Changes
+FY2023 Changes
 		-Update report start and end dates
-		-Add LookbackDate
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -27,12 +26,12 @@ insert into lsa_Report (
 		)
 	select
 		  12345
-		, '10/1/2021'
-		, '9/30/2022'
+		, '10/1/2022'
+		, '9/30/2023'
 		, 'XX-500'
 		, 'Sample Code Inc.'
 		, 'LSA Online'
 		, 'Molly'			
 		, 'molly@squarepegdata.com'
 		, 1					
-		, dateadd(yyyy, -7, '10/1/2021')
+		, dateadd(yyyy, -7, '10/1/2022')

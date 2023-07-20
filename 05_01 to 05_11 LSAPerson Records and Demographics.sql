@@ -1,9 +1,30 @@
 /*
-LSA FY2022 Sample Code
+LSA FY2023 Sample Code
 Name:  05_01 to 05_11 LSAPerson.sql  
 
-FY2022 Changes
-		None
+FY2023 Changes
+		5.1.2 and 5.2.2
+		- exclude RRH-SO enrollments from AHAR status
+
+		5.3/5.4
+		- RaceEthnicity - data standards changes and populate for non-HoH children 
+		- Gender update to include all selected values / data standards changes and populate for non-HoH children
+		- Add HIV, SMI, SUD for adults 
+		- Set DisabilityStatus = 1 for adults who meet criteria for HIV, SMI, SUD even if DisablingCondition <> 1
+
+		5.5.1
+		- Include Safe Haven enrollments (bug fix from last year) and RRH-SO when setting LastActive
+		- Include ES/SH/Street dates from RRH-SO enrollments
+
+		5.8.3 
+		- LivingSituation data standards changes
+		- Include ES/SH/Street dates between DateToStreetESSH and move-in, exit, or report end from RRH-SO enrollments for CH
+
+		5.10.5
+		- LivingSituation data standards changes
+
+		5.11.3 and 5.11.4
+		- RRHSOAgeMin and RRHSOAgeMax
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 
@@ -17,12 +38,6 @@ FY2022 Changes
 	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
 	inner join lsa_Project p on p.ProjectID = hhid.ProjectID
 	where (hhid.ExitDate is null or hhid.ExitDate >= rpt.ReportStart) 
-		and (select top 1 coc.CoCCode
-			from hmis_EnrollmentCoC coc
-			where coc.EnrollmentID = hhid.EnrollmentID
-				and coc.InformationDate <= rpt.ReportEnd
-				and coc.DateDeleted is null
-			order by coc.InformationDate desc) = rpt.ReportCoC
 
 	update hhid
 	set hhid.AHAR = 1 
@@ -30,7 +45,7 @@ FY2022 Changes
 	from tlsa_HHID HHID
 	where hhid.Active = 1 
 		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.LSAProjectType not in (3,13)
+		and hhid.LSAProjectType not in (3,13,15)
 		
 	update hhid
 	set hhid.AHAR = 1 
@@ -62,7 +77,7 @@ FY2022 Changes
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.AHAR = 1
 	where n.Active = 1
 		and (n.ExitDate is null or n.ExitDate > rpt.ReportStart)
-		and n.LSAProjectType not in (3,13)
+		and n.LSAProjectType not in (3,13,15)
 	
 	update n
 	set n.AHAR = 1 
@@ -81,14 +96,11 @@ FY2022 Changes
 	truncate table tlsa_Person
 
 	insert into tlsa_Person (PersonalID, HoHAdult, 
-		Ethnicity, VetStatus, DisabilityStatus, DVStatus, Gender, Race, ReportID, Step)
+		VetStatus, DisabilityStatus, DVStatus, Gender, RaceEthnicity
+		, SMI, SUD, HIV
+		, ReportID, Step)
 	select distinct n.PersonalID
 		, HoHAdult.stat
-		, case 
-			when HoHAdult.stat = 0 then -1 
-			when c.Ethnicity in (8,9) then 98
-			when c.Ethnicity in (0,1) then c.Ethnicity
-			else 99 end 	
 		, case 
 			when HoHAdult.stat not in (1,3) then -1 
 			when c.VeteranStatus in (8,9) then 98
@@ -96,41 +108,69 @@ FY2022 Changes
 			else 99 end
 		, case	
 			when HoHAdult.stat = 0 then -1
-			when Disability.stat is null then 99 
-			else Disability.stat end 		 
+			when Disability.stat = 1 then 1
+			when HIV.PersonalID is not null 
+				or SMI.PersonalID is not null 
+				or SUD.PersonalID is not null then 1 
+			when Disability.stat = 0 then 0
+			else 99 end 		 
 		, case	
 			when HoHAdult.stat = 0 then -1
 			when DV.stat = 10 then 0 
 			when DV.stat is null then 99
 			else DV.stat end 	
 		, case 
-			when HoHAdult.stat = 0 then -1 
 			when c.GenderNone in (8,9) then 98
-			when c.Questioning = 1 then 5
-			when c.NoSingleGender = 1 then 4
-			when c.Female = 1 and c.Male = 1 then 4
-			when c.Transgender = 1 then 3
-			when c.Female = 1 then 1
-			when c.Male = 1 then 2
-			else 99 end 
+			when c.GenderNone = 99 then 99
+			when (c.Woman = 1
+					or c.Man = 1
+					or c.NonBinary = 1
+					or c.CulturallySpecific = 1 
+					or c.Transgender = 1 
+					or c.Questioning = 1
+					or c.DifferentIdentity = 1) then 
+						(select cast (
+							(case when c.Man = 1 then '1' else '' end
+							+ case when c.CulturallySpecific = 1 then '2' else '' end 
+							+ case when c.DifferentIdentity = 1 then '3' else '' end
+							+ case when c.NonBinary = 1 then '4' else '' end
+							+ case when c.Transgender = 1 then '5' else '' end
+							+ case when c.Questioning = 1 then '6' else '' end
+							+ case when c.Woman = 1 then '0' else '' end
+							) as int)
+						from hmis_Client g
+						where g.PersonalID = c.PersonalID)
+			else 99 end
 		, case 
-			when HoHAdult.stat = 0 then -1 
 			when c.RaceNone in (8,9) then 98
 			when c.RaceNone = 99 then 99
 			when (c.AmIndAkNative = 1 
 					or c.Asian = 1
 					or c.BlackAfAmerican = 1
 					or c.NativeHIPacific = 1
-					or c.White = 1) then 
+					or c.White = 1
+					or c.HispanicLatinaeo = 1
+					or c.MidEastNAfrican = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
 							+ case when r.Asian = 1 then '2' else '' end
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
 							+ case when r.NativeHIPacific = 1 then '4' else '' end
-							+ case when r.White = 1 then '5' else '' end) as int)
+							+ case when r.White = 1 then '5' else '' end
+							+ case when r.HispanicLatinaeo = 1 then '6' else '' end
+							+ case when r.MidEastNAfrican = 1 then '7' else '' end) as int)
 						from hmis_Client r
 						where r.PersonalID = c.PersonalID)
 			else 99 end 
+		, case when HoHAdult.stat not in (1,3) then -1
+			when hiv.PersonalID is null then 0
+			else 1 end
+		, case when HoHAdult.stat not in (1,3) then -1
+			when smi.PersonalID is null then 0
+			else 1 end
+		, case when HoHAdult.stat not in (1,3) then -1
+			when sud.PersonalID is null then 0
+			else 1 end
 		, rpt.ReportID
 		, '5.3/5.4'
 	from lsa_Report rpt
@@ -159,21 +199,47 @@ FY2022 Changes
 		from tlsa_Enrollment n
 		where n.Active = 1
 		group by n.PersonalID) DV on DV.PersonalID = n.PersonalID	
-
+	left outer join 
+		(select n.PersonalID
+			 from tlsa_Enrollment n
+			 inner join hmis_Disabilities d on d.DisabilityType = 8 and d.DisabilityResponse = 1
+			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
+		) HIV on HIV.PersonalID = n.PersonalID
+	left outer join 
+		(select n.PersonalID
+			 from tlsa_Enrollment n
+			 inner join hmis_Disabilities d on d.DisabilityType = 9 and d.DisabilityResponse = 1 and d.IndefiniteAndImpairs = 1
+			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
+		) SMI on SMI.PersonalID = n.PersonalID
+	left outer join 
+		(select n.PersonalID
+			 from tlsa_Enrollment n
+			 inner join hmis_Disabilities d on d.DisabilityType = 10 and d.DisabilityResponse in (1,2,3) and d.IndefiniteAndImpairs = 1
+			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
+		 ) SUD on SUD.PersonalID = n.PersonalID
 /*
 	5.5 Get Dates for Three Year Period Relevant to Chronic Homelessness Status 
 		 for Each Active Adult and Head of Household
 */
 
 	-- CH status is based on HMIS enrollment data in the three year period ending on the client's 
-	-- last active date in the report period.
+	-- last unhoused date in the report period (i.e., not enrolled in TH and/or prior to a MoveInDate in RRH/PSH).
+	-- Clients who have no unhoused dates in the report period cannot, by definition, be considered 
+	-- chronically homeless.
 	update lp
 	set lp.LastActive =  
 		(select max(case 
-			when n.ExitDate is null and 
-				(n.LastBednight is null or n.LastBednight = rpt.ReportEnd) then rpt.ReportEnd 
-			when n.LastBednight is not null then dateadd(dd, 1, n.LastBednight)
-			else n.ExitDate end) 
+			when n.LSAProjectType in (0,8) and n.ExitDate is null then rpt.ReportEnd
+			when n.LSAProjectType in (0,8) and n.ExitDate > rpt.ReportStart then dateadd(dd, -1, n.ExitDate) 
+			when n.LSAProjectType = 1 then n.LastBednight
+			when n.LSAProjectType = 2 and n.EntryDate > rpt.ReportStart then dateadd(dd, -1, n.EntryDate)
+			when n.LSAProjectType in (3,13,15) and n.MoveInDate > rpt.ReportStart then dateadd(dd, -1, n.MoveInDate)
+			when n.LSAProjectType in (3,13,15) and n.MoveInDate is null and n.ExitDate is not null then dateadd(dd, -1, n.ExitDate)
+			when n.LSAProjectType in (3,13,15) and n.MoveInDate is null and n.ExitDate is null then rpt.ReportEnd
+			-- Enrollments set to NULL will include:
+				-- Active TH enrollments with an EntryDate prior to ReportStart 
+				-- Active PSH/RRH enrollments with a MoveInDate on or before ReportStart
+			else NULL end)
 		from lsa_Report rpt
 		inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd and n.Active = 1
 		where n.PersonalID = lp.PersonalID)
@@ -181,12 +247,14 @@ FY2022 Changes
 	from tlsa_Person lp
 	where lp.HoHAdult > 0
 
-	--The start of the period is:  LastActive minus (3 years) plus (1 day)
+	--The start of the period is:  LastActive minus (3 years) plus (1 day) --
+	--  i.e., only people who are chronically homeless as of their most recent
+	--  unhoused date of service will be counted as chronically homeless.  
 	update lp
 	set lp.CHStart = dateadd(dd, 1, (dateadd(yyyy, -3, lp.LastActive)))
 		, lp.Step = '5.5.2'
 	from tlsa_Person lp
-	where HoHAdult > 0
+	where HoHAdult > 0 and lp.LastActive is not NULL
 
 /*
 	5.6 Enrollments Relevant to Counting ES/SH/Street Dates
@@ -205,33 +273,34 @@ FY2022 Changes
 	5.7 Get Dates to Exclude from Counts of ES/SH/Street Days 
 */
 
-	-- ch_Exclude identifies dates between CHStart and LastActive when client was enrolled in TH
-	-- or housed in RRH/PSH.
 	truncate table ch_Exclude
 
+	-- ch_Exclude identifies dates between CHStart and LastActive when client was 
+	--  housed in TH (EntryDate to the day before ExitDate) and/or RRH/PSH (MoveInDate to the day before ExitDate)
+	--  i.e., dates when the client was NOT on the street or in ES/SH based on HMIS enrollment data.
+	--  Regardless of any potentially conflicting data, these dates will not be counted as ESSHStreetDates.
 	insert into ch_Exclude (PersonalID, excludeDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.7'
 	from tlsa_Person lp
 	inner join tlsa_Enrollment chn on chn.PersonalID = lp.PersonalID and chn.CH = 1
 	inner join ref_Calendar cal on cal.theDate >=
-			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
+			case when chn.LSAProjectType in (3,13,15) then chn.MoveInDate  
 				else chn.EntryDate end
 		and (cal.theDate < chn.ExitDate 
 			or chn.ExitDate is null)
 			and cal.theDate between lp.CHStart and lp.LastActive
-	where chn.LSAProjectType in (2,3,13)
+	where chn.LSAProjectType in (2,3,13,15)
 
 /*
 	5.8 Get Dates to Include in Counts of ES/SH/Street Days 
 */
 	--ch_Include identifies dates on which a client was in ES/SH or on the street 
-	-- (excluding any dates in ch_Exclude) based on:
-	--	 HMIS entry/exit dates for enrollments in those project types
-	--   Responses to DE 3.917 when EntryDate > CHStart
-	--   Bed nights in nbn ES
+	-- based on HMIS data (excluding any dates in ch_Exclude).
+
 	truncate table ch_Include
 
-	--Dates enrolled in ES entry/exit or SH
+	--Dates enrolled in ES entry/exit or SH (EntryDate to the day before ExitDate), 
+	-- not including any dates already accounted for in ch_Exclude
 	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.1'
 	from tlsa_Person lp
@@ -245,7 +314,8 @@ FY2022 Changes
 	where chn.LSAProjectType in (0,8)
 		and chx.excludeDate is null
 
-	--ES nbn bed nights
+	--ES nbn bed nights (any valid DateProvided between CHStart and LastActive 
+	-- that is not already accounted for in ch_Exclude, and not already in ch_Include)
 	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.2'
 	from tlsa_Person lp
@@ -265,7 +335,8 @@ FY2022 Changes
 	where chn.LSAProjectType = 1 and chx.excludeDate is null
 		and chi.ESSHStreetDate is null
 
-	--ES/SH/Street dates from 3.917 DateToStreetESSH when EntryDates > CHStart.
+	--ES/SH/Street dates from 3.917 DateToStreetESSH when EntryDates > CHStart --
+	-- all dates 
 
 	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select distinct lp.PersonalID, cal.theDate, '5.8.3'
@@ -282,10 +353,10 @@ FY2022 Changes
 			and chi.PersonalID = chn.PersonalID
 	where chx.excludeDate is null
 		and chi.ESSHStreetDate is null
-		and (hn.LivingSituation in (1,18,16)
+		and (hn.LivingSituation between 100 and 199
 			or (chn.LSAProjectType not in (0,1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
 			or (chn.LSAProjectType not in (0,1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-					and hn.LivingSituation in (4,5,6,7,15,25)) 
+					and hn.LivingSituation between 200 and 299) 
 			)
 		and ( 
 			
@@ -293,7 +364,7 @@ FY2022 Changes
 				chn.LSAProjectType in (0,1,2,8) and cal.theDate < chn.EntryDate)
 			or (-- for PSH/RRH, dates prior to and after EntryDate are counted for 
 				-- as long as the client remains homeless in the project  
-				chn.LSAProjectType in (3,13)
+				chn.LSAProjectType in (3,13,15)
 				and (cal.theDate < chn.MoveInDate
 					 or (chn.MoveInDate is NULL and cal.theDate < chn.ExitDate)
 					 or (chn.MoveInDate is NULL and chn.ExitDate is NULL and cal.theDate <= lp.LastActive)
@@ -301,22 +372,26 @@ FY2022 Changes
 				)
 			)						
 
-	--Gaps of less than 7 nights between two ESSHStreet dates are counted
+	--Gaps of less than 7 nights between two ESSHStreet dates are counted as ESSHStreetDates
+	-- 2023:	There should be no change in logic here; changes are to add comments and make the 
+	--			code more readable.
 	insert into ch_Include (PersonalID, ESSHStreetDate, Step)
 	select gap.PersonalID, cal.theDate, '5.8.4'
-	from (select distinct s.PersonalID, s.ESSHStreetDate as StartDate, min(e.ESSHStreetDate) as EndDate
+	from
+			(select s.PersonalID, s.ESSHStreetDate as StartDate, min(e.ESSHStreetDate) as EndDate
 			from ch_Include s 
-				inner join ch_Include e on e.PersonalID = s.PersonalID and e.ESSHStreetDate > s.ESSHStreetDate 
-					and dateadd(dd, -7, e.ESSHStreetDate) <= s.ESSHStreetDate
-			where s.PersonalID not in 
-				(select PersonalID 
-				from ch_Include 
-				where ESSHStreetDate = dateadd(dd, 1, s.ESSHStreetDate))
+			--nogap identifies dates in ch_Include that have an ESSHStreetDate on the next day --
+			--  i.e., not the start of a gap -- and they are excluded in the WHERE clause
+			left outer join ch_Include nogap on nogap.PersonalID = s.PersonalID 
+				and nogap.ESSHStreetDate = dateadd(dd, 1, s.ESSHStreetDate)
+			-- e identifies ESSHStreetDates within 7 days after the start of a gap --
+			-- i.e., potential end dates for the gap -- and the earliest one is selected as EndDate
+			inner join ch_Include e on e.PersonalID = s.PersonalID 
+				and e.ESSHStreetDate > s.ESSHStreetDate 
+				and dateadd(dd, -7, e.ESSHStreetDate) <= s.ESSHStreetDate
+			where nogap.PersonalID is null
 			group by s.PersonalID, s.ESSHStreetDate) gap
-		inner join ref_Calendar cal on cal.theDate between gap.StartDate and gap.EndDate
-		left outer join ch_Include chi on chi.PersonalID = gap.PersonalID 
-			and chi.ESSHStreetDate = cal.theDate
-	where chi.ESSHStreetDate is null
+		inner join ref_Calendar cal on cal.theDate > gap.StartDate and cal.theDate < gap.EndDate
 
 /*
 	5.9 Get ES/SH/Street Episodes
@@ -409,16 +484,16 @@ FY2022 Changes
 		inner join hmis_Enrollment hn on hn.EnrollmentID = chn.EnrollmentID
 	where (lp.CHTime in (0,270) or lp.CHTimeStatus = 3)
 		and (hn.DateToStreetESSH > chn.EntryDate 
-				or (hn.LivingSituation in (8,9,99) or hn.LivingSituation is null)
+				or (hn.LivingSituation < 100 or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
-				or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+				or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation between 200 and 299 
 						and hn.LengthOfStay in (2,3)
 						and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
 				or (chn.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
 							and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
 				or ((chn.LSAProjectType in (0,1,8)
-					  or hn.LivingSituation in (1,16,18)
-					  or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation in (4,5,6,7,15,25) 
+					  or hn.LivingSituation between 100 and 199
+					  or (chn.LSAProjectType not in (0,1,8) and hn.LivingSituation between 200 and 299  
 							and hn.LengthOfStay in (2,3)
 							and hn.PreviousStreetESSH = 1)
 					  or (chn.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
@@ -434,7 +509,7 @@ FY2022 Changes
 			))
 
 /*
-	5.11 EST/RRH/PSH AgeMin and AgeMax - LSAPerson
+	5.11 EST/RRH/PSH/RRHSO AgeMin and AgeMax - LSAPerson
 */
 
 	update lp 
@@ -490,4 +565,23 @@ FY2022 Changes
 		 , -1)
 		, lp.Step = '5.11.6'
 	from tlsa_Person lp
+
+	update lp 
+	set RRHSOAgeMin = coalesce(
+		(select min(n.ActiveAge) 
+		 from tlsa_Enrollment n
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 15 and n.Active = 1)
+		 , -1)
+		, lp.Step = '5.11.3'
+	from tlsa_Person lp
+
+	update lp 
+	set RRHSOAgeMax = coalesce(
+		(select max(n.ActiveAge) 
+		 from tlsa_Enrollment n
+		 where n.PersonalID = lp.PersonalID and n.LSAProjectType = 15 and n.Active = 1)
+		 , -1)
+		, lp.Step = '5.11.4'
+	from tlsa_Person lp
+
 
