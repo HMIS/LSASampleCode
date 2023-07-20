@@ -16,7 +16,7 @@ This repository is provided as a supplement to the [LSA Report Specifications](h
 ## Documentation
 The final versions of these documents are available on the [HUD Exchange](https://www.hudexchange.info/resource/5726/lsa-report-specifications-and-tools/). The documents here are working versions that change more frequently and prior to release on the HUD Exchange.  
 * LSA Programming Specifications (usually referred to as 'the specs') - a Word document with detailed business logic and step-by-step instructions for producing the LSA based on HMIS data. 
-* LSA Data Dictionary - an Excel file that lists file names, columns, and valid values for the 10 CSV files included in an LSA upload.
+* LSA Data Dictionary - an Excel file that lists file names, columns, and valid values for the 12 CSV files included in an LSA upload.
 
 ## Code
 The sample code is SQL, and written in SQL Server. Originally, it was not intended for public release -- it was written concurrent with the first version of the specs (FY2018) as a check to make sure the specs were specific enough. It was released on GitHub as a reference.  
