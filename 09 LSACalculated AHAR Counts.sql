@@ -141,7 +141,7 @@ Populates and references:
 			when lp.RaceEthnicity = 46 then 66
 			when lp.RaceEthnicity = 5 then 67
 			when lp.RaceEthnicity = 56 then 68
-			when lp.RaceEthnicity >= 12 and cast(lp.RaceEthnicity as nvarchar) not like '%6%' then 69
+			when lp.RaceEthnicity >= 12 and lp.RaceEthnicity not in (98,99) and cast(lp.RaceEthnicity as nvarchar) not like '%6%' then 69
 			when lp.RaceEthnicity >= 126 and cast(lp.RaceEthnicity as nvarchar) like '%6%' then 70 else null end
 		, n.PersonalID, '9.1.18' 
 	from tlsa_Enrollment n 
