@@ -116,7 +116,7 @@ Populates and references:
 			when hh.HoHRaceEthnicity = 46 then 33
 			when hh.HoHRaceEthnicity = 5 then 34
 			when hh.HoHRaceEthnicity = 56 then 35
-			when hh.HoHRaceEthnicity >=12 and cast(hh.HoHRaceEthnicity as nvarchar) not like '%6%' then 36
+			when hh.HoHRaceEthnicity >=12 and hh.HoHRaceEthnicity not in (98,99) and cast(hh.HoHRaceEthnicity as nvarchar) not like '%6%' then 36
 			when hh.HoHRaceEthnicity >=126 and cast(hh.HoHRaceEthnicity as nvarchar) like '%6%' then 37
 			else null end
 		, 1, hh.HoHID, hh.HHType, '8.3.15'
@@ -255,7 +255,7 @@ Populates and references:
 			when ex.HoHRaceEthnicity = 46 then 33
 			when ex.HoHRaceEthnicity = 5 then 34
 			when ex.HoHRaceEthnicity = 56 then 35
-			when ex.HoHRaceEthnicity >=12 and cast(ex.HoHRaceEthnicity as nvarchar) not like '%6%' then 36
+			when ex.HoHRaceEthnicity >=12 and ex.HoHRaceEthnicity not in (98,99) and cast(ex.HoHRaceEthnicity as nvarchar) not like '%6%' then 36
 			when ex.HoHRaceEthnicity >=126 and cast(ex.HoHRaceEthnicity as nvarchar) like '%6%' then 37
 			else null end
 		, ex.Cohort, ex.HoHID, ex.HHType, '8.3.39'
@@ -263,37 +263,37 @@ Populates and references:
 	where ex.HoHRaceEthnicity not in (98,99)
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 38, 1, ex.HoHID, ex.HHType, '8.3.40'
+	select distinct 38, 1, ex.HoHID, ex.HHType, '8.3.40'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%1%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 39, 1, ex.HoHID, ex.HHType, '8.3.41'
+	select distinct 39, 1, ex.HoHID, ex.HHType, '8.3.41'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%2%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 40, 1, ex.HoHID, ex.HHType, '8.3.42'
+	select distinct 40, 1, ex.HoHID, ex.HHType, '8.3.42'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%3%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 41, 1, ex.HoHID, ex.HHType, '8.3.43'
+	select distinct 41, 1, ex.HoHID, ex.HHType, '8.3.43'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%6%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 42, 1, ex.HoHID, ex.HHType, '8.3.44'
+	select distinct 42, 1, ex.HoHID, ex.HHType, '8.3.44'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%7%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 43, 1, ex.HoHID, ex.HHType, '8.3.45'
+	select distinct 43, 1, ex.HoHID, ex.HHType, '8.3.45'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%4%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 44, 1, ex.HoHID, ex.HHType, '8.3.46'
+	select distinct 44, 1, ex.HoHID, ex.HHType, '8.3.46'
 	from tlsa_Exit ex 
 	where cast(ex.HoHRaceEthnicity as nvarchar) like '%5%' 
 
