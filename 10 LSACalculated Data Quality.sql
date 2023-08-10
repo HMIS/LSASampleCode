@@ -24,7 +24,7 @@ FY2023 Changes
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct n.EnrollmentID), 10, 10, 0, 0, -1
+	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1
 		, case when hx.ExitDate is null then 901
 			else 902 end 
 		, p.ProjectID, cd.ReportID, '10.2'
@@ -32,7 +32,7 @@ FY2023 Changes
 	left outer join hmis_Exit hx on hx.EnrollmentID = n.EnrollmentID 
 		and hx.DateDeleted is null
 	inner join hmis_Project p on p.ProjectID = n.ProjectID 
-	inner join tlsa_CohortDates cd on cd.Cohort = 10 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
+	inner join tlsa_CohortDates cd on cd.Cohort = 1 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
 	where (hx.ExitDate is null or hx.ExitDate > p.OperatingEndDate)
 		and p.ProjectType in (1,2,3,8,13)
 	group by case when hx.ExitDate is null then 901
@@ -48,12 +48,12 @@ FY2023 Changes
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct hn.EnrollmentID), 10, 10, 0, 0, -1
+	select count (distinct hn.EnrollmentID), 1, 10, 0, 0, -1
 		, case when hx.ExitDate is null or hx.ExitDate > cd.CohortEnd then 903
 			else 904 end 
 		, p.ProjectID, cd.ReportID, '10.3'
 	from tlsa_Enrollment n
-	inner join tlsa_CohortDates cd on cd.Cohort = 10
+	inner join tlsa_CohortDates cd on cd.Cohort = 1
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
@@ -65,7 +65,7 @@ FY2023 Changes
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
 			and p.ProjectType = 1 
 			and (p.OperatingEndDate is null or p.OperatingEndDate >= DateProvided)
-		inner join tlsa_CohortDates cd on cd.Cohort = 10 
+		inner join tlsa_CohortDates cd on cd.Cohort = 1
 			and svc.DateProvided between cd.CohortStart and cd.CohortEnd
 		where svc.RecordType = 200 and svc.DateDeleted is null
 		group by svc.EnrollmentID
@@ -136,7 +136,7 @@ FY2023 Changes
 		and hx.DateDeleted is null
 	left outer join (select hoh.HouseholdID, count(hoh.PersonalID) as hoh
 		from hmis_Enrollment hoh
-		where hoh.RelationshipToHoH = 1
+		where hoh.RelationshipToHoH = 1 and hoh.DateDeleted is null
 		group by hoh.HouseholdID) counthoh on counthoh.HouseholdID = hn.HouseholdID
 	where (counthoh.HouseholdID is null or counthoh.hoh > 1)
 		and p.ProjectType in (0,1,2,3,8,13) 
@@ -173,11 +173,11 @@ FY2023 Changes
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct n.HouseholdID), 1, 10, 0, 0, -1, 909, n.ProjectID, rpt.ReportID, '10.8'
+	select count (distinct hh.HouseholdID), 1, 10, 0, 0, -1, 909, hh.ProjectID, rpt.ReportID, '10.8'
 	from lsa_Report rpt
-	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	where n.Active = 1
-	group by n.ProjectID, rpt.ReportID
+	inner join tlsa_HHID hh on hh.EntryDate <= rpt.ReportEnd
+	where hh.Active = 1
+	group by hh.ProjectID, rpt.ReportID
 /*
 	10.9	DQ – Client Entry
 */
@@ -339,7 +339,7 @@ FY2023 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 919, n.ProjectID, rpt.ReportID, '10.18'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.ExitDate <= rpt.ReportEnd
-	inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
+	inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
 	where n.Active = 1
 		and (x.Destination is NULL or x.Destination in (8,9,17,30,99)
 			or (x.Destination = 435 and x.DestinationSubsidyType is NULL))
