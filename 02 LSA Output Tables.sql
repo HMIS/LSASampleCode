@@ -17,7 +17,7 @@ FY2023 Changes
 
 		lsa_Person 
 		- Remove columns Race and Ethnicity
-		- Add columns RaceEthnicity, RRHSOMinAge, RRHSOMaxAge, RRHSONoMoveIn, RRHSOWithMoveIn, HIV, SMI, SUD
+		- Add columns RaceEthnicity, RRHSOMinAge, RRHSOMaxAge, HHTypeRRHSONoMI, HHTypeRRHSOMI, HIV, SMI, SUD
 
 		lsa_Household 
 		- Remove columns HoHRace and HoHEthnicity
