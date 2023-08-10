@@ -4,7 +4,7 @@ Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql
 
 FY2023 Changes
 	- HHChronic and HHFleeingDV updates in 5.12.1
-	- Updates for new columns RRHSOAgeMin, RRHSOAgeMax, RRHSONoMoveIn, RRHSOWithMoveIn, 
+	- Updates for new columns RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI, 
 		HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD in 5.13.2 and 5.15
 
 	
@@ -402,7 +402,7 @@ FY2023 Changes
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3)
-		, lp.RRHSONoMoveIn = (select sum(distinct case hhid.ActiveHHType 
+		, lp.HHTypeRRHSONoMI = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
@@ -410,7 +410,7 @@ FY2023 Changes
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.MoveInDate is null and n.LSAProjectType = 15) 
-		, lp.RRHSOWithMoveIn = (select sum(distinct case hhid.ActiveHHType 
+		, lp.HHTypeRRHSOMI = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
@@ -493,8 +493,8 @@ FY2023 Changes
 	, lp.ESTAgeMin = case when lp.ESTAgeMin is NULL then -1 else lp.ESTAgeMin end 
 	, lp.RRHSOAgeMin = case when lp.RRHSOAgeMin is NULL then -1 else lp.RRHSOAgeMin end    
 	, lp.RRHSOAgeMax = case when lp.RRHSOAgeMax is NULL then -1 else lp.RRHSOAgeMax end    
-	, lp.RRHSONoMoveIn = case when lp.RRHSONoMoveIn is NULL then -1 else cast(replace(cast(lp.RRHSONoMoveIn as varchar), '0', '') as int) end 
-	, lp.RRHSOWithMoveIn = case when lp.RRHSOWithMoveIn is NULL then -1 else cast(replace(cast(lp.RRHSOWithMoveIn as varchar), '0', '') as int) end 
+	, lp.HHTypeRRHSONoMI = case when lp.HHTypeRRHSONoMI is NULL then -1 else cast(replace(cast(lp.HHTypeRRHSONoMI as varchar), '0', '') as int) end 
+	, lp.HHTypeRRHSOMI = case when lp.HHTypeRRHSOMI is NULL then -1 else cast(replace(cast(lp.HHTypeRRHSOMI as varchar), '0', '') as int) end 
 	, Step = '5.13.2'
 	from tlsa_Person lp
 	
@@ -568,7 +568,7 @@ FY2023 Changes
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
-		, RRHSOAgeMin, RRHSOAgeMax, RRHSONoMoveIn, RRHSOWithMoveIn
+		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
 		)
@@ -581,7 +581,7 @@ FY2023 Changes
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
-		, RRHSOAgeMin, RRHSOAgeMax, RRHSONoMoveIn, RRHSOWithMoveIn
+		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
 	from tlsa_Person
@@ -594,7 +594,7 @@ FY2023 Changes
 		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
 		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
 		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
-		, RRHSOAgeMin, RRHSOAgeMax, RRHSONoMoveIn, RRHSOWithMoveIn
+		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
 	
