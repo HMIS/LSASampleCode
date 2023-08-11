@@ -124,37 +124,37 @@ Populates and references:
 	where hh.HoHRaceEthnicity not in (98,99)
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 38, 1, hh.HoHID, hh.HHType, '8.3.16'
+	select distinct 38, 1, hh.HoHID, hh.HHType, '8.3.16'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%1%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 39, 1, hh.HoHID, hh.HHType, '8.3.17'
+	select distinct 39, 1, hh.HoHID, hh.HHType, '8.3.17'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%2%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 40, 1, hh.HoHID, hh.HHType, '8.3.18'
+	select distinct 40, 1, hh.HoHID, hh.HHType, '8.3.18'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%3%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 41, 1, hh.HoHID, hh.HHType, '8.3.19'
+	select distinct 41, 1, hh.HoHID, hh.HHType, '8.3.19'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%6%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 42, 1, hh.HoHID, hh.HHType, '8.3.20'
+	select distinct 42, 1, hh.HoHID, hh.HHType, '8.3.20'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%7%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 43, 1, hh.HoHID, hh.HHType, '8.3.21'
+	select distinct 43, 1, hh.HoHID, hh.HHType, '8.3.21'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%4%' 
 
 	insert into tlsa_AveragePops (PopID, Cohort, HoHID, HHType, Step)
-	select 44, 1, hh.HoHID, hh.HHType, '8.3.22'
+	select distinct 44, 1, hh.HoHID, hh.HHType, '8.3.22'
 	from tlsa_Household hh 
 	where cast(hh.HoHRaceEthnicity as nvarchar) like '%5%' 
 
