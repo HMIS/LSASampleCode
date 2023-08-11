@@ -148,28 +148,7 @@ FY2023 Changes
 			in Project.csv 
 */
 
-	insert into lsa_HMISParticipation (
-		ParticipationID, ProjectID, 
-		HMISParticipationType, 
-		HMISParticipationStatusStartDate, HMISParticipationStatusEndDate,
-		DateCreated, DateUpdated, ExportID)
-	select distinct hp.ParticipationID
-		, hp.ProjectID
-		, hp.HMISParticipationType
-		, format(hp.HMISParticipationStatusStartDate, 'yyyy-MM-dd')
-		, case when isdate(cast(hp.HMISParticipationStatusEndDate as datetime)) = 1 then format(hp.HMISParticipationStatusEndDate, 'yyyy-MM-dd') else null end
-		, format(hp.DateCreated, 'yyyy-MM-dd HH:mm:ss')
-		, format(hp.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
-		, lp.ExportID	
-	from hmis_HMISParticipation hp
-	inner join lsa_Project lp on lp.ProjectID = hp.ProjectID
-	where hp.DateDeleted is null
-
-/*
-	4.6 Get HMIS Participation Records for Export
-		HMISParticipation.csv must have at least one record for each ProjectID 
-			in Project.csv 
-*/
+	delete from lsa_HMISParticipation
 
 	insert into lsa_HMISParticipation (
 		ParticipationID, ProjectID, 
@@ -194,6 +173,8 @@ FY2023 Changes
 		Affiliation.csv must have at least one record for each ProjectID 
 			in Project.csv where RRHSubType = 1 and ResidentialAffiliation = 1 
 */
+
+	delete from lsa_Affiliation
 
 	insert into lsa_Affiliation (
 		AffiliationID, ProjectID, 
