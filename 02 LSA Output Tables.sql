@@ -221,9 +221,6 @@ create table lsa_Affiliation (
 	AffiliationID nvarchar(32) not NULL,
 	ProjectID nvarchar(32) not NULL,
 	ResProjectID nvarchar(32) not NULL,
-	HMISParticipationType int not NULL, 
-	HMISParticipationStatusStartDate nvarchar(10) not NULL,		--HMIS: date
-	HMISParticipationStatusEndDate nvarchar(10),				--HMIS: date
 	DateCreated nvarchar(19) not NULL,							--HMIS: datetime
 	DateUpdated nvarchar(19) not NULL,							--HMIS: datetime
 	UserID nvarchar(32),										--HMIS: not NULL
@@ -231,8 +228,7 @@ create table lsa_Affiliation (
 	ExportID int not NULL,										--HMIS: string(32)
 	CONSTRAINT pk_lsa_Affiliation PRIMARY KEY CLUSTERED (AffiliationID)
 	)
-
-
+	
 /*
 	2.8 LSAReport.csv / lsa_Report
 */
