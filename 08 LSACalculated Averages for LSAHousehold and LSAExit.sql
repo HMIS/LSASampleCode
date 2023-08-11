@@ -474,7 +474,7 @@ Populates and references:
 				when 439 then 132
 				when 440 then 133
 				when 24 then 134
-				when 17 then 135
+				when 98 then 135
 				else 136 end
 			and rv.Cohort = ex.Cohort 
 			and rv.Universe = case 
