@@ -15,6 +15,9 @@ FY2023 Changes
 	- Remove columns HoHRace and HoHEthnicity / add HoHRaceEthnicity (data standards changes)
 	- Add columns RRHSOStatus, RRHSOMoveIn (data standards addition of RRH-SO subtype)
 
+	tlsa_Exit
+	- Remove columns HoHRace and HoHEthnicity / add HoHRaceEthnicity (data standards changes)
+
 	ref_Calendar
 	- Extended date range of ref_Calendar to 9/30/2024
 
