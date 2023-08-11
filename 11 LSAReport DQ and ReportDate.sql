@@ -6,6 +6,9 @@ FY2023 Changes
 		11.1, 11.2
 		- EnrollmentCoC, HMIS participation data standards changes
 
+		11.6
+		- Added sequential SSNs to list of invalid SSNs
+
 		11.7 Homeless Date, TimesHomeless, MonthsHomeless
 		- LivingSituation data standards changes
 
@@ -21,7 +24,7 @@ update rpt
 set rpt.NoCoC = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			inner join lsa_Project p on p.ProjectID = n.ProjectID
-				and p.ProjectType in (1,2,3,8,13)
+				and p.ProjectType in (0,1,2,3,8,13)
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
@@ -29,7 +32,11 @@ set rpt.NoCoC = (select count (distinct n.HouseholdID)
 			where n.EntryDate <= rpt.ReportEnd 
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.RelationshipToHoH = 1 
-				and n.EnrollmentCoC is null
+				and (n.EnrollmentCoC is null 
+					or n.EnrollmentCoC not in (select coc.CoCCode 
+						from hmis_ProjectCoC coc 
+						where coc.ProjectID = p.ProjectID)
+					)
 				and n.DateDeleted is null 
 			)
 from lsa_Report rpt
@@ -42,7 +49,7 @@ update rpt
 set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 			from hmis_Enrollment n 
 			inner join lsa_Project p on p.ProjectID = n.ProjectID
-				and p.ProjectType in (1,2,3,8,13)
+				and p.ProjectType in (0,1,2,3,8,13)
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
@@ -53,6 +60,7 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				group by hn.HouseholdID
 				) hoh on hoh.HouseholdID = n.HouseholdID
 			where n.EntryDate <= rpt.ReportEnd 
+				and n.EnrollmentCoC = rpt.ReportCoC
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.DateDeleted is null
 				and (hoh.hoh <> 1 or hoh.HouseholdID is null)
@@ -86,7 +94,7 @@ set rpt.MoveInDate =
 	(select count(distinct hhid.EnrollmentID)
 		from tlsa_HHID hhid
 		inner join hmis_Enrollment hn on hn.EnrollmentID = hhid.EnrollmentID
-		where hhid.LSAProjectType in (3,13)
+		where hhid.LSAProjectType in (3,13,15)
 			and hhid.Active = 1 
 			and hhid.MoveInDate is null 
 			and hn.MoveInDate <= rpt.ReportEnd
@@ -129,8 +137,10 @@ set lp.SSNValid = case when c.SSNDataQuality in (8,9) then 9
 				or c.SSN = ''
 				or c.SSN like '%[^0-9]%'
 				or left(c.SSN,1) = '9'
-				or c.SSN in ('123456789','111111111','222222222','333333333','444444444'
-						,'555555555','777777777','888888888')
+				or c.SSN in ('111111111','222222222','333333333','444444444'
+						,'555555555','777777777','888888888'
+						, '123456789', '234567890', '345678901', '456789012', '567890123'
+						, '678901234', '789012345', '890123456', '901234567')
 			then 0 else 1 end 
 from tlsa_Person lp
 inner join hmis_Client c on c.PersonalID = lp.PersonalID
@@ -197,7 +207,7 @@ set rpt.HomelessDate = (select count(distinct n.EnrollmentID)
 	and (hn.DateToStreetESSH > hn.EntryDate
 		 or (hn.DateToStreetESSH is null 
 				and (n.LSAProjectType in (0,1,8)
-					 or hn.LivingSituation in (101,116,118)
+					 or hn.LivingSituation between 100 and 199
 					 or hn.PreviousStreetESSH = 1
 					)
 			)
@@ -214,7 +224,7 @@ set rpt.TimesHomeless = (select count(distinct n.EnrollmentID)
 	and (hn.TimesHomelessPastThreeYears is NULL
 		or hn.TimesHomelessPastThreeYears not in (1,2,3,4)) 
 	and (n.LSAProjectType in (0,1,8)
-			or hn.LivingSituation in (101,116,118)
+			or hn.LivingSituation between 100 and 199
 			or hn.PreviousStreetESSH = 1)
 	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
@@ -227,7 +237,7 @@ set rpt.MonthsHomeless = (select count(distinct n.EnrollmentID)
 	and (hn.MonthsHomelessPastThreeYears is NULL
 		or hn.MonthsHomelessPastThreeYears not between 101 and 113) 
 	and (n.LSAProjectType in (0,1,8)
-		or hn.LivingSituation in (101,116,118)
+		or hn.LivingSituation between 100 and 199
 		or hn.PreviousStreetESSH = 1)
 	and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
@@ -239,7 +249,8 @@ set rpt.Destination = (select count(distinct n.EnrollmentID)
 		and x.DateDeleted is null
 	where n.Active = 1 and n.ExitDate is not null
 		and (x.Destination is null
-			or x.Destination in (8,9,17,30,99))
+			or x.Destination in (8,9,17,30,99)
+			or (x.Destination = 435 and x.DestinationSubsidyType is null))
 	)
 from lsa_Report rpt
 
