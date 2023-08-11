@@ -304,7 +304,11 @@ FY2023 Changes
 	update hh
 	set hh.RRHLivingSit = 
 		case when hh.RRHStatus = 0 then -1 
-			when hn.EntryDate <> n.EntryDate then 99
+			when hn.EntryDate <> n.EntryDate 
+				or hn.LivingSituation is null 
+				or (hn.LivingSituation = 435 and hn.LivingSituationSubsidyType is null)
+				then 99
+			when hn.LivingSituation in (8,9) then 98
 			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
 			else hn.LivingSituation	end
 	, hh.Step = '6.6.2'
@@ -323,7 +327,11 @@ FY2023 Changes
 	update hh
 	set hh.PSHLivingSit = 
 		case when hh.PSHStatus = 0 then -1 
-			when hn.EntryDate <> n.EntryDate then 99
+			when hn.EntryDate <> n.EntryDate 
+				or hn.LivingSituation is null 
+				or (hn.LivingSituation = 435 and hn.LivingSituationSubsidyType is null)
+				then 99
+			when hn.LivingSituation in (8,9) then 98
 			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
 			else hn.LivingSituation	end
 		, hh.Step = '6.6.3'
