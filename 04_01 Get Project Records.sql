@@ -25,7 +25,7 @@ FY2023 Changes
 		(ProjectID, OrganizationID, ProjectName
 		 , OperatingStartDate, OperatingEndDate
 		 , ContinuumProject, ProjectType, HousingType, RRHSubType
-		 , TargetPopulation
+		 , ResidentialAffiliation, TargetPopulation
 		 , HOPWAMedAssistedLivingFac
 		 , DateCreated, DateUpdated, ExportID)
 	select distinct 
@@ -34,7 +34,7 @@ FY2023 Changes
 		, case when hp.OperatingEndDate is not null then format(hp.OperatingEndDate, 'yyyy-MM-dd') else null end
 		, hp.ContinuumProject, hp.ProjectType, hp.HousingType, hp.RRHSubType
 		, hp.TargetPopulation 
-		, hp.HOPWAMedAssistedLivingFac
+		, case when hp.RRHSubType = 1 then hp.ResidentialAffiliation else null end, hp.HOPWAMedAssistedLivingFac
 		, format(hp.DateCreated, 'yyyy-MM-dd HH:mm:ss')
 		, format(hp.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
 		, rpt.ReportID
