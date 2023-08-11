@@ -9,6 +9,7 @@ Name:  07 LSAExit.sql
 			- EnrollmentCoC updates
 		7.6.3
 			- include RRHSO ES/SH/Street dates from 3.917 DateToStreetESSH for CH
+			- update LivingSituation values
 		7.9.1
 			- HHChronic category updates
 		7.9.2
