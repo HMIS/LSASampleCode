@@ -75,13 +75,13 @@ Populates and references:
 	where AHAR = 1 and HHFleeingDV = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
-	select 34, HouseholdID, '9.1.9' 
+	select 45, HouseholdID, '9.1.9' 
 	from tlsa_HHID
 	where AHAR = 1 and HHAdultAge = 55
 		and ActiveHHType = 1
 
 	insert into tlsa_CountPops (PopID, HouseholdID, Step)
-	select 35, HouseholdID, '9.1.10' 
+	select 46, HouseholdID, '9.1.10' 
 	from tlsa_HHID
 	where AHAR = 1 and HHParent = 1 and ActiveHHType = 3
 
