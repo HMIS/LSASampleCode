@@ -163,12 +163,13 @@ where hoh.DateDeleted is null
 
 		update hhid
 		set hhid.ExitDest = case	
-				when hhid.ExitDate is null then null
+				when hhid.ExitDate is null then -1
 				when hx.ExitDate is null or 
 					hx.ExitDate in (17,30,99) or
 					(hx.ExitDate <> hhid.ExitDate 
 						and (hhid.MoveInDate is NULL or hhid.MoveInDate <> hx.ExitDate)) then 99
 				when hx.Destination in (8,9) then 98
+				when hx.Destination = 435 and hx.DestinationSubsidyType is null then 99
 				when hx.Destination = 435 then hx.DestinationSubsidyType 
 				else hx.Destination	end
 			, hhid.Step = '3.3.2'
