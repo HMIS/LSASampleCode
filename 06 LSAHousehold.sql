@@ -6,7 +6,7 @@ FY2023 Changes
 
 		- RaceEthnicity and HHFleeingDV changes in 6.1
 		- Set RRHSOStatus and RRHSOMoveIn values in 6.3.4 and 6.4.3
-		- LivingSituation list changes in 6.6.1-6.6.3
+		- LivingSituation list changes in 6.6.1-6.6.3, 6.14.1, 6.14.2
 		- HoHRaceEthnicity, RRHSOStatus, and RRHSOMoveIn columns in select statement in 6.19
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
@@ -782,9 +782,9 @@ FY2023 Changes
 				and hhid.EntryDate > hh.LastInactive
 				and hn.DateToStreetESSH <= hh.LastInactive 
 				and (hhid.LSAProjectType in (0,1,8)
-					or hn.LivingSituation in (1,18,16)
+					or hn.LivingSituation between 100 and 199
 					or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)
-					or (hn.LivingSituation in (4,5,6,7,15,25) 
+					or (hn.LivingSituation between 200 and 299 
 						and hn.LengthOfStay in (2,3) and hn.PreviousStreetESSH = 1))
 			order by hn.DateToStreetESSH asc)
 		, hh.LastInactive)) + 1
@@ -813,9 +813,9 @@ FY2023 Changes
 				and hhid.EntryDate > hh.LastInactive
 				and hn.DateToStreetESSH <= hh.LastInactive 
 				and (hhid.LSAProjectType in (0,1,8)
-					or hn.LivingSituation in (1,18,16)
+					or hn.LivingSituation between 100 and 199
 					or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)
-					or (hn.LivingSituation in (4,5,6,7,15,25) 
+					or (hn.LivingSituation between 200 and 299
 						and hn.LengthOfStay in (2,3) and hn.PreviousStreetESSH = 1))
 			order by hn.DateToStreetESSH asc)
 
