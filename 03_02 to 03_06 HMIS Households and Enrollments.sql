@@ -93,7 +93,7 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 	, case when hoh.EntryDate < bn.FirstBednight then bn.FirstBednight
 		else hoh.EntryDate end
 	, case when hoh.MoveInDate > rpt.ReportEnd 
-			or p.LSAProjectType not in (3,13) 
+			or p.LSAProjectType not in (3,13,15) 
 			or hoh.MoveInDate < hoh.EntryDate 
 			or hoh.MoveInDate > p.OperatingEndDate then null
 		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null) 
@@ -163,16 +163,18 @@ where hoh.DateDeleted is null
 
 		update hhid
 		set hhid.ExitDest = case	
+				when hhid.ExitDate is null then null
 				when hx.ExitDate is null or 
+					hx.ExitDate in (17,30,99) or
 					(hx.ExitDate <> hhid.ExitDate 
 						and (hhid.MoveInDate is NULL or hhid.MoveInDate <> hx.ExitDate)) then 99
+				when hx.Destination in (8,9) then 98
 				when hx.Destination = 435 then hx.DestinationSubsidyType 
 				else hx.Destination	end
 			, hhid.Step = '3.3.2'
 		from tlsa_HHID hhid
 		left outer join hmis_Exit hx on hx.EnrollmentID = hhid.EnrollmentID
 			and hx.DateDeleted is null 
-		where hhid.ExitDate is not null	
 
 /*
 	3.4  HMIS Client Enrollments 
