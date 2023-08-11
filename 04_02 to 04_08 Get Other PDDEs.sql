@@ -140,7 +140,7 @@ FY2023 Changes
 			or (hi.InventoryEndDate >= rpt.ReportStart
 				and hi.InventoryEndDate > hi.InventoryStartDate)
 			)
-		and lp.RRHSubType <> 1
+		and lp.ProjectType <> 13 or lp.RRHSubType = 2
 
 /*
 	4.6 Get HMIS Participation Records for Export
