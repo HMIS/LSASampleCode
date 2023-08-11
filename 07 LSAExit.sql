@@ -247,10 +247,10 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	where chx.excludeDate is null
 		and chi.ESSHStreetDate is null
 		and ha.CHTime is null
-		and (hn.LivingSituation in (1,18,16)
+		and (hn.LivingSituation between 100 and 199
 			or (chn.LSAProjectType not in (0,1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (10,11))
 			or (chn.LSAProjectType not in (0,1,8) and hn.PreviousStreetESSH = 1 and hn.LengthOfStay in (2,3)
-					and hn.LivingSituation in (4,5,6,7,15,25)) 
+					and hn.LivingSituation between 200 and 299) 
 			)
 		and ( 
 			
