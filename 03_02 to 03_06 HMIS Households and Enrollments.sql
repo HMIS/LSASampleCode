@@ -164,8 +164,8 @@ where hoh.DateDeleted is null
 		update hhid
 		set hhid.ExitDest = case	
 				when hhid.ExitDate is null then -1
-				when hx.ExitDate is null or 
-					hx.ExitDate in (17,30,99) or
+				when hx.Destination is null or 
+					hx.Destination in (17,30,99) or
 					(hx.ExitDate <> hhid.ExitDate 
 						and (hhid.MoveInDate is NULL or hhid.MoveInDate <> hx.ExitDate)) then 99
 				when hx.Destination in (8,9) then 98
