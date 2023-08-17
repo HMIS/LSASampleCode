@@ -34,7 +34,6 @@ FY2023 Changes
 	inner join hmis_Project p on p.ProjectID = n.ProjectID 
 	inner join tlsa_CohortDates cd on cd.Cohort = 1 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
 	where (hx.ExitDate is null or hx.ExitDate > p.OperatingEndDate)
-		and p.ProjectType in (1,2,3,8,13)
 	group by case when hx.ExitDate is null then 901
 			else 902 end 
 		, p.ProjectID, cd.ReportID
@@ -139,7 +138,7 @@ FY2023 Changes
 		where hoh.RelationshipToHoH = 1 and hoh.DateDeleted is null
 		group by hoh.HouseholdID) counthoh on counthoh.HouseholdID = hn.HouseholdID
 	where (counthoh.HouseholdID is null or counthoh.hoh > 1)
-		and p.ProjectType in (0,1,2,3,8,13) 
+		and p.ProjectType not in (9,10) 
 		and hn.DateDeleted is null 
 		and (hx.ExitDate is null or 
 				(hx.ExitDate >= rpt.ReportStart and hx.ExitDate > hn.EntryDate))
@@ -160,7 +159,7 @@ FY2023 Changes
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
 		and hx.DateDeleted is null
 	where (hn.RelationshipToHoH is null or hn.RelationshipToHoH not between 1 and 5)
-		and p.ProjectType in (0,1,2,3,8,13) 
+		and p.ProjectType not in (9,10) 
 		and hn.DateDeleted is null 
 		and (hx.ExitDate is null or 
 				(hx.ExitDate >= rpt.ReportStart and hx.ExitDate > hn.EntryDate))
