@@ -171,7 +171,8 @@ FY2023 Changes
 /*
 	4.7 Get Affiliation Records for Export
 		Affiliation.csv must have at least one record for each ProjectID 
-			in Project.csv where RRHSubType = 1 and ResidentialAffiliation = 1 
+			in Project.csv active during the report period where 
+			RRHSubType = 1 and ResidentialAffiliation = 1 
 */
 
 	delete from lsa_Affiliation
@@ -189,4 +190,5 @@ FY2023 Changes
 	from hmis_Affiliation a
 	inner join lsa_Project lp on lp.ProjectID = a.ProjectID
 	where a.DateDeleted is null
-		and lp.RRHSubType = 1 and lp.ResidentialAffiliation = 1
+		and lp.ProjectType = 13 and lp.RRHSubType = 1 and lp.ResidentialAffiliation = 1
+		and (lp.OperatingEndDate is null or lp.OperatingEndDate >= (select ReportStart from lsa_Report))

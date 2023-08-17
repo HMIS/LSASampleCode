@@ -32,7 +32,9 @@ FY2023 Changes
 		hp.ProjectID, hp.OrganizationID, left(hp.ProjectName, 200)
 		, format(hp.OperatingStartDate, 'yyyy-MM-dd')
 		, case when hp.OperatingEndDate is not null then format(hp.OperatingEndDate, 'yyyy-MM-dd') else null end
-		, hp.ContinuumProject, hp.ProjectType, hp.HousingType, hp.RRHSubType
+		, hp.ContinuumProject, hp.ProjectType
+		, case when hp.RRHSubType = 1 then null else hp.HousingType end
+		, case when hp.ProjectType = 13 then hp.RRHSubType else null end
 		, hp.TargetPopulation 
 		, case when hp.RRHSubType = 1 then hp.ResidentialAffiliation else null end, hp.HOPWAMedAssistedLivingFac
 		, format(hp.DateCreated, 'yyyy-MM-dd HH:mm:ss')
