@@ -1747,8 +1747,6 @@ insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, 
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1118, 11, 18)
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1119, 11, 19)
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1120, 11, 20)
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1121, 11, 21)
-insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1122, 11, 22)
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1123, 11, 23)
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1124, 11, 24)
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (23, 23, NULL, NULL, 1125, 11, 25)
