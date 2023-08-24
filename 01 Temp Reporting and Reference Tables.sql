@@ -2460,9 +2460,6 @@ insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (57, 1, 1
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (57, 1, 14, -1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (57, 1, 15, -1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (57, 1, 16, -1);
-insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (60, 20, 10, -1);
-insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (61, 20, 10, -1);
-insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (62, 1, 10, -1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (63, -2, 2, -1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (63, -2, 3, -1);
 insert into ref_RowValues (RowID, Cohort, Universe, SystemPath) values (63, -2, 4, -1);

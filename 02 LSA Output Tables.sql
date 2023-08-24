@@ -7,6 +7,7 @@ FY2023 Changes
 		lsa_Project
 		- Remove columns TrackingMethod and HMISParticipatingProject
 		- Add column RRHSubType
+		- Allow NULLs for HousingType (because RRH-SO will not have a housing type)
 		- Expand character count for ProjectName and ProjectCommonName to 200 
 
 		lsa_Organization
@@ -74,7 +75,7 @@ create table lsa_Project(
 	OperatingEndDate nvarchar(10),				--HMIS: date
 	ContinuumProject int not NULL,
 	ProjectType int not NULL,					--HMIS: may be NULL
-	HousingType int not NULL,					--HMIS: may be NULL
+	HousingType int,
 	RRHSubType int,
 	ResidentialAffiliation int,
 	TargetPopulation int,
