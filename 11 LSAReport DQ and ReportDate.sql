@@ -35,7 +35,8 @@ set rpt.NoCoC = (select count (distinct n.HouseholdID)
 				and (n.EnrollmentCoC is null 
 					or n.EnrollmentCoC not in (select coc.CoCCode 
 						from hmis_ProjectCoC coc 
-						where coc.ProjectID = p.ProjectID)
+						where coc.ProjectID = p.ProjectID
+							and coc.DateDeleted is null)
 					)
 				and n.DateDeleted is null 
 			)
