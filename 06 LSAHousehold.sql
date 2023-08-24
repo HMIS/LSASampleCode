@@ -641,6 +641,7 @@ FY2023 Changes
 	inner join ref_Calendar cal on cal.theDate >= hhid.MoveInDate
 		and (cal.theDate < hhid.ExitDate 
 			or (hhid.ExitDate is null and cal.theDate <= rpt.ReportEnd))
+		and cal.theDate >= rpt.LookbackDate
 	where hhid.LSAProjectType in (3,13) and hhid.Active = 1
 	group by hhid.HoHID, hhid.ActiveHHType, cal.theDate
 /*
@@ -728,6 +729,7 @@ FY2023 Changes
 		cal.theDate >= hhid.EntryDate
 		and cal.theDate > hh.LastInactive
 		and cal.theDate <= coalesce(dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
+		and cal.theDate >= rpt.LookbackDate
 	left outer join sys_Time housed on housed.HoHID = hh.HoHID and housed.HHType = hh.HHType
 		and housed.sysDate = cal.theDate
 	where housed.sysDate is null 
@@ -747,6 +749,7 @@ FY2023 Changes
 		cal.theDate = bn.DateProvided
 		and cal.theDate > hh.LastInactive
 		and cal.theDate between hhid.EntryDate and coalesce(dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
+		and cal.theDate >= rpt.LookbackDate
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
 	where other.sysDate is null and hhid.LSAProjectType = 1 
@@ -762,6 +765,7 @@ FY2023 Changes
 	inner join ref_Calendar cal on 
 		cal.theDate >= hhid.EntryDate
 		and cal.theDate <= coalesce(dateadd(dd, -1, hhid.MoveInDate), dateadd(dd, -1, hhid.ExitDate), rpt.ReportEnd)
+		and cal.theDate >= rpt.LookbackDate
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
 	where cal.theDate > hh.LastInactive
@@ -811,6 +815,7 @@ FY2023 Changes
 		cal.theDate >= hn.DateToStreetESSH
 		and cal.theDate < hn.EntryDate
 		and cal.theDate > hh.LastInactive
+		and cal.theDate >= rpt.LookbackDate
 	left outer join sys_Time other on other.HoHID = hh.HoHID and other.HHType = hh.HHType
 		and other.sysDate = cal.theDate
 	where other.sysDate is null and hhid.EnrollmentID in 
