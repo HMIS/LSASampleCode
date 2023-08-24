@@ -12,10 +12,6 @@ FY2023 Changes
 		- Add HIV, SMI, SUD for adults 
 		- Set DisabilityStatus = 1 for adults who meet criteria for HIV, SMI, SUD even if DisablingCondition <> 1
 
-		5.5.1
-		- Include Safe Haven enrollments (bug fix from last year) and RRH-SO when setting LastActive
-		- Include ES/SH/Street dates from RRH-SO enrollments
-
 		5.8.3 
 		- LivingSituation data standards changes
 		- Include ES/SH/Street dates between DateToStreetESSH and move-in, exit, or report end from RRH-SO enrollments for CH
@@ -223,23 +219,15 @@ FY2023 Changes
 */
 
 	-- CH status is based on HMIS enrollment data in the three year period ending on the client's 
-	-- last unhoused date in the report period (i.e., not enrolled in TH and/or prior to a MoveInDate in RRH/PSH).
-	-- Clients who have no unhoused dates in the report period cannot, by definition, be considered 
-	-- chronically homeless.
+	-- last active date in the report period.
+
 	update lp
 	set lp.LastActive =  
 		(select max(case 
-			when n.LSAProjectType in (0,8) and n.ExitDate is null then rpt.ReportEnd
-			when n.LSAProjectType in (0,8) and n.ExitDate > rpt.ReportStart then dateadd(dd, -1, n.ExitDate) 
-			when n.LSAProjectType = 1 then n.LastBednight
-			when n.LSAProjectType = 2 and n.EntryDate > rpt.ReportStart then dateadd(dd, -1, n.EntryDate)
-			when n.LSAProjectType in (3,13,15) and n.MoveInDate > rpt.ReportStart then dateadd(dd, -1, n.MoveInDate)
-			when n.LSAProjectType in (3,13,15) and n.MoveInDate is null and n.ExitDate is not null then dateadd(dd, -1, n.ExitDate)
-			when n.LSAProjectType in (3,13,15) and n.MoveInDate is null and n.ExitDate is null then rpt.ReportEnd
-			-- Enrollments set to NULL will include:
-				-- Active TH enrollments with an EntryDate prior to ReportStart 
-				-- Active PSH/RRH enrollments with a MoveInDate on or before ReportStart
-			else NULL end)
+			when n.ExitDate is null and 
+				(n.LastBednight is null or n.LastBednight = rpt.ReportEnd) then rpt.ReportEnd 
+			when n.LastBednight is not null then dateadd(dd, 1, n.LastBednight)
+			else n.ExitDate end) 
 		from lsa_Report rpt
 		inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd and n.Active = 1
 		where n.PersonalID = lp.PersonalID)
