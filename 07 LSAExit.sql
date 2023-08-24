@@ -3,10 +3,10 @@ LSA FY2023 Sample Code
 Name:  07 LSAExit.sql  
 
 	FY2023 Changes
+		7.1 and 7.3
+			- EnrollmentCoC updates
 		7.2.3
 			- ExitFrom values for RRHSO  
-		7.3
-			- EnrollmentCoC updates
 		7.6.3
 			- include RRHSO ES/SH/Street dates from 3.917 DateToStreetESSH for CH
 			- update LivingSituation values
@@ -130,7 +130,9 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		Cohort, DisabilityStatus, CHStart, LastActive, 
 		Step)
 	select distinct n.PersonalID, ex.QualifyingExitHHID,
-		ex.Cohort, max(case when n.DisabilityStatus = 1 then 1 else 0 end),
+		ex.Cohort, 
+		case when n.DisabilityStatus in (0,1) then n.DisabilityStatus
+			else 99 end,
 		dateadd(dd, 1, (dateadd(yy, -3, max(n.ExitDate)))),
 		max(n.ExitDate), '7.4.1'
 	from tlsa_Exit ex
@@ -145,7 +147,9 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
 		and (ex.ExitFrom <> 3 or hhid.EntryDate > dateadd(yy, -1, hhid.ExitDate))
 		and (ex.ExitFrom not in (5,6) or hhid.MoveInDate > dateadd(yy, -1, hhid.ExitDate))
-	group by n.PersonalID, ex.QualifyingExitHHID, ex.Cohort
+	group by n.PersonalID, ex.QualifyingExitHHID, ex.Cohort,
+		case when n.DisabilityStatus in (0,1) then n.DisabilityStatus
+			else 99 end
 
 	update hoha
 	set CHTime = 400, CHTimeStatus = 2, Step = '7.4.2'
@@ -349,7 +353,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 */
 
 	update ex
-	set HHChronic = case when ch.ch is null or ch.ch = 4 then 0
+	set HHChronic = case when ch.ch is null then 0
 		else ch.ch end
 		, Step = '7.9.1'
 	from tlsa_Exit ex
@@ -374,12 +378,16 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			from tlsa_Enrollment disability
 			where disability.HouseholdID = hh.HouseholdID)
 		, HHFleeingDV = coalesce((select min(
-				case when dv.DVStatus = 1 
-						and (dv.ActiveAge between 18 and 65 or dv.RelationshipToHoH = 1) then 1
-					when dv.DVStatus in (2,3) 
-						and (dv.ActiveAge between 18 and 65 or dv.RelationshipToHoH = 1) then 2
+				case when dv.RelationshipToHoH <> 1 and 
+						((cd.Cohort = 0 and dv.ActiveAge not between 18 and 65)
+							or (cd.Cohort = -1 and dv.Exit1Age not between 18 and 65)
+							or (cd.Cohort = -2 and dv.Exit2Age not between 18 and 65)
+						) then null
+					when dv.DVStatus = 1 then 1
+					when dv.DVStatus in (2,3) then 2
 					else null end)
 				from tlsa_Enrollment dv
+				inner join tlsa_CohortDates cd on dv.ExitDate between cd.CohortStart and cd.CohortEnd
 				where dv.HouseholdID = hh.HouseholdID), 0)
 		, HoHRaceEthnicity =  (select case when r.RaceNone in (8,9) then 98
 			when r.RaceNone = 99 then 99
