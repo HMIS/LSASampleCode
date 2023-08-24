@@ -6,7 +6,7 @@ FY2023 Changes
 		
 		-Remove columns TrackingMethod, HMISParticipatingProject
 		-Add ProjectType 0 (ES entry/exit) to WHERE clause
-		-Add column RRHSubType
+		-Add column RRHSubType, logic for ResidentialAffiliation
 		-Expand ProjectName up to 200 characters in length
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
