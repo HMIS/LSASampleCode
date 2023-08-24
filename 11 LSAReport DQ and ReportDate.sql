@@ -53,6 +53,11 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				and p.ProjectType in (0,1,2,3,8,13)
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
+			inner join (select distinct hh.HouseholdID
+				from hmis_Enrollment hh
+				inner join lsa_Report coc on coc.ReportCoC = hh.EnrollmentCoC
+				where hh.DateDeleted is null
+				) coc on coc.HouseholdID = n.HouseholdID
 			left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 				and x.DateDeleted is null
 			left outer join (select hn.HouseholdID, count(distinct hn.EnrollmentID) as hoh
@@ -61,7 +66,6 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				group by hn.HouseholdID
 				) hoh on hoh.HouseholdID = n.HouseholdID
 			where n.EntryDate <= rpt.ReportEnd 
-				and n.EnrollmentCoC = rpt.ReportCoC
 				and (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
 				and n.DateDeleted is null
 				and (hoh.hoh <> 1 or hoh.HouseholdID is null)
