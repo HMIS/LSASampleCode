@@ -35,8 +35,9 @@ FY2023 Changes
 		, hp.ContinuumProject, hp.ProjectType
 		, case when hp.RRHSubType = 1 then null else hp.HousingType end
 		, case when hp.ProjectType = 13 then hp.RRHSubType else null end
+		, case when hp.RRHSubType = 1 then hp.ResidentialAffiliation else null end
 		, hp.TargetPopulation 
-		, case when hp.RRHSubType = 1 then hp.ResidentialAffiliation else null end, hp.HOPWAMedAssistedLivingFac
+		, hp.HOPWAMedAssistedLivingFac
 		, format(hp.DateCreated, 'yyyy-MM-dd HH:mm:ss')
 		, format(hp.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
 		, rpt.ReportID
