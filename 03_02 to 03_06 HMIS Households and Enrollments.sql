@@ -264,11 +264,11 @@ where hoh.DateDeleted is null
 	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.LSAProjectType in (3,13,15)
 
 	update n
-	set n.DVStatus = (select min(case when dv.DomesticViolenceVictim = 1 and dv.CurrentlyFleeing = 1 then 1
-				when dv.DomesticViolenceVictim = 1 and dv.CurrentlyFleeing = 0 then 2 
-				when dv.DomesticViolenceVictim = 1 then 3
-				when dv.DomesticViolenceVictim = 0 then 10
-				when dv.DomesticViolenceVictim in (8,9) then 98
+	set n.DVStatus = (select min(case when dv.DomesticViolenceSurvivor = 1 and dv.CurrentlyFleeing = 1 then 1
+				when dv.DomesticViolenceSurvivor = 1 and dv.CurrentlyFleeing = 0 then 2 
+				when dv.DomesticViolenceSurvivor = 1 then 3
+				when dv.DomesticViolenceSurvivor = 0 then 10
+				when dv.DomesticViolenceSurvivor in (8,9) then 98
 				else null end) 
 			from lsa_Report rpt 
 			inner join hmis_HealthAndDV dv on dv.EnrollmentID = n.EnrollmentID 
@@ -278,6 +278,10 @@ where hoh.DateDeleted is null
 				 and (dv.InformationDate <= n.ExitDate or n.ExitDate is null))
 		, n.Step = '3.4.4'
 	from tlsa_Enrollment n
+
+
+
+
 
 /*
 	3.5 Enrollment Ages - Active and Exit
@@ -373,6 +377,27 @@ where hoh.DateDeleted is null
 	from  tlsa_Enrollment n
 	inner join tlsa_CohortDates cd on cd.Cohort = -2 
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
+
+		update n
+	set n.HIV = 1, n.Step = '3.4.5'
+	from tlsa_Enrollment n
+	inner join hmis_Disabilities d on d.EnrollmentID = n.EnrollmentID and d.DisabilityType = 8 and d.DisabilityResponse = 1
+	where n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report) 
+
+	update n
+	set n.SMI = 1, n.Step = '3.4.6'
+	from tlsa_Enrollment n
+	inner join hmis_Disabilities d on d.EnrollmentID = n.EnrollmentID and d.DisabilityType = 9 and d.DisabilityResponse = 1
+		and d.IndefiniteAndImpairs = 1
+	where n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report) 
+
+	update n
+	set n.SUD = 1, n.Step = '3.4.7'
+	from tlsa_Enrollment n
+	inner join hmis_Disabilities d on d.EnrollmentID = n.EnrollmentID and d.DisabilityType = 10 and d.DisabilityResponse = 1
+		and d.IndefiniteAndImpairs = 1
+	where n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report) 
+
 
 /*
 	3.6 Household Types

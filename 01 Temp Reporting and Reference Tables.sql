@@ -141,6 +141,9 @@ create table tlsa_Enrollment (
 	, PITApril bit default 0
 	, PITJuly bit default 0
 	, CH bit default 0
+	, HIV bit default 0
+	, SMI bit default 0
+	, SUD bit default 0
 	, Step nvarchar(10) not NULL
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)

@@ -93,7 +93,6 @@ FY2023 Changes
 
 	insert into tlsa_Person (PersonalID, HoHAdult, 
 		VetStatus, DisabilityStatus, DVStatus, Gender, RaceEthnicity
-		, SMI, SUD, HIV
 		, ReportID, Step)
 	select distinct n.PersonalID
 		, HoHAdult.stat
@@ -105,10 +104,6 @@ FY2023 Changes
 		, case	
 			when HoHAdult.stat = 0 then -1
 			when Disability.stat = 1 then 1
-			when HIV.PersonalID is not null 
-				or SMI.PersonalID is not null 
-				or SUD.PersonalID is not null then 1 
-			when Disability.stat = 0 then 0
 			else 99 end 		 
 		, case	
 			when HoHAdult.stat = 0 then -1
@@ -158,15 +153,6 @@ FY2023 Changes
 						from hmis_Client r
 						where r.PersonalID = c.PersonalID)
 			else 99 end 
-		, case when HoHAdult.stat not in (1,3) then -1
-			when hiv.PersonalID is null then 0
-			else 1 end
-		, case when HoHAdult.stat not in (1,3) then -1
-			when smi.PersonalID is null then 0
-			else 1 end
-		, case when HoHAdult.stat not in (1,3) then -1
-			when sud.PersonalID is null then 0
-			else 1 end
 		, rpt.ReportID
 		, '5.3/5.4'
 	from lsa_Report rpt
@@ -195,24 +181,22 @@ FY2023 Changes
 		from tlsa_Enrollment n
 		where n.Active = 1
 		group by n.PersonalID) DV on DV.PersonalID = n.PersonalID	
-	left outer join 
-		(select n.PersonalID
-			 from tlsa_Enrollment n
-			 inner join hmis_Disabilities d on d.DisabilityType = 8 and d.DisabilityResponse = 1
-			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
-		) HIV on HIV.PersonalID = n.PersonalID
-	left outer join 
-		(select n.PersonalID
-			 from tlsa_Enrollment n
-			 inner join hmis_Disabilities d on d.DisabilityType = 9 and d.DisabilityResponse = 1 and d.IndefiniteAndImpairs = 1
-			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
-		) SMI on SMI.PersonalID = n.PersonalID
-	left outer join 
-		(select n.PersonalID
-			 from tlsa_Enrollment n
-			 inner join hmis_Disabilities d on d.DisabilityType = 10 and d.DisabilityResponse in (1,2,3) and d.IndefiniteAndImpairs = 1
-			 where n.AHAR = 1 and n.ActiveAge between 18 and 65 and d.InformationDate <= (select ReportEnd from lsa_Report)
-		 ) SUD on SUD.PersonalID = n.PersonalID
+
+	update lp
+	set lp.HIV = 1
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.HIV = 1
+
+		update lp
+	set lp.smi = 1
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.SMI = 1
+
+	update lp
+	set lp.sud = 1
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.SUD = 1
+
 /*
 	5.5 Get Dates for Three Year Period Relevant to Chronic Homelessness Status 
 		 for Each Active Adult and Head of Household
