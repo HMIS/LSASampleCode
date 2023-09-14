@@ -151,11 +151,11 @@ FY2023 Changes
 	delete from lsa_HMISParticipation
 
 	insert into lsa_HMISParticipation (
-		ParticipationID, ProjectID, 
+		HMISParticipationID, ProjectID, 
 		HMISParticipationType, 
 		HMISParticipationStatusStartDate, HMISParticipationStatusEndDate,
 		DateCreated, DateUpdated, ExportID)
-	select distinct hp.ParticipationID
+	select distinct hp.HMISParticipationID
 		, hp.ProjectID
 		, hp.HMISParticipationType
 		, format(hp.HMISParticipationStatusStartDate, 'yyyy-MM-dd')

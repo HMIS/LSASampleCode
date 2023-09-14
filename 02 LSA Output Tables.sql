@@ -200,7 +200,7 @@ create table lsa_Inventory(
 if object_id ('lsa_HMISParticipation') is not NULL drop table lsa_HMISParticipation
 
 create table lsa_HMISParticipation (
-	ParticipationID nvarchar(32) not NULL,
+	HMISParticipationID nvarchar(32) not NULL,
 	ProjectID nvarchar(32) not NULL,
 	HMISParticipationType int not NULL, 
 	HMISParticipationStatusStartDate nvarchar(10) not NULL,		--HMIS: date
@@ -210,7 +210,7 @@ create table lsa_HMISParticipation (
 	UserID nvarchar(32),										--HMIS: not NULL
 	DateDeleted datetime,
 	ExportID int not NULL,										--HMIS: string(32)
-	CONSTRAINT pk_lsa_HMISParticipation PRIMARY KEY CLUSTERED (ParticipationID)
+	CONSTRAINT pk_lsa_HMISParticipation PRIMARY KEY CLUSTERED (HMISParticipationID)
 	)
 
 /*
