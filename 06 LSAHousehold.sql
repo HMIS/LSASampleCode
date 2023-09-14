@@ -283,10 +283,10 @@ FY2023 Changes
 		case when hh.ESTStatus = 0 then -1
 			when hn.EntryDate <> n.EntryDate 
 				or hn.LivingSituation is null 
-				or (hn.LivingSituation = 435 and hn.LivingSituationSubsidyType is null)
+				or (hn.LivingSituation = 435 and hn.RentalSubsidyType is null)
 				then 99
 			when hn.LivingSituation in (8,9) then 98
-			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			when hn.LivingSituation = 435 then hn.RentalSubsidyType
 			else hn.LivingSituation	end
 		, hh.Step = '6.6.1'
 	from tlsa_Household hh
@@ -306,10 +306,10 @@ FY2023 Changes
 		case when hh.RRHStatus = 0 then -1 
 			when hn.EntryDate <> n.EntryDate 
 				or hn.LivingSituation is null 
-				or (hn.LivingSituation = 435 and hn.LivingSituationSubsidyType is null)
+				or (hn.LivingSituation = 435 and hn.RentalSubsidyType is null)
 				then 99
 			when hn.LivingSituation in (8,9) then 98
-			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			when hn.LivingSituation = 435 then hn.RentalSubsidyType
 			else hn.LivingSituation	end
 	, hh.Step = '6.6.2'
 	from tlsa_Household hh
@@ -329,10 +329,10 @@ FY2023 Changes
 		case when hh.PSHStatus = 0 then -1 
 			when hn.EntryDate <> n.EntryDate 
 				or hn.LivingSituation is null 
-				or (hn.LivingSituation = 435 and hn.LivingSituationSubsidyType is null)
+				or (hn.LivingSituation = 435 and hn.RentalSubsidyType is null)
 				then 99
 			when hn.LivingSituation in (8,9) then 98
-			when hn.LivingSituation = 435 then hn.LivingSituationSubsidyType
+			when hn.LivingSituation = 435 then hn.RentalSubsidyType
 			else hn.LivingSituation	end
 		, hh.Step = '6.6.3'
 	from tlsa_Household hh
