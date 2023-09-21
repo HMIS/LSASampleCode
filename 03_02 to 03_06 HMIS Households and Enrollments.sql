@@ -378,7 +378,9 @@ where hoh.DateDeleted is null
 	inner join tlsa_CohortDates cd on cd.Cohort = -2 
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 
-		update n
+	--NOTE:  The logic for HIV/SMI/SUD columns is described in specs section 5.4; this is occurring in the code here 
+	--       because it made a massive difference in the speed with which the code in section 5.4 runs.
+	update n
 	set n.HIV = 1, n.Step = '3.4.5'
 	from tlsa_Enrollment n
 	inner join hmis_Disabilities d on d.EnrollmentID = n.EnrollmentID and d.DisabilityType = 8 and d.DisabilityResponse = 1
