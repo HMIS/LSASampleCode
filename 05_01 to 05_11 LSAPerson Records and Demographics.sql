@@ -197,6 +197,11 @@ FY2023 Changes
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.SUD = 1
 
+	update lp
+	set lp.DisabilityStatus = 1
+	from tlsa_Person lp
+	where lp.DisabilityStatus <> 1 and (lp.HIV = 1 or lp.SMI = 1 or lp.SUD = 1)
+
 /*
 	5.5 Get Dates for Three Year Period Relevant to Chronic Homelessness Status 
 		 for Each Active Adult and Head of Household
