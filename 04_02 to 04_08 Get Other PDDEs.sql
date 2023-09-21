@@ -119,13 +119,13 @@ FY2023 Changes
 		, DateCreated, DateUpdated, ExportID)
 	select distinct hi.InventoryID, hi.ProjectID, hi.CoCCode
 		, hi.HouseholdType
-		, case when lp.ProjectType = 1 then hi.Availability else null end 
+		, case when lp.ProjectType in (0,1) then hi.Availability else null end 
 		, hi.UnitInventory 
 		--, hi.BedInventory
 		, hi.CHVetBedInventory, hi.YouthVetBedInventory, hi.VetBedInventory
 		, hi.CHYouthBedInventory, hi.YouthBedInventory
 		, hi.CHBedInventory, hi.OtherBedInventory
-		, case when lp.ProjectType = 1 then hi.ESBedType else null end
+		, case when lp.ProjectType in (0,1) then hi.ESBedType else null end
 		, format(hi.InventoryStartDate, 'yyyy-MM-dd')
 		, case when isdate(cast(hi.InventoryEndDate as datetime)) = 1 then format(hi.InventoryEndDate, 'yyyy-MM-dd') else null end
 		, format(hi.DateCreated, 'yyyy-MM-dd HH:mm:ss')
