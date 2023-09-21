@@ -126,6 +126,7 @@ inner join (select hp.ProjectID
 					and hp.ContinuumProject = 1 
 					and ho.VictimServiceProvider = 0
 					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
+					and hp.OperatingStartDate <= cd.CohortEnd
 					and (hp.OperatingEndDate is null 
 						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
 			) p on p.ProjectID = hoh.ProjectID
