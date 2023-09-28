@@ -183,19 +183,28 @@ FY2023 Changes
 		group by n.PersonalID) DV on DV.PersonalID = n.PersonalID	
 
 	update lp
-	set lp.HIV = 1
+	set lp.HIV = case when n.PersonalID is not null then 1
+		when chk.PersonalID is not null then 0
+		else -1 end
 	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.HIV = 1
-
-		update lp
-	set lp.smi = 1
-	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.SMI = 1
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.HIV = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
 
 	update lp
-	set lp.sud = 1
+	set lp.SMI = case when n.PersonalID is not null then 1
+		when chk.PersonalID is not null then 0
+		else -1 end
 	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.SUD = 1
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.SMI = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
+
+	update lp
+	set lp.SUD = case when n.PersonalID is not null then 1
+		when chk.PersonalID is not null then 0
+		else -1 end
+	from tlsa_Person lp
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.SUD = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
 
 	update lp
 	set lp.DisabilityStatus = 1
