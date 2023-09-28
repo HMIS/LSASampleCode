@@ -104,6 +104,7 @@ FY2023 Changes
 		, case	
 			when HoHAdult.stat = 0 then -1
 			when Disability.stat = 1 then 1
+			when Disability.stat = 0 then 0
 			else 99 end 		 
 		, case	
 			when HoHAdult.stat = 0 then -1
