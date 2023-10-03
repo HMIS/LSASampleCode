@@ -128,7 +128,7 @@ inner join (select hp.ProjectID
 					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
 					and hp.OperatingStartDate <= cd.CohortEnd
 					and (hp.OperatingEndDate is null 
-						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
+						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate >= cd.LookbackDate))
 			) p on p.ProjectID = hoh.ProjectID
 -- Enrollments must be active (no exit date) or exited during the relevant period 
 left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
