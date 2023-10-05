@@ -14,7 +14,7 @@ This repository is provided as a supplement to the [LSA Report Specifications](h
 
 # Resources
 ## HMIS Data Lab Test Data
-There is a ZIP file called 'Sample LSA Output' above; it is the LSA as produced by the LSA sample code when applied to the FY2024 Test Data available (login required) [here](https://sakai.lampschools.org/access/content/group/44c5c653-66cd-47c3-9c06-44d89ed087ff/Dummy%20Data%20Sets/FY2024%20Test%20Data%20_%20Test%20Kits/DataLab%20-%202024%20Zips%202023-09-20.zip)
+There is a ZIP file called 'Sample LSA Output' above; it is the LSA as produced by the LSA sample code when applied to the FY2024 Test Data available (login required) [here](https://sakai.lampschools.org/access/content/group/44c5c653-66cd-47c3-9c06-44d89ed087ff/Dummy%20Data%20Sets/FY2024%20Test%20Data%20_%20Test%20Kits/DataLab%20-%202024%20Zips%202023-09-20.zip).
 
 ## Documentation
 The final versions of these documents are available on the [HUD Exchange](https://www.hudexchange.info/resource/5726/lsa-report-specifications-and-tools/). The documents here are working versions that change more frequently and prior to release on the HUD Exchange.  
