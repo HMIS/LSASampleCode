@@ -25,10 +25,10 @@ insert into lsa_Report (
 		, LookbackDate		--ReportStart - 7 years
 		)
 	select
-		  12345
+		  cast(format (getdate(),'3MMddHHmm') as int)
 		, '10/1/2022'
 		, '9/30/2023'
-		, 'XX-500'
+		, 'XX-501'
 		, 'Sample Code Inc.'
 		, 'LSA Online'
 		, 'Molly'			
