@@ -112,8 +112,9 @@ create table tlsa_HHID (
 	, constraint pk_tlsa_HHID primary key clustered (HouseholdID)
 	)
 	;
-
+	create index ix__tlsa_HHID_Active_HHAdultAge on tlsa_HHID (Active, HHAdultAge) INCLUDE (HoHID, ActiveHHType)
 	create index ix_tlsa_HHID_HoHID_ActiveHHType on tlsa_HHID (HoHID, ActiveHHType) include (EntryDate, EnrollmentID)
+	create index ix_tlsa_HHID_ActiveHHType_AHAR_HHAdultAge on tlsa_HHID (ActiveHHType, AHAR, HHAdultAge)
 
 if object_id ('tlsa_Enrollment') is not NULL drop table tlsa_Enrollment 
 
@@ -148,6 +149,9 @@ create table tlsa_Enrollment (
 	, constraint pk_tlsa_Enrollment primary key clustered (EnrollmentID)
 	)
 
+	create index ix_tlsa_Enrollment_AHAR on tlsa_Enrollment (AHAR) include (PersonalID)
+--create index ix_tlsa_Enrollment_PersonalID_AHAR on tlsa_Enrollment (PersonalID, AHAR)
+--create index ix_tlsa_Enrollment_Active on tlsa_Enrollment (Active) include (RelationshipToHoH, ProjectID, EntryDate, ActiveAge)
 
 if object_id ('tlsa_Person') is not NULL drop table tlsa_Person
 
@@ -415,6 +419,8 @@ create table tlsa_Household(
 		, HHType int
 		, Step nvarchar(10) not null)
 		;
+
+		--create index tlsa_AveragePops_PopID_Cohort on tlsa_AveragePops (PopID, Cohort) include (HoHID, HHType)
 
 	if object_id ('tlsa_CountPops') is not null drop table tlsa_CountPops;
 
