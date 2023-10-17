@@ -39,10 +39,10 @@ Specifically, the LSA sample code requires the tables listed below. Only records
 * hmis_HMISParticipation
 * hmis_Client
 * hmis_Enrollment
-* hmis_EnrollmentCoC
 * hmis_Exit
 * hmis_Services
 * hmis_HealthAndDV
+* hmis_Disabilities
 
 
 
