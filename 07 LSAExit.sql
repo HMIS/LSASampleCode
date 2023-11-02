@@ -491,8 +491,8 @@ from tlsa_Exit ex
 	set ex.Stat = 
 		case when prior.HoHID is null then 1
 			when prior.ExitDate >= dateadd(dd, -14, qx.EntryDate) then 5
-			when prior.ExitDest between 1 and 6 then 2
-			when prior.ExitDest between 7 and 14 then 3
+			when prior.ExitDest between 400 and 499 then 2
+			when prior.ExitDest between 100 and 399 then 3
 			else 4 end 
 		, ex.Step = '7.10'
 	from tlsa_Exit ex 
