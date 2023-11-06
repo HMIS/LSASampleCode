@@ -127,12 +127,10 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 
 	insert into tlsa_ExitHoHAdult (
 		PersonalID, QualifyingExitHHID,
-		Cohort, DisabilityStatus, CHStart, LastActive, 
+		Cohort, CHStart, LastActive, 
 		Step)
 	select distinct n.PersonalID, ex.QualifyingExitHHID,
 		ex.Cohort, 
-		case when n.DisabilityStatus in (0,1) then n.DisabilityStatus
-			else 99 end,
 		dateadd(dd, 1, (dateadd(yy, -3, max(n.ExitDate)))),
 		max(n.ExitDate), '7.4.1'
 	from tlsa_Exit ex
@@ -152,7 +150,27 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			else 99 end
 
 	update hoha
-	set CHTime = 400, CHTimeStatus = 2, Step = '7.4.2'
+	set hoha.DisabilityStatus = 1, Step = '7.4.2'
+	from tlsa_ExitHoHAdult hoha
+	inner join tlsa_Enrollment n on n.HouseholdID = hoha.QualifyingExitHHID 
+		and n.PersonalID = hoha.PersonalID and n.DisabilityStatus = 1
+
+	update hoha
+	set hoha.DisabilityStatus = 0, Step = '7.4.3'
+	from tlsa_ExitHoHAdult hoha
+	inner join tlsa_Enrollment n on n.HouseholdID = hoha.QualifyingExitHHID 
+		and n.PersonalID = hoha.PersonalID and n.DisabilityStatus = 0
+	where hoha.DisabilityStatus is null
+
+	update hoha
+	set hoha.DisabilityStatus = 99, Step = '7.4.4'
+	from tlsa_ExitHoHAdult hoha
+	where hoha.DisabilityStatus is null
+
+
+
+	update hoha
+	set CHTime = 400, CHTimeStatus = 2, Step = '7.4.5'
 	from tlsa_ExitHoHAdult hoha
 	inner join tlsa_CohortDates cd on cd.Cohort = hoha.Cohort
 	inner join tlsa_Enrollment n on n.HouseholdID = hoha.QualifyingExitHHID 
