@@ -145,9 +145,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
 		and (ex.ExitFrom <> 3 or hhid.EntryDate > dateadd(yy, -1, hhid.ExitDate))
 		and (ex.ExitFrom not in (5,6) or hhid.MoveInDate > dateadd(yy, -1, hhid.ExitDate))
-	group by n.PersonalID, ex.QualifyingExitHHID, ex.Cohort,
-		case when n.DisabilityStatus in (0,1) then n.DisabilityStatus
-			else 99 end
+	group by n.PersonalID, ex.QualifyingExitHHID, ex.Cohort
 
 	update hoha
 	set hoha.DisabilityStatus = 1, Step = '7.4.2'
