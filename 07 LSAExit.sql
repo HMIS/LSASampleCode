@@ -392,7 +392,14 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	set HHVet = case when vet.vet is null then 0 else vet.vet end
 		, HHDisability = (select max(case when disability.DisabilityStatus = 1 then 1 else 0 end)
 			from tlsa_Enrollment disability
-			where disability.HouseholdID = hh.HouseholdID)
+			where disability.HouseholdID = hh.HouseholdID
+				and (hhid.HoHID = disability.PersonalID
+					or (
+						(ex.Cohort = 0 and disability.ActiveAge between 18 and 65)
+						 or (ex.Cohort = -1 and disability.Exit1Age between 18 and 65)
+						 or (ex.Cohort = -2 and disability.Exit2Age between 18 and 65)		
+						)
+					))
 		, HHFleeingDV = coalesce((select min(
 				case when dv.RelationshipToHoH <> 1 and 
 						((cd.Cohort = 0 and dv.ActiveAge not between 18 and 65)
