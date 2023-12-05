@@ -429,10 +429,10 @@ FY2023 Changes
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
 				and hhid.LSAProjectType in (0,1,2,8)), 0)
 		, ESTFleeingDV = coalesce (
-			(select max(hhid.HHFleeingDV)
+			(select min(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.LSAProjectType in (0,1,2,8)), 0)
+				and hhid.LSAProjectType in (0,1,2,8) and hhid.HHFleeingDV > 0), 0)
 		, ESTParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
@@ -481,10 +481,10 @@ FY2023 Changes
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
 				and hhid.LSAProjectType = 13), 0)
 		, RRHFleeingDV = coalesce (
-			(select max(hhid.HHFleeingDV)
+			(select min(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.LSAProjectType = 13), 0)
+				and hhid.LSAProjectType = 13 and hhid.HHFleeingDV > 0), 0)
 		, RRHParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
@@ -532,10 +532,10 @@ FY2023 Changes
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
 				and hhid.LSAProjectType = 3), 0)
 		, PSHFleeingDV = coalesce (
-			(select max(hhid.HHFleeingDV)
+			(select min(hhid.HHFleeingDV)
 			 from tlsa_HHID hhid 
 			 where hhid.Active = 1 and hhid.ActiveHHType = hh.HHType and hhid.HoHID = hh.HoHID
-				and hhid.LSAProjectType = 3), 0)
+				and hhid.LSAProjectType = 3 and hhid.HHFleeingDV > 0), 0)
 		, PSHParent = coalesce (
 			(select max(hhid.HHParent)
 			 from tlsa_HHID hhid 
