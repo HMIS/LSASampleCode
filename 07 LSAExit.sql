@@ -401,16 +401,16 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 						)
 					))
 		, HHFleeingDV = coalesce((select min(
-				case when dv.RelationshipToHoH <> 1 and 
-						((ex.Cohort = 0 and dv.ActiveAge not between 18 and 65)
-							or (ex.Cohort = -1 and dv.Exit1Age not between 18 and 65)
-							or (ex.Cohort = -2 and dv.Exit2Age not between 18 and 65)
-						) then null
-					when dv.DVStatus = 1 then 1
-					when dv.DVStatus in (2,3) then 2
-					else null end)
+				case when dv.DVStatus = 1 then 1
+					else 2 end)
 				from tlsa_Enrollment dv
-				where dv.HouseholdID = hh.HouseholdID), 0)
+				where dv.HouseholdID = hh.HouseholdID
+					and dv.DVStatus between 1 and 3
+					and (dv.RelationshipToHoH = 1 
+							or (ex.Cohort = 0 and dv.ActiveAge between 18 and 65)
+							or (ex.Cohort = -1 and dv.Exit1Age between 18 and 65)
+							or (ex.Cohort = -2 and dv.Exit2Age between 18 and 65)
+						)), 0)
 		, HoHRaceEthnicity =  (select case when r.RaceNone in (8,9) then 98
 			when r.RaceNone = 99 then 99
 			when (r.AmIndAkNative = 1 
