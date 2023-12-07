@@ -1,6 +1,11 @@
-
+Sample Data/Sample LSA Output/
+Sample Data/Sample HMIS Data/
+Sample Data/Sample LSA Temp Tables/
 03_01a HIC Parameters and Metadata.sql
 12 Fake HIC Dates for 2024.sql
 99 HIC from LSA.sql
 Flag Fixes.sql
 *.csv
+99 Create Inventory Records from lsa_Calculated.sql
+99 Update HMIS ExportIDs.sql
+99 Update HMIS ExportIDs for Hashed Export.sql
