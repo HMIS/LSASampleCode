@@ -1,19 +1,12 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  09 LSACalculated AHAR Counts.sql  
 
-FY2023 Changes
+FY2024 Changes
 
-	9.1.11
-		New PopID 48 for DV Survivors not Identified as Currently Fleeing
-	9.1.18 - 9.1.25
-		Update RaceEthnicity logic and popIDs 
-	9.1.26
-		Update Gender logic and popIDs 
-	9.1.27 and 9.1.28
-		Update Age popIDs 
+	Section 9.6 - Get OPH Point-in-Time Counts for HIC
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 	
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
@@ -568,4 +561,30 @@ Populates and references:
 			and n.LSAProjectType in (0,2,8)
 		where n.AHAR = 1) est
 	group by est.HHType, est.PopID
+
+
+/*
+	9.6.	Get OPH Point-In-Time Counts for HIC
 	
+*/
+
+	delete from lsa_Calculated where Step = '9.6'
+
+	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
+	select count(distinct hh.PersonalID), 1, 10, 0, 0, -1, p.ProjectID, 55, rpt.ReportID, '9.6'
+	from lsa_Project p 
+	inner join lsa_HMISParticipation hp on hp.ProjectID = p.ProjectID 
+	inner join lsa_Report rpt on rpt.ReportStart >= hp.HMISParticipationStatusStartDate
+		and (hp.HMISParticipationStatusEndDate is null or hp.HMISParticipationStatusEndDate > rpt.ReportStart)
+	inner join hmis_Enrollment hn on hn.ProjectID = p.ProjectID and hn.MoveInDate <= rpt.ReportStart and hn.RelationshipToHoH = 1
+		and hn.EnrollmentCoC = rpt.ReportCoC
+	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
+	inner join (select hhn.ProjectID, hhn.HouseholdID, hhn.PersonalID, hhn.EntryDate as StartDate, coalesce(hhx.ExitDate, getdate()) as EndDate
+		from hmis_Enrollment hhn
+		left outer join hmis_Exit hhx on hhx.EnrollmentID = hhn.EnrollmentID 
+		where hhn.DateDeleted is null and hhx.DateDeleted is null) hh on hh.HouseholdID = hn.HouseholdID 
+			and hh.StartDate <= hn.MoveInDate and hh.EndDate > hn.MoveInDate
+	where rpt.LSAScope = 3 and hp.HMISParticipationType = 1 and p.ProjectType in (9,10)
+		and (hx.ExitDate is null or hx.ExitDate > rpt.ReportStart)
+		and hn.DateDeleted is null and hx.DateDeleted is null
+	group by p.ProjectID, rpt.ReportID
