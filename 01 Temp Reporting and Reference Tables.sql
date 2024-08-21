@@ -1,34 +1,12 @@
 /*
-LSA FY2023 Sample Code 
+LSA FY2024 Sample Code 
 Name:  01 Temp Reporting and Reference Tables.sql
 
-FY2023 Changes
-	All
-	- All columns that had a data type of varchar have been updated to use nvarchar 
+FY2024 Changes
+	
+	-Extend ref_Calendar through 9/30/2025
+	-Add ch_Include_exit, ch_Exclude_exit, ch_Episodes_exit, and sys_TimePadded_exit
 
-	tlsa_Person 
-	- Remove columns Race and Ethnicity / add RaceEthnicity (data standards changes)
-	- Add columns RRHSOMinAge, RRHSOMaxAge, HHTypeRRHSONoMI, HHTypeRRHSOMI (data standards addition of RRH-SO subtype)
-	- Add columns HHTypeES, HHTypeSH, HHTypeTH, SMI, SUD, and HIV (sheltered PIT) 
-
-	tlsa_Household
-	- Remove columns HoHRace and HoHEthnicity / add HoHRaceEthnicity (data standards changes)
-	- Add columns RRHSOStatus, RRHSOMoveIn (data standards addition of RRH-SO subtype)
-
-	tlsa_Exit
-	- Remove columns HoHRace and HoHEthnicity / add HoHRaceEthnicity (data standards changes)
-
-	ref_Calendar
-	- Extended date range of ref_Calendar to 9/30/2024
-
-	ref_RowPopulations 
-	- Update to include all current population identifiers / new and updated report rows
-
-	ref_PopHHTypes
-	- Update to reflect changes and additions to list of population identifiers
-
-	ref_RowValues
-	- Update to add new project-level DQ rows and new row IDs for LSAExit average days to return grouped by destination
 
 	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -51,6 +29,10 @@ the following temp reporting tables:
 		sys_TimePadded - used to identify households' last inactive date for SystemPath 
 		sys_Time - used to count dates in ES/SH, TH, RRH/PSH but not housed, housed in RRH/PSH, and ES/SH/StreetDates
 	tlsa_Exit - household-level precursor to LSAExit / households with system exits in exit cohort periods
+		ch_Exclude_exit - dates in TH or housed in RRH/PSH; used for LSAExit chronic homelessness determination
+		ch_Include_exit - dates in ES/SH or on the street; used for LSAExit chronic homelessness determination
+		ch_Episodes_exit - episodes of ES/SH/Street time constructed from ch_Include_exit for LSAExit chronic homelessness determination
+		sys_TimePadded_exit - used to identify households' last inactive date for SystemPath 
 	tlsa_ExitHoHAdult - used as the basis for determining chronic homelessness for LSAExit
 	tlsa_AveragePops - used to identify households in various populations for average # of days in section 8 
 		based on LSAHousehold and LSAExit.
@@ -58,7 +40,7 @@ the following temp reporting tables:
 
 This script also drops (if tables exist), creates, and populates the following 
 reference tables used in the sample code:  
-	ref_Calendar - table of dates between 10/1/2012 and 9/30/2024  
+	ref_Calendar - table of dates between 10/1/2012 and 9/30/2025  
 	ref_RowValues - required combinations of Cohort, Universe, and SystemPath values for each ReportRow in LSACalculated
 	ref_RowPopulations - the populations required for each ReportRow in LSACalculated
 	ref_PopHHTypes - the household types associated with each population 
@@ -393,6 +375,49 @@ create table tlsa_Household(
 		constraint pk_tlsa_Exit primary key (Cohort, HoHID, HHType)
 		)
 		;
+		
+	if object_id ('ch_Exclude_exit') is not NULL drop table ch_Exclude_exit
+
+		create table ch_Exclude_exit (
+		PersonalID nvarchar(32) not NULL,
+		excludeDate date not NULL,
+		Step nvarchar(10) not NULL,
+		constraint pk_ch_Exclude_exit primary key clustered (PersonalID, excludeDate) 
+		)
+		;
+
+	if object_id ('ch_Include_exit') is not NULL drop table ch_Include_exit
+	
+		create table ch_Include_exit (
+		PersonalID nvarchar(32) not NULL,
+		ESSHStreetDate date not NULL,
+		Step nvarchar(10) not NULL,
+		constraint pk_ch_Include_exit primary key clustered (PersonalID, ESSHStreetDate)
+		)
+		;
+	
+	if object_id ('ch_Episodes_exit') is not NULL drop table ch_Episodes_exit
+		create table ch_Episodes_exit (
+		PersonalID nvarchar(32),
+		episodeStart date,
+		episodeEnd date,
+		episodeDays int null,
+		Step nvarchar(10) not NULL,
+		constraint pk_ch_Episodes_exit primary key clustered (PersonalID, episodeStart)
+		)
+		;
+
+	if object_id ('sys_TimePadded_exit') is not null drop table sys_TimePadded_exit
+	
+		create table sys_TimePadded_exit (
+		HoHID nvarchar(32) not null
+		, HHType int not null
+		, Cohort int not null
+		, StartDate date
+		, EndDate date
+		, Step nvarchar(10) not NULL
+		)
+		;
 
 	if object_id ('tlsa_ExitHoHAdult') is not NULL drop table tlsa_ExitHoHAdult;
  
@@ -446,7 +471,7 @@ create table tlsa_Household(
 
 	--Populate ref_Calendar
 	declare @start date = '2012-10-01'
-	declare @end date = '2024-09-30'
+	declare @end date = '2025-09-30'
 	declare @i int = 0
 	declare @total_days int = DATEDIFF(d, @start, @end) 
 
