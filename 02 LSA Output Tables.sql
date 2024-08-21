@@ -1,34 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  02 LSA Output Tables.sql 
 
-FY2023 Changes
+FY2024 Changes
 		
-		lsa_Project
-		- Remove columns TrackingMethod and HMISParticipatingProject
-		- Add column RRHSubType
-		- Allow NULLs for HousingType (because RRH-SO will not have a housing type)
-		- Expand character count for ProjectName and ProjectCommonName to 200 
-
-		lsa_Organization
-		- Expand character count for OrganizationName and OrganizationCommonName to 200 
-
-		lsa_Funder
-		- Expand character limits for OtherFunder and GrantID to 100
-
-		lsa_Person 
-		- Remove columns Race and Ethnicity
-		- Add columns RaceEthnicity, RRHSOMinAge, RRHSOMaxAge, HHTypeRRHSONoMI, HHTypeRRHSOMI, HIV, SMI, SUD
-
-		lsa_Household 
-		- Remove columns HoHRace and HoHEthnicity
-		- Add columns HoHRaceEthnicity, RRHSOStatus, RRHSOMoveIn
-
-		lsa_Exit
-		- Remove columns HoHRace and HoHEthnicity
-		- Add column HoHRaceEthnicity
-
-		lsa_HMISParticipation and lsa_Affiliation added
+		None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 

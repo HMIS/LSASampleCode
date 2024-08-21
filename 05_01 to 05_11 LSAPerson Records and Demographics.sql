@@ -1,26 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  05_01 to 05_11 LSAPerson.sql  
 
-FY2023 Changes
-		5.1.2 and 5.2.2
-		- exclude RRH-SO enrollments from AHAR status
+FY2024 Changes
 
-		5.3/5.4
-		- RaceEthnicity - data standards changes and populate for non-HoH children 
-		- Gender update to include all selected values / data standards changes and populate for non-HoH children
-		- Add HIV, SMI, SUD for adults 
-		- Set DisabilityStatus = 1 for adults who meet criteria for HIV, SMI, SUD even if DisablingCondition <> 1
-
-		5.8.3 
-		- LivingSituation data standards changes
-		- Include ES/SH/Street dates between DateToStreetESSH and move-in, exit, or report end from RRH-SO enrollments for CH
-
-		5.10.5
-		- LivingSituation data standards changes
-
-		5.11.3 and 5.11.4
-		- RRHSOAgeMin and RRHSOAgeMax
+		None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 

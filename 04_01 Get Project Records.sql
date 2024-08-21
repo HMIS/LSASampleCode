@@ -1,13 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  04_01 Get Project Records.sql
 
-FY2023 Changes
+FY2024 Changes
 		
-		-Remove columns TrackingMethod, HMISParticipatingProject
-		-Add ProjectType 0 (ES entry/exit) to WHERE clause
-		-Add column RRHSubType, logic for ResidentialAffiliation
-		-Expand ProjectName up to 200 characters in length
+	None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 

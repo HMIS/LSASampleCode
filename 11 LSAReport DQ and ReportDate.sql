@@ -1,16 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name: 11 LSAReport DQ and ReportDate.sql
 
-FY2023 Changes
-		11.1, 11.2
-		- EnrollmentCoC, HMIS participation data standards changes
-
-		11.6
-		- Added sequential SSNs to list of invalid SSNs
-
-		11.7 Homeless Date, TimesHomeless, MonthsHomeless
-		- LivingSituation data standards changes
+FY2024 Changes
+		
+		None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 

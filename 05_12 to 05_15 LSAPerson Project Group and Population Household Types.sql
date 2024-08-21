@@ -1,12 +1,12 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
 
-FY2023 Changes
-	- HHChronic and HHFleeingDV updates in 5.12.1
-	- Updates for new columns RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI, 
-		HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD in 5.13.2 and 5.15
+FY2024 Changes
 
+		None
+
+		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 	
 	5.12 Set Population Identifiers for Active HouseholdIDs
 */

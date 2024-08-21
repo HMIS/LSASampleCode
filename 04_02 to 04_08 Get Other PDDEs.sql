@@ -1,19 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  04_02 to 04_08 Get Other PDDEs.sql
 
-FY2023 Changes
-		lsa_Organization 
-		- expand OrganizationName to up to 200 characters
-		
-		lsa_Inventory
-		- exclude inventory records (if any) for RRH Services Only
+FY2024 Changes
 
-		lsa_HMISParticipation
-		- new
-
-		lsa_Affiliation
-		- new
+	None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
