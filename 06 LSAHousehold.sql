@@ -1,18 +1,19 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  06 LSAHousehold.sql  
 
-FY2023 Changes
+FY2024 Changes
 
-		- RaceEthnicity and HHFleeingDV changes in 6.1
-		- Set RRHSOStatus and RRHSOMoveIn values in 6.3.4 and 6.4.3
-		- LivingSituation list changes in 6.6.1-6.6.3, 6.14.1, 6.14.2
-		- HoHRaceEthnicity, RRHSOStatus, and RRHSOMoveIn columns in select statement in 6.19
+		Run code only if the LSAScope is not 'HIC'
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
+
+if (select LSAScope from lsa_Report) <> 3
+begin
+
 	truncate table tlsa_Household
 
 	insert into tlsa_Household (HoHID, HHType
@@ -1275,6 +1276,7 @@ group by Stat
 		else TotalHomelessDays end 
 	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
 
+end --END IF LSAScope <> HIC
 /*
 	End LSAHousehold
 */

@@ -1,19 +1,12 @@
 /*
-LSA FY2023 Sample Code
-Name:  08 LSACalculated Averages.sql  
+LSA FY2024 Sample Code
+Name:  08 LSACalculated Averages for LSAHousehold and LSAExit.sql  
 
-FY2023 Changes
+FY2024 Changes
 
-		8.3.15 - 8.3.22 (LSAHousehold) and 8.3.39 - 8.3.46 (LSAExit)
-		- RaceEthnicity changes
-		8.3.23 - 8.3.25 (LSAHousehold) and 8.3.47 - 8.3.49 (LSAExit)
-		- PopulationID changes to accommodate new RaceEthnicity categories
-		8.3.26 (LSAHousehold) and 8.3.50 (LSAExit)
-		- New PopID 48 for DV Survivors not Identified as Currently Fleeing
-		8.11
-		- New report row IDs and Destination values for Average Days to Return by Exit Destination
-
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
+	Run code only if the LSAScope is not 'HIC'
+		
+	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
 
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
@@ -27,7 +20,9 @@ Populates and references:
 
 	8.3 Populations for Average Days from LSAHousehold and LSAExit
 */
--- 
+ 
+if (select LSAScope from lsa_Report) <> 3
+begin
 
 	truncate table tlsa_AveragePops
 
@@ -485,3 +480,9 @@ Populates and references:
 	group by rv.RowID, rv.Cohort, rv.Universe, ph.HHType,
 		rp.PopID, rv.SystemPath, rv.RowID, 
 		ex.ReportID
+
+end -- END IF LSAScope <> HIC
+
+/*
+	End LSACalculated Averages for LSAHousehold and LSAExit
+*/
