@@ -1,74 +1,77 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:	03_02 to 03_06 HMIS Households and Enrollments.sql 
 
-FY2023 Changes
+FY2024 Changes
 
-		3.3.1
-		- Data standards changes:
-			Remove reference to hmis_EnrollmentCoC; filter by the new EnrollmentCoC field in hmis_Enrollment
-			Include enrollments regardless of HMIS participation status
-			Use LSAProjectType = 15 for RRH Services Only (ProjectType = 13 and RRHSubType = 1)
-			Remove references to TrackingMethod for ES project types
+		3.2 - Set ReportEnd = ReportStart if LSAScope = HIC
+			- Set Exit and Point-in-Time Cohort dates only if LSAScope <> HIC
+		3.3 - Adjust entry/exit dates to align with period of projects' HMIS participation if the dates conflict
+			     and limit reported bednights to periods of HMIS participation
 
-		3.3.2
-		- Remove crosswalking of HMIS destination values to LSA-specific categories to use 
-			HMIS value for Destination (unless Destination = 435, in which case, use DestinationSubsidyType)
-
-		3.4.1 and 3.4.3
-		- Incorporate logic for RRH-SO / LSAProjectType 15
-
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
 
 	3.2 Cohort Dates 
 */
+
+	if (select LSAScope from lsa_Report) = 3
+	begin
+		update lsa_Report set ReportEnd = ReportStart
+	end -- END IF LSAScope = HIC
+
 	truncate table tlsa_CohortDates
 
 	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
 	select 1, rpt.ReportStart, rpt.ReportEnd, rpt.LookbackDate, rpt.ReportID
 	from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
-	select 0, rpt.ReportStart,
-		case when dateadd(mm, -6, rpt.ReportEnd) <= rpt.ReportStart 
-			then rpt.ReportEnd
-			else dateadd(mm, -6, rpt.ReportEnd) end
-		, rpt.LookbackDate
-		, rpt.ReportID
-	from lsa_Report rpt
+	if (select LSAScope from lsa_Report) <> 3
+	begin
+	
+		insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
+		select 0, rpt.ReportStart,
+			case when dateadd(mm, -6, rpt.ReportEnd) <= rpt.ReportStart 
+				then rpt.ReportEnd
+				else dateadd(mm, -6, rpt.ReportEnd) end
+			, rpt.LookbackDate
+			, rpt.ReportID
+		from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
-	select -1, dateadd(yyyy, -1, rpt.ReportStart)
-		, dateadd(yyyy, -1, rpt.ReportEnd)
-		, rpt.LookbackDate
-		, rpt.ReportID
-	from lsa_Report rpt
+		insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
+		select -1, dateadd(yyyy, -1, rpt.ReportStart)
+			, dateadd(yyyy, -1, rpt.ReportEnd)
+			, rpt.LookbackDate
+			, rpt.ReportID
+		from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
-	select -2, dateadd(yyyy, -2, rpt.ReportStart)
-		, dateadd(yyyy, -2, rpt.ReportEnd)
-		, rpt.LookbackDate
-		, rpt.ReportID
-	from lsa_Report rpt
+		insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
+		select -2, dateadd(yyyy, -2, rpt.ReportStart)
+			, dateadd(yyyy, -2, rpt.ReportEnd)
+			, rpt.LookbackDate
+			, rpt.ReportID
+		from lsa_Report rpt
 
-	insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
-	select distinct case cal.mm 
-		when 10 then 10
-		when 1 then 11 
-		when 4 then 12 
-		else 13 end
-		, cal.theDate
-		, cal.theDate
-		, rpt.LookbackDate
-		, rpt.ReportID
-	from lsa_Report rpt 
-	inner join ref_Calendar cal 
-		on cal.theDate between rpt.ReportStart and rpt.ReportEnd
-	where (cal.mm = 10 and cal.dd = 31 and cal.yyyy = year(rpt.ReportStart))
-		or (cal.mm = 1 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
-		or (cal.mm = 4 and cal.dd = 30 and cal.yyyy = year(rpt.ReportEnd))
-		or (cal.mm = 7 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
+		insert into tlsa_CohortDates (Cohort, CohortStart, CohortEnd, LookbackDate, ReportID)
+		select distinct case cal.mm 
+			when 10 then 10
+			when 1 then 11 
+			when 4 then 12 
+			else 13 end
+			, cal.theDate
+			, cal.theDate
+			, rpt.LookbackDate
+			, rpt.ReportID
+		from lsa_Report rpt 
+		inner join ref_Calendar cal 
+			on cal.theDate between rpt.ReportStart and rpt.ReportEnd
+		where (cal.mm = 10 and cal.dd = 31 and cal.yyyy = year(rpt.ReportStart))
+			or (cal.mm = 1 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
+			or (cal.mm = 4 and cal.dd = 30 and cal.yyyy = year(rpt.ReportEnd))
+			or (cal.mm = 7 and cal.dd = 31 and cal.yyyy = year(rpt.ReportEnd))
+
+	end -- END IF LSASCOPE <> HIC
+	
 
 /*
 	3.3 HMIS HouseholdIDs 
@@ -91,15 +94,19 @@ insert into tlsa_HHID (
 select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 	, hoh.ProjectID, p.LSAProjectType
 	, case when hoh.EntryDate < bn.FirstBednight then bn.FirstBednight
+		when hoh.EntryDate < part.HMISParticipationStatusStartDate then part.HMISParticipationStatusStartDate
 		else hoh.EntryDate end
 	, case when hoh.MoveInDate > rpt.ReportEnd 
 			or p.LSAProjectType not in (3,13,15) 
 			or hoh.MoveInDate < hoh.EntryDate 
-			or hoh.MoveInDate > p.OperatingEndDate then null
-		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null) 
+			or hoh.MoveInDate > p.OperatingEndDate 
+			or hoh.MoveInDate >= part.HMISParticipationStatusEndDate
+		    then null
+		when hoh.MoveInDate < part.HMISParticipationStatusStartDate then part.HMISParticipationStatusStartDate
+		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null)  
 			then hoh.MoveInDate
 		when p.LSAProjectType in (13,15) and (hoh.MoveInDate <= hx.ExitDate or hx.ExitDate is null) 
-			then hoh.MoveInDate
+		    then hoh.MoveInDate
 		else null end
 	, case when p.LSAProjectType = 1 
 				and dateadd(dd, 1, bn.LastBednight) >= p.OperatingEndDate then p.OperatingEndDate
@@ -107,6 +114,7 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 			then dateadd(dd, 1, bn.LastBednight)
 		when p.LSAProjectType = 1 and hx.ExitDate is null 
 			and dateadd(dd, 90, bn.LastBednight) <= rpt.ReportEnd then dateadd(dd, 1, bn.LastBednight) 
+		when part.HMISParticipationStatusEndDate < hx.ExitDate and part.HMISParticipationStatusEndDate < rpt.ReportEnd then part.HMISParticipationStatusEndDate
 		when p.OperatingEndDate <= rpt.ReportEnd and hx.ExitDate is null then p.OperatingEndDate
 		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
 		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
@@ -124,7 +132,6 @@ inner join (select hp.ProjectID
 				inner join tlsa_CohortDates cd on cd.Cohort = 1
 				where hp.DateDeleted is null
 					and hp.ContinuumProject = 1 
-					and ho.VictimServiceProvider = 0
 					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
 					and hp.OperatingStartDate <= cd.CohortEnd
 					and (hp.OperatingEndDate is null 
@@ -135,6 +142,8 @@ left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 	and hx.ExitDate <= rpt.ReportEnd 
 	and (hx.ExitDate <= p.OperatingEndDate or p.OperatingEndDate is null)
 	and hx.DateDeleted is null
+-- Some part of the enrollment must occur during a period of HMIS participation for the project
+inner join hmis_HMISParticipation part on part.ProjectID = hoh.ProjectID 
 left outer join hmis_Enrollment hohCheck on hohCheck.HouseholdID = hoh.HouseholdID
 	and hohCheck.RelationshipToHoH = 1 and hohCheck.EnrollmentID <> hoh.EnrollmentID
 	and hohCheck.DateDeleted is null
@@ -146,6 +155,10 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 			and p.ProjectType = 1 
 			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
 		inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
+		inner join hmis_HMISParticipation part on part.ProjectID = p.ProjectID 
+			and part.HMISParticipationType = 1
+			and svc.DateProvided >= part.HMISParticipationStatusStartDate 
+			and (svc.DateProvided < part.HMISParticipationStatusEndDate or part.HMISParticipationStatusEndDate is null)
 		where svc.RecordType = 200 and svc.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
@@ -161,6 +174,14 @@ where hoh.DateDeleted is null
 	and (p.LSAProjectType in (0,2,3,8,13,15)
    		or (p.LSAProjectType = 1 and bn.LastBednight is not null)
 		)
+	and part.HMISParticipationID = (select top 1 hp1.HMISParticipationID 
+			from hmis_HMISParticipation hp1
+			where hp1.ProjectID = hoh.ProjectID 
+				and hp1.HMISParticipationType = 1 
+				and (hoh.EntryDate <= hp1.HMISParticipationStatusEndDate or hp1.HMISParticipationStatusEndDate is null)
+				and (hx.ExitDate > hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
+				and hp1.DateDeleted is null
+			order by hp1.HMISParticipationStatusStartDate desc)
 
 		update hhid
 		set hhid.ExitDest = case	
