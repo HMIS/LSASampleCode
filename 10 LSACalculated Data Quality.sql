@@ -1,17 +1,10 @@
 /*
-LSA FY2023 Sample Code
+LSA FY2024 Sample Code
 Name:  10 LSACalculated Data Quality.sql
 
-FY2023 Changes
+FY2024 Changes
 
-		10.2-10.4 
-			- update ReportRow numbers
-		10.3
-			- Remove references to TrackingMethod column in hmis_Project
-		10.4
-			- Update for data standards changes to EnrollmentCoC
-		10.5-10.19
-			- new
+		None
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
 
@@ -109,14 +102,15 @@ FY2023 Changes
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 906, n.ProjectID, rpt.ReportID, '10.5'
 	from lsa_Report rpt
-	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
 	left outer join lsa_HMISParticipation part on part.ProjectID = n.ProjectID
 		and part.DateDeleted is null
 		and part.HMISParticipationType = 1
 		and part.HMISParticipationStatusStartDate <= n.EntryDate
 		and (part.HMISParticipationStatusEndDate is null
-			or part.HMISParticipationStatusEndDate >= coalesce(n.ExitDate, rpt.ReportEnd))
-	where n.Active = 1 and part.ProjectID is null
+			or part.HMISParticipationStatusEndDate >= coalesce(x.ExitDate, rpt.ReportEnd))
+	where part.ProjectID is null
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.6	DQ – Enrollments without exactly one HoH
