@@ -159,7 +159,7 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 			and part.HMISParticipationType = 1
 			and svc.DateProvided >= part.HMISParticipationStatusStartDate 
 			and (svc.DateProvided < part.HMISParticipationStatusEndDate or part.HMISParticipationStatusEndDate is null)
-		where svc.RecordType = 200 and svc.DateDeleted is null
+		where svc.RecordType = 200 and svc.DateDeleted is null and part.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		group by svc.EnrollmentID
