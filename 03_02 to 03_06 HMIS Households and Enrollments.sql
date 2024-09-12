@@ -155,11 +155,11 @@ left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as Firs
 			and p.ProjectType = 1 
 			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
 		inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
-		inner join hmis_HMISParticipation part on part.ProjectID = p.ProjectID 
-			and part.HMISParticipationType = 1
-			and svc.DateProvided >= part.HMISParticipationStatusStartDate 
-			and (svc.DateProvided < part.HMISParticipationStatusEndDate or part.HMISParticipationStatusEndDate is null)
-		where svc.RecordType = 200 and svc.DateDeleted is null and part.DateDeleted is null
+		inner join hmis_HMISParticipation hpart on hpart.ProjectID = p.ProjectID 
+			and hpart.HMISParticipationType = 1
+			and svc.DateProvided >= hpart.HMISParticipationStatusStartDate 
+			and (svc.DateProvided < hpart.HMISParticipationStatusEndDate or hpart.HMISParticipationStatusEndDate is null)
+		where svc.RecordType = 200 and svc.DateDeleted is null and hpart.DateDeleted is null
 			and svc.DateProvided >= nbn.EntryDate 
 			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		group by svc.EnrollmentID
@@ -179,7 +179,7 @@ where hoh.DateDeleted is null
 			where hp1.ProjectID = hoh.ProjectID 
 				and hp1.HMISParticipationType = 1 
 				and (hoh.EntryDate <= hp1.HMISParticipationStatusEndDate or hp1.HMISParticipationStatusEndDate is null)
-				and (hx.ExitDate > hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
+				and (hx.ExitDate >= hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
 				and hp1.DateDeleted is null
 			order by hp1.HMISParticipationStatusStartDate desc)
 
