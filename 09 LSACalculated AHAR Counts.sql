@@ -571,7 +571,7 @@ Populates and references:
 	delete from lsa_Calculated where Step = '9.6'
 
 	insert into lsa_Calculated (Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID, Step)
-	select count(distinct hh.PersonalID), 1, 10, 0, 0, -1, p.ProjectID, 55, rpt.ReportID, '9.6'
+	select count(distinct hh.PersonalID), 1, 10, 0, 0, -1, p.ProjectID, 53, rpt.ReportID, '9.6'
 	from lsa_Project p 
 	inner join lsa_HMISParticipation hp on hp.ProjectID = p.ProjectID 
 	inner join lsa_Report rpt on rpt.ReportStart >= hp.HMISParticipationStatusStartDate
