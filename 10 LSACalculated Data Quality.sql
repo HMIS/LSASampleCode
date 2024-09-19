@@ -103,9 +103,8 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 906, n.ProjectID, rpt.ReportID, '10.5'
 	from lsa_Report rpt
 	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
+	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
 	left outer join lsa_HMISParticipation part on part.ProjectID = n.ProjectID
-		and part.DateDeleted is null
 		and part.HMISParticipationType = 1
 		and part.HMISParticipationStatusStartDate <= n.EntryDate
 		and (part.HMISParticipationStatusEndDate is null
