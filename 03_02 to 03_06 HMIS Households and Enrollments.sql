@@ -100,7 +100,7 @@ select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
 			or p.LSAProjectType not in (3,13,15) 
 			or hoh.MoveInDate < hoh.EntryDate 
 			or hoh.MoveInDate > p.OperatingEndDate 
-			or hoh.MoveInDate >= part.HMISParticipationStatusEndDate
+			or hoh.MoveInDate > part.HMISParticipationStatusEndDate
 		    then null
 		when hoh.MoveInDate < part.HMISParticipationStatusStartDate then part.HMISParticipationStatusStartDate
 		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null)  
@@ -132,6 +132,7 @@ inner join (select hp.ProjectID
 				inner join tlsa_CohortDates cd on cd.Cohort = 1
 				where hp.DateDeleted is null
 					and hp.ContinuumProject = 1 
+					and ho.VictimServiceProvider = 0
 					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
 					and hp.OperatingStartDate <= cd.CohortEnd
 					and (hp.OperatingEndDate is null 
