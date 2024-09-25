@@ -72,16 +72,10 @@ FY2024 Changes
 
 	end -- END IF LSASCOPE <> HIC
 	
-
 /*
 	3.3 HMIS HouseholdIDs 
 */
 truncate table tlsa_HHID
--- Note:  Code here and elsewhere 
-			-- Uses LSAProjectType = 13 when ProjectType = 13 and RRHSubType = 2 (RRH: Housing with or without services)	
---				and LSAProjectType = 15 when ProjectType = 13 and RRHSubType = 1 (RRH: Services Only)
-			-- When RRH MoveInDate = ExitDate, uses an effective ExitDate of MoveIn + 1 day so that subsequent
---				sections can use the same logic for RRH and PSH.
 
 insert into tlsa_HHID (
 	  HouseholdID, HoHID, EnrollmentID
@@ -91,98 +85,135 @@ insert into tlsa_HHID (
 	, ExitDate
 	, LastBedNight
 	, Step)
-select distinct hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
-	, hoh.ProjectID, p.LSAProjectType
-	, case when hoh.EntryDate < bn.FirstBednight then bn.FirstBednight
-		when hoh.EntryDate < part.HMISParticipationStatusStartDate then part.HMISParticipationStatusStartDate
-		else hoh.EntryDate end
-	, case when hoh.MoveInDate > rpt.ReportEnd 
-			or p.LSAProjectType not in (3,13,15) 
-			or hoh.MoveInDate < hoh.EntryDate 
-			or hoh.MoveInDate > p.OperatingEndDate 
-			or hoh.MoveInDate > part.HMISParticipationStatusEndDate
-		    then null
-		when hoh.MoveInDate < part.HMISParticipationStatusStartDate then part.HMISParticipationStatusStartDate
-		when p.LSAProjectType = 3 and (hoh.MoveInDate < hx.ExitDate or hx.ExitDate is null)  
-			then hoh.MoveInDate
-		when p.LSAProjectType in (13,15) and (hoh.MoveInDate <= hx.ExitDate or hx.ExitDate is null) 
-		    then hoh.MoveInDate
-		else null end
-	, case when p.LSAProjectType = 1 
-				and dateadd(dd, 1, bn.LastBednight) >= p.OperatingEndDate then p.OperatingEndDate
-	    when p.LSAProjectType = 1 and hx.ExitDate > dateadd(dd, 1, bn.LastBednight)
-			then dateadd(dd, 1, bn.LastBednight)
-		when p.LSAProjectType = 1 and hx.ExitDate is null 
-			and dateadd(dd, 90, bn.LastBednight) <= rpt.ReportEnd then dateadd(dd, 1, bn.LastBednight) 
-		when part.HMISParticipationStatusEndDate < hx.ExitDate and part.HMISParticipationStatusEndDate < rpt.ReportEnd then part.HMISParticipationStatusEndDate
-		when p.OperatingEndDate <= rpt.ReportEnd and hx.ExitDate is null then p.OperatingEndDate
-		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate and hx.ExitDate = rpt.ReportEnd then NULL
-		when p.LSAProjectType in (13,15) and hoh.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
-		else hx.ExitDate end
-	, bn.LastBednight
+select 	
+	HouseholdID, HoHID, EnrollmentID, ProjectID, LSAProjectType
+	, case 
+		-- nbn EntryDate must = FirstBedNight
+		when LSAProjectType = 1 then FirstBedNight
+		-- no adjustment as long as the entry date occurs while the project is operating & participating in HMIS
+		when EntryDate >= HMISStart and EntryDate >= OperatingStart then EntryDate
+		-- otherwise, adjust to the later of HMIS/OperatingStart
+		when HMISStart > OperatingStart then HMISStart
+		else OperatingStart end
+	, case 
+		-- select null if recorded Move-In Date is null, not relevant, or not valid
+		when MoveInDate is null
+			or MoveInDate > ReportEnd 
+			or LSAProjectType not in (3,13,15) 
+			or MoveInDate < EntryDate 
+			or MoveInDate >= OperatingEnd 
+			or MoveInDate >= HMISEnd
+			or MoveInDate > ExitDate
+			or (MoveInDate = ExitDate and LSAProjectType = 3)
+			then null
+		-- no adjustment as long as the valid MoveInDate occurs while the project is operating & participating in HMIS
+		when MoveInDate >= HMISStart and MoveInDate >= OperatingStart then MoveInDate
+		-- adjust MoveInDate to later of Operating/HMISStart if valid but prior to one or both
+		when HMISStart >= OperatingStart then HMISStart
+		else OperatingStart end
+	, case 
+		-- bed nights are limited to periods the project is operating and participating in HMIS, so 
+		-- these are the only adjustments to Exit Date required for nbn shelters
+		when LSAProjectType = 1 and ExitDate is not null then dateadd(dd, 1, LastBedNight)
+		when ExitDate is null and dateadd(dd, 90, LastBedNight) <= ReportEnd then dateadd(dd, 1, LastBedNight) 
+		-- When RRH MoveInDate = ExitDate, uses an effective ExitDate of MoveIn + 1 day so that subsequent
+		--	sections can use the same logic for RRH and PSH.
+		when LSAProjectType in (13,15) and MoveInDate = ExitDate and ExitDate = ReportEnd then NULL
+		when LSAProjectType in (13,15) and MoveInDate = ExitDate then dateadd(dd, 1, ExitDate)
+		when (ExitDate <= HMISEnd or HMISEnd is null) 
+			and (ExitDate <= OperatingEnd or OperatingEnd is null) then ExitDate
+		when ExitDate is NULL 
+			and (HMISEnd is null)
+			and (OperatingEnd is null) then ExitDate
+		-- Truncates enrollment at the earlier of Operating/HMISEnd if it extends beyond either or both
+		when (OperatingEnd < HMISEnd or HMISEnd is null) 
+				then OperatingEnd
+		else HMISEnd end
+	, LastBednight
 	, '3.3.1'
-from hmis_Enrollment hoh
-inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate and rpt.ReportCoC = hoh.EnrollmentCoC
-inner join (select hp.ProjectID
-			,  case when hp.ProjectType = 13 and hp.RRHSubType = 1 then 15
-						else hp.ProjectType end as LSAProjectType, 
-					hp.OperatingStartDate, hp.OperatingEndDate
-				from hmis_Project hp
-				inner join hmis_Organization ho on ho.OrganizationID = hp.OrganizationID
-				inner join tlsa_CohortDates cd on cd.Cohort = 1
-				where hp.DateDeleted is null
-					and hp.ContinuumProject = 1 
-					and ho.VictimServiceProvider = 0
-					and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
-					and hp.OperatingStartDate <= cd.CohortEnd
-					and (hp.OperatingEndDate is null 
-						or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate >= cd.LookbackDate))
+from
+	(select hoh.HouseholdID, hoh.PersonalID as HoHID, hoh.EnrollmentID
+		, hoh.ProjectID, p.LSAProjectType
+		, hoh.EntryDate, hoh.MoveInDate, hx.ExitDate, min(bn.BedNightDate) as FirstBedNight, max(bn.BedNightDate) as LastBedNight
+		, part.HMISStart, part.HMISEnd, p.OperatingStart, p.OperatingEnd
+		, rpt.LookbackDate, rpt.ReportEnd
+	from hmis_Enrollment hoh
+	inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate and rpt.ReportCoC = hoh.EnrollmentCoC
+	inner join (
+		select hp.ProjectID
+			-- Code here and elsewhere 
+			-- Uses LSAProjectType = 13 when ProjectType = 13 and RRHSubType = 2 (RRH: Housing with or without services)	
+			--	and LSAProjectType = 15 when ProjectType = 13 and RRHSubType = 1 (RRH: Services Only)
+			, case when hp.ProjectType = 13 and hp.RRHSubType = 1 then 15 else hp.ProjectType end as LSAProjectType 
+			, hp.OperatingStartDate as OperatingStart
+			-- Selecting null if Operating End > Cohort End so not necessary to specify over and over again 
+			-- "OperatingEndDate is null or OperatingEndDate > ReportEnd"  
+			, case when hp.OperatingEndDate <= cd.CohortEnd then hp.OperatingEndDate else null end as OperatingEnd
+		from hmis_Project hp
+		inner join hmis_Organization ho on ho.OrganizationID = hp.OrganizationID
+		inner join tlsa_CohortDates cd on cd.Cohort = 1
+		where hp.DateDeleted is null
+			and hp.ContinuumProject = 1 
+			and ho.VictimServiceProvider = 0
+			and hp.ProjectType in (0,1,2,3,8,13)
+			and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
+			and hp.OperatingStartDate <= cd.CohortEnd
+			and (hp.OperatingEndDate is null 
+				or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
 			) p on p.ProjectID = hoh.ProjectID
--- Enrollments must be active (no exit date) or exited during the relevant period 
-left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
-	and hx.ExitDate <= rpt.ReportEnd 
-	and (hx.ExitDate <= p.OperatingEndDate or p.OperatingEndDate is null)
-	and hx.DateDeleted is null
--- Some part of the enrollment must occur during a period of HMIS participation for the project
-inner join hmis_HMISParticipation part on part.ProjectID = hoh.ProjectID 
-left outer join hmis_Enrollment hohCheck on hohCheck.HouseholdID = hoh.HouseholdID
-	and hohCheck.RelationshipToHoH = 1 and hohCheck.EnrollmentID <> hoh.EnrollmentID
-	and hohCheck.DateDeleted is null
-left outer join (select distinct svc.EnrollmentID, min(svc.DateProvided) as FirstBednight, max(svc.DateProvided) as LastBednight
+	-- Some part of the enrollment must occur during a period of HMIS participation for the project
+	inner join (
+		select hp.HMISParticipationID, hp.ProjectID, hp.HMISParticipationStatusStartDate as HMISStart 
+			-- Selecting null if HMIS End > Cohort End so not necessary to specify over and over again 
+			-- "HMISParticipationStatusEndDate is null or HMISParticipationStatusEndDate > ReportEnd"  
+			-- Also using HMISStart and HMISEnd aliases for obvious reasons
+			, case when hp.HMISParticipationStatusEndDate > (select ReportEnd from lsa_Report) then null else hp.HMISParticipationStatusEndDate end as HMISEnd
+		from hmis_HMISParticipation hp
+		) part on part.ProjectID = hoh.ProjectID 
+	left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
+		-- Selecting only exit dates prior to report end that occur while the project is operating and participating in HMIS
+		-- because the same logic applies to null exit dates as to exit dates after ReportEnd, OperatingEnd, and/or HMISEnd
+		and hx.ExitDate <= rpt.ReportEnd 
+		and (hx.ExitDate <= p.OperatingEnd or p.OperatingEnd is null)
+		and (hx.ExitDate <= part.HMISEnd or part.HMISEnd is null)
+		and hx.DateDeleted is null
+	left outer join hmis_Enrollment hohCheck on hohCheck.HouseholdID = hoh.HouseholdID
+		and hohCheck.RelationshipToHoH = 1 and hohCheck.EnrollmentID <> hoh.EnrollmentID
+		and hohCheck.DateDeleted is null
+	left outer join (select svc.EnrollmentID, svc.DateProvided as BedNightDate
 		from hmis_Services svc
-		inner join hmis_Enrollment nbn on nbn.EnrollmentID = svc.EnrollmentID
-		left outer join hmis_Exit nbnx on nbnx.EnrollmentID = nbn.EnrollmentID
-		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
-			and p.ProjectType = 1 
-			and (p.OperatingEndDate is null or p.OperatingEndDate > DateProvided)
-		inner join lsa_Report rpt on svc.DateProvided between rpt.LookbackDate and rpt.ReportEnd
-		inner join hmis_HMISParticipation hpart on hpart.ProjectID = p.ProjectID 
-			and hpart.HMISParticipationType = 1
-			and svc.DateProvided >= hpart.HMISParticipationStatusStartDate 
-			and (svc.DateProvided < hpart.HMISParticipationStatusEndDate or hpart.HMISParticipationStatusEndDate is null)
-		where svc.RecordType = 200 and svc.DateDeleted is null and hpart.DateDeleted is null
-			and svc.DateProvided >= nbn.EntryDate 
-			and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
-		group by svc.EnrollmentID
-		) bn on bn.EnrollmentID = hoh.EnrollmentID
-where hoh.DateDeleted is null
-	and hoh.RelationshipToHoH = 1
-	and hohCheck.EnrollmentID is null 
-	and (hoh.EntryDate < p.OperatingEndDate or p.OperatingEndDate is null)
-	and	(hx.ExitDate is null or 
-			(hx.ExitDate >= rpt.LookbackDate and hx.ExitDate > hoh.EntryDate) 
-		)
-	and (p.LSAProjectType in (0,2,3,8,13,15)
-   		or (p.LSAProjectType = 1 and bn.LastBednight is not null)
-		)
-	and part.HMISParticipationID = (select top 1 hp1.HMISParticipationID 
-			from hmis_HMISParticipation hp1
-			where hp1.ProjectID = hoh.ProjectID 
-				and hp1.HMISParticipationType = 1 
-				and (hoh.EntryDate <= hp1.HMISParticipationStatusEndDate or hp1.HMISParticipationStatusEndDate is null)
-				and (hx.ExitDate >= hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
-				and hp1.DateDeleted is null
-			order by hp1.HMISParticipationStatusStartDate desc)
+		where svc.RecordType = 200 and svc.DateDeleted is null
+		) bn on bn.EnrollmentID = hoh.EnrollmentID and p.LSAProjectType = 1 
+			and bn.BedNightDate >= part.HMISStart
+			and bn.BedNightDate >= p.OperatingStart
+			and bn.BedNightDate >= hoh.EntryDate
+			and (bn.BedNightDate < hx.ExitDate or hx.ExitDate is null)
+			and (bn.BedNightDate < part.HMISEnd or part.HMISEnd is null)
+			and (bn.BedNightDate < p.OperatingEnd or p.OperatingEnd is null)
+			and (bn.BedNightDate < hx.ExitDate or hx.ExitDate is null)
+	where hoh.DateDeleted is null
+		and hoh.RelationshipToHoH = 1
+		and hohCheck.EnrollmentID is null 
+		and (hoh.EntryDate < p.OperatingEnd or p.OperatingEnd is null)
+		and	(hx.ExitDate is null or 
+				(hx.ExitDate >= rpt.LookbackDate and hx.ExitDate > hoh.EntryDate) 
+			)
+		and part.HMISParticipationID = (select top 1 hp1.HMISParticipationID 
+				from hmis_HMISParticipation hp1
+				where hp1.ProjectID = hoh.ProjectID 
+					and hp1.HMISParticipationType = 1 
+					and hp1.HMISParticipationStatusStartDate <= (select ReportEnd from lsa_Report)
+					and (hoh.EntryDate < hp1.HMISParticipationStatusEndDate or hp1.HMISParticipationStatusEndDate is null)
+					and (hx.ExitDate > hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
+					and hp1.DateDeleted is null
+				order by hp1.HMISParticipationStatusStartDate desc)
+	group by hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
+		, hoh.ProjectID, p.LSAProjectType
+		, hoh.EntryDate, hoh.MoveInDate, hx.ExitDate
+		, part.HMISStart, part.HMISEnd, p.OperatingStart, p.OperatingEnd
+		, rpt.LookbackDate, rpt.ReportEnd
+		) core
+where core.LSAProjectType <> 1 or core.LastBedNight is not null
 
 		update hhid
 		set hhid.ExitDest = case	
