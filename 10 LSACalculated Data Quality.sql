@@ -103,13 +103,17 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 906, n.ProjectID, rpt.ReportID, '10.5'
 	from lsa_Report rpt
 	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join hmis_Enrollment hoh on hoh.HouseholdID = n.HouseholdID 
+	inner join lsa_Project p on p.ProjectID = n.ProjectID
 	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
 	left outer join lsa_HMISParticipation part on part.ProjectID = n.ProjectID
 		and part.HMISParticipationType = 1
 		and part.HMISParticipationStatusStartDate <= n.EntryDate
 		and (part.HMISParticipationStatusEndDate is null
 			or part.HMISParticipationStatusEndDate >= coalesce(x.ExitDate, rpt.ReportEnd))
-	where part.ProjectID is null
+	where hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC and part.ProjectID is null
+		and x.ExitDate is null or x.ExitDate >= ReportEnd
+		and n.DateDeleted is null and hoh.DateDeleted is null
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.6	DQ – Enrollments without exactly one HoH
