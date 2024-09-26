@@ -109,7 +109,7 @@ select
 		-- no adjustment as long as the valid MoveInDate occurs while the project is operating & participating in HMIS
 		when MoveInDate >= HMISStart and MoveInDate >= OperatingStart then MoveInDate
 		-- adjust MoveInDate to later of Operating/HMISStart if valid but prior to one or both
-		when HMISStart >= OperatingStart then HMISStart
+		when HMISStart > OperatingStart then HMISStart
 		else OperatingStart end
 	, case 
 		-- bed nights are limited to periods the project is operating and participating in HMIS, so 
