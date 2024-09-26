@@ -106,11 +106,13 @@ FY2024 Changes
 	inner join hmis_Enrollment hoh on hoh.HouseholdID = n.HouseholdID 
 	inner join lsa_Project p on p.ProjectID = n.ProjectID
 	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
+		and x.ExitDate <= rpt.ReportEnd
 	left outer join lsa_HMISParticipation part on part.ProjectID = n.ProjectID
 		and part.HMISParticipationType = 1
 		and part.HMISParticipationStatusStartDate <= n.EntryDate
 		and (part.HMISParticipationStatusEndDate is null
-			or part.HMISParticipationStatusEndDate >= coalesce(x.ExitDate, rpt.ReportEnd))
+			or part.HMISParticipationStatusEndDate >= x.ExitDate
+			or part.HMISParticipationStatusEndDate > rpt.ReportEnd)
 	where hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC and part.ProjectID is null
 		and x.ExitDate is null or x.ExitDate >= ReportEnd
 		and n.DateDeleted is null and hoh.DateDeleted is null
