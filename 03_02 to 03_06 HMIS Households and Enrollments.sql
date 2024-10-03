@@ -114,17 +114,19 @@ select
 	, case 
 		-- bed nights are limited to periods the project is operating and participating in HMIS, so 
 		-- these are the only adjustments to Exit Date required for nbn shelters
-		when LSAProjectType = 1 and ExitDate is not null then dateadd(dd, 1, LastBedNight)
+		when LSAProjectType = 1 and ExitDate <= ReportEnd then dateadd(dd, 1, LastBedNight)
 		when ExitDate is null and dateadd(dd, 90, LastBedNight) <= ReportEnd then dateadd(dd, 1, LastBedNight) 
 		-- When RRH MoveInDate = ExitDate, uses an effective ExitDate of MoveIn + 1 day so that subsequent
 		--	sections can use the same logic for RRH and PSH.
 		when LSAProjectType in (13,15) and MoveInDate = ExitDate and ExitDate = ReportEnd then NULL
-		when LSAProjectType in (13,15) and MoveInDate = ExitDate then dateadd(dd, 1, ExitDate)
+		when LSAProjectType in (13,15) and MoveInDate = ExitDate and ExitDate < ReportEnd then dateadd(dd, 1, ExitDate)
 		when (ExitDate <= HMISEnd or HMISEnd is null) 
-			and (ExitDate <= OperatingEnd or OperatingEnd is null) then ExitDate
+			and (ExitDate <= OperatingEnd or OperatingEnd is null) 
+			and ExitDate <= ReportEnd then ExitDate
 		when ExitDate is NULL 
 			and (HMISEnd is null)
 			and (OperatingEnd is null) then ExitDate
+		when ExitDate > ReportEnd and HMISEnd is null and OperatingEnd is null then NULL
 		-- Truncates enrollment at the earlier of Operating/HMISEnd if it extends beyond either or both
 		when (OperatingEnd < HMISEnd or HMISEnd is null) 
 				then OperatingEnd
@@ -173,9 +175,6 @@ from
 	left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
 		-- Selecting only exit dates prior to report end that occur while the project is operating and participating in HMIS
 		-- because the same logic applies to null exit dates as to exit dates after ReportEnd, OperatingEnd, and/or HMISEnd
-		and hx.ExitDate <= rpt.ReportEnd 
-		and (hx.ExitDate <= p.OperatingEnd or p.OperatingEnd is null)
-		and (hx.ExitDate <= part.HMISEnd or part.HMISEnd is null)
 		and hx.DateDeleted is null
 	left outer join hmis_Enrollment hohCheck on hohCheck.HouseholdID = hoh.HouseholdID
 		and hohCheck.RelationshipToHoH = 1 and hohCheck.EnrollmentID <> hoh.EnrollmentID
@@ -196,7 +195,11 @@ from
 		and hohCheck.EnrollmentID is null 
 		and (hoh.EntryDate < p.OperatingEnd or p.OperatingEnd is null)
 		and	(hx.ExitDate is null or 
-				(hx.ExitDate >= rpt.LookbackDate and hx.ExitDate > hoh.EntryDate) 
+				(	hx.ExitDate >= rpt.LookbackDate 
+					and hx.ExitDate > hoh.EntryDate
+					and hx.ExitDate > p.OperatingStart 
+					and hx.ExitDate > part.HMISStart
+				)
 			)
 		and part.HMISParticipationID = (select top 1 hp1.HMISParticipationID 
 				from hmis_HMISParticipation hp1
