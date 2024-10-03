@@ -114,7 +114,7 @@ FY2024 Changes
 			or part.HMISParticipationStatusEndDate >= x.ExitDate
 			or part.HMISParticipationStatusEndDate > rpt.ReportEnd)
 	where hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC and part.ProjectID is null
-		and x.ExitDate is null or x.ExitDate >= ReportEnd
+		and (x.ExitDate is null or x.ExitDate >= ReportStart)
 		and n.DateDeleted is null and hoh.DateDeleted is null
 	group by n.ProjectID, rpt.ReportID
 /*
