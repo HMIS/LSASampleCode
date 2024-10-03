@@ -8,6 +8,8 @@ FY2024 Changes
 			- Set Exit and Point-in-Time Cohort dates only if LSAScope <> HIC
 		3.3 - Adjust entry/exit dates to align with period of projects' HMIS participation if the dates conflict
 			     and limit reported bednights to periods of HMIS participation
+		3.3.1 - Operating end dates and HMIS participation end dates are considered inactive; enrollment dates 
+				and bed nights must be < operating/HMIS end dates in order to be relevant. 
 
 	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -189,7 +191,6 @@ from
 			and (bn.BedNightDate < hx.ExitDate or hx.ExitDate is null)
 			and (bn.BedNightDate < part.HMISEnd or part.HMISEnd is null)
 			and (bn.BedNightDate < p.OperatingEnd or p.OperatingEnd is null)
-			and (bn.BedNightDate < hx.ExitDate or hx.ExitDate is null)
 	where hoh.DateDeleted is null
 		and hoh.RelationshipToHoH = 1
 		and hohCheck.EnrollmentID is null 
