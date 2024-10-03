@@ -576,14 +576,15 @@ Populates and references:
 	inner join lsa_HMISParticipation hp on hp.ProjectID = p.ProjectID 
 	inner join lsa_Report rpt on rpt.ReportStart >= hp.HMISParticipationStatusStartDate
 		and (hp.HMISParticipationStatusEndDate is null or hp.HMISParticipationStatusEndDate > rpt.ReportStart)
-	inner join hmis_Enrollment hn on hn.ProjectID = p.ProjectID and hn.MoveInDate <= rpt.ReportStart and hn.RelationshipToHoH = 1
+	inner join hmis_Enrollment hn on hn.ProjectID = p.ProjectID and hn.MoveInDate <= rpt.ReportStart 
+		and hn.MoveInDate >= hn.EntryDate and hn.RelationshipToHoH = 1
 		and hn.EnrollmentCoC = rpt.ReportCoC
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
 	inner join (select hhn.ProjectID, hhn.HouseholdID, hhn.PersonalID, hhn.EntryDate as StartDate, coalesce(hhx.ExitDate, getdate()) as EndDate
 		from hmis_Enrollment hhn
 		left outer join hmis_Exit hhx on hhx.EnrollmentID = hhn.EnrollmentID 
 		where hhn.DateDeleted is null and hhx.DateDeleted is null) hh on hh.HouseholdID = hn.HouseholdID 
-			and hh.StartDate <= hn.MoveInDate and hh.EndDate > hn.MoveInDate
+			and hh.StartDate <= rpt.ReportStart and hh.EndDate > ReportStart
 	where rpt.LSAScope = 3 and hp.HMISParticipationType = 1 and p.ProjectType in (9,10)
 		and (hx.ExitDate is null or hx.ExitDate > rpt.ReportStart)
 		and hn.DateDeleted is null and hx.DateDeleted is null
