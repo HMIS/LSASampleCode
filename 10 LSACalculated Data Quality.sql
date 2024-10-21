@@ -25,7 +25,8 @@ FY2024 Changes
 	left outer join hmis_Exit hx on hx.EnrollmentID = n.EnrollmentID 
 		and hx.DateDeleted is null
 	inner join hmis_Project p on p.ProjectID = n.ProjectID 
-	inner join tlsa_CohortDates cd on cd.Cohort = 1 and p.OperatingEndDate between cd.CohortStart and cd.CohortEnd
+	inner join tlsa_CohortDates cd on cd.Cohort = 1 
+		and p.OperatingEndDate between dateadd(dd, 1, cd.CohortStart) and cd.CohortEnd
 	where (hx.ExitDate is null or hx.ExitDate > p.OperatingEndDate)
 	group by case when hx.ExitDate is null then 901
 			else 902 end 
@@ -51,7 +52,7 @@ FY2024 Changes
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID 
 		and hx.DateDeleted is NULL
 	inner join hmis_Project p on p.ProjectID = hn.ProjectID and p.ProjectType = 1 and p.ContinuumProject = 1
-	left outer join (select distinct svc.EnrollmentID, max(svc.DateProvided) as LastBednight
+	left outer join (select svc.EnrollmentID, max(svc.DateProvided) as LastBednight
 		from hmis_Services svc
 		inner join hmis_Enrollment nbn on nbn.EnrollmentID = svc.EnrollmentID
 		inner join hmis_Project p on p.ProjectID = nbn.ProjectID 
