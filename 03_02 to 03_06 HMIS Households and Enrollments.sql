@@ -93,7 +93,9 @@ select
 		-- nbn EntryDate must = FirstBedNight
 		when LSAProjectType = 1 then FirstBedNight
 		-- no adjustment as long as the entry date occurs while the project is operating & participating in HMIS
-		else greatest(core.pStart, core.EntryDate) end
+		when EntryDate >= pStart then EntryDate
+		-- otherwise, adjust to the later of HMIS/OperatingStart
+		else pStart end
 	, case 
 		-- select null if recorded Move-In Date is null, not relevant, or not valid
 		when core.MoveInDate is null
@@ -105,7 +107,8 @@ select
 			or (core.MoveInDate = ExitDate and LSAProjectType = 3)
 			then null
 		-- no adjustment as long as the valid MoveInDate occurs while the project is operating & participating in HMIS
-		else greatest(core.pStart, core.MoveInDate) end
+		when core.MoveInDate >= pStart then core.MoveInDate
+		else pStart end
 	, case 
 		when LSAProjectType = 1 and LastBednight = rpt.ReportEnd then null
 		when LSAProjectType = 1 and ExitDate <= rpt.ReportEnd then dateadd(dd, 1, LastBednight)
@@ -124,8 +127,11 @@ inner join
 	(select hoh.HouseholdID, hoh.PersonalID as HoHID, hoh.EnrollmentID
 		, hoh.ProjectID, p.LSAProjectType
 		, hoh.EntryDate, hoh.MoveInDate, hx.ExitDate, min(bn.BedNightDate) as FirstBedNight, max(bn.BedNightDate) as LastBedNight
-		, greatest(part.HMISStart, p.OperatingStart) as pStart
-		, least(p.OperatingEnd, part.HMISEnd) as pEnd
+		, case when part.HMISStart >= p.OperatingStart then part.HMISStart
+			else p.OperatingStart end as pStart 
+		, case when part.HMISEnd <= p.OperatingEnd or (part.HMISEnd is not null and p.OperatingEnd is null) then part.HMISEnd
+			when part.HMISEnd > p.OperatingEnd or (part.HMISEnd is null and p.OperatingEnd is not null) then p.OperatingEnd 
+			else null end as pEnd
 		, rpt.LookbackDate, rpt.ReportEnd
 	from hmis_Enrollment hoh
 	inner join lsa_Report rpt on rpt.ReportEnd >= hoh.EntryDate and rpt.ReportCoC = hoh.EnrollmentCoC
@@ -136,6 +142,8 @@ inner join
 			--	and LSAProjectType = 15 when ProjectType = 13 and RRHSubType = 1 (RRH: Services Only)
 			, case when hp.ProjectType = 13 and hp.RRHSubType = 1 then 15 else hp.ProjectType end as LSAProjectType 
 			, hp.OperatingStartDate as OperatingStart
+			-- Selecting null if Operating End > Cohort End so not necessary to specify over and over again 
+			-- "OperatingEndDate is null or OperatingEndDate > ReportEnd"  
 			, case when hp.OperatingEndDate <= cd.CohortEnd then hp.OperatingEndDate else null end as OperatingEnd
 		from hmis_Project hp
 		inner join hmis_Organization ho on ho.OrganizationID = hp.OrganizationID
@@ -146,7 +154,8 @@ inner join
 			and hp.ProjectType in (0,1,2,3,8,13)
 			and (hp.ProjectType <> 13 or hp.RRHSubType in (1,2))
 			and hp.OperatingStartDate <= cd.CohortEnd
-			and coalesce(hp.OperatingEndDate, '9999-9-9') > greatest(hp.OperatingStartDate, cd.LookbackDate)
+			and (hp.OperatingEndDate is null 
+				or (hp.OperatingEndDate > hp.OperatingStartDate and hp.OperatingEndDate > cd.LookbackDate))
 			) p on p.ProjectID = hoh.ProjectID
 	-- Some part of the enrollment must occur during a period of HMIS participation for the project
 	inner join (
@@ -158,7 +167,8 @@ inner join
 		from hmis_HMISParticipation hp
 		) part on part.ProjectID = hoh.ProjectID 
 	left outer join hmis_Exit hx on hx.EnrollmentID = hoh.EnrollmentID
-		and hx.ExitDate <= least(p.OperatingEnd, part.HMISEnd, '9999-9-9')
+		and (hx.ExitDate <= p.OperatingEnd or p.OperatingEnd is null)
+		and (hx.ExitDate <= part.HMISEnd or part.HMISEnd is null)
 		and hx.DateDeleted is null
 	left outer join hmis_Enrollment hohCheck on hohCheck.HouseholdID = hoh.HouseholdID
 		and hohCheck.RelationshipToHoH = 1 and hohCheck.EnrollmentID <> hoh.EnrollmentID
@@ -167,20 +177,34 @@ inner join
 		from hmis_Services svc
 		where svc.RecordType = 200 and svc.DateDeleted is null
 		) bn on bn.EnrollmentID = hoh.EnrollmentID and p.LSAProjectType = 1 
-			and bn.BedNightDate >= greatest(part.HMISStart, p.OperatingStart, rpt.LookbackDate, hoh.EntryDate) 
-			and bn.BedNightDate < least(hx.ExitDate, part.HMISEnd, p.OperatingEnd, dateadd(dd, 1, rpt.ReportEnd))
+			and bn.BedNightDate >= part.HMISStart 
+			and bn.BedNightDate >= p.OperatingStart
+			and bn.BedNightDate >= rpt.LookbackDate
+			and bn.BedNightDate >= hoh.EntryDate
+			and bn.BedNightDate <= rpt.ReportEnd  
+			and (bn.BedNightDate < hx.ExitDate or hx.ExitDate is null)
+			and (bn.BedNightDate < part.HMISEnd or part.HMISEnd is null)
+			and (bn.BedNightDate < p.OperatingEnd or p.OperatingEnd is null)
 	where hoh.DateDeleted is null
 		and hoh.RelationshipToHoH = 1
 		and hohCheck.EnrollmentID is null 
 		and (hoh.EntryDate < p.OperatingEnd or p.OperatingEnd is null)
-		and	coalesce(hx.ExitDate, '9999-9-9') >	greatest(rpt.LookbackDate, hoh.EntryDate, p.OperatingStart, part.HMISStart)
+		and	(hx.ExitDate is null or 
+				(	hx.ExitDate > rpt.LookbackDate 
+					and hx.ExitDate > hoh.EntryDate
+					and hx.ExitDate > p.OperatingStart 
+					and hx.ExitDate > part.HMISStart
+				)
+			)
 		and part.HMISParticipationID = (select top 1 hp1.HMISParticipationID 
 				from hmis_HMISParticipation hp1
 				where hp1.ProjectID = hoh.ProjectID 
 					and hp1.HMISParticipationType = 1 
-					and coalesce(hp1.HMISParticipationStatusEndDate, '9999-9-9') > greatest(hoh.EntryDate, rpt.LookbackDate)
-					and hp1.HMISParticipationStatusStartDate <= rpt.ReportEnd
-					and coalesce(hx.ExitDate, '9999-9-9') > hp1.HMISParticipationStatusStartDate 
+					and (hp1.HMISParticipationStatusEndDate is null
+						or (hp1.HMISParticipationStatusEndDate > (select LookbackDate from lsa_Report) and hp1.HMISParticipationStatusEndDate > hoh.EntryDate)
+						)
+					and hp1.HMISParticipationStatusStartDate <= (select ReportEnd from lsa_Report)
+					and (hx.ExitDate > hp1.HMISParticipationStatusStartDate or hx.ExitDate is null)
 					and hp1.DateDeleted is null
 				order by hp1.HMISParticipationStatusStartDate desc)
 	group by hoh.HouseholdID, hoh.PersonalID, hoh.EnrollmentID
@@ -241,9 +265,10 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 		and hx.DateDeleted is null
 	where hhid.LSAProjectType in (0,2,3,8,13,15) 
 		and hn.RelationshipToHoH in (1,2,3,4,5)
-		and hn.EntryDate <= least(hhid.ExitDate, rpt.ReportEnd)
-		and coalesce(hx.ExitDate, '9999-9-9') > greatest(hhid.EntryDate, rpt.LookbackDate, hn.EntryDate)
-	
+		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
+		and (hx.ExitDate is null or 
+				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= rpt.LookbackDate
+					and hx.ExitDate > hn.EntryDate)) 
 
 	-- ES night-by-night
 	insert into tlsa_Enrollment 
@@ -433,94 +458,70 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 -- Note:  Code here and elsewhere uses 'between 18 and 65' instead of 'between 21 and 65' because the output
 --        is the same (there are no values of 18, 19, or 20) and it is easier to understand without consulting 
 --		  the LSA Dictionary.
-	update hhid
-	set hhid.EntryHHType = case 
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is null
-				and noDOB.EnrollmentID is null then 1
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is not null then 2
-			when adult.EnrollmentID is null 
-				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
-		, hhid.Step = '3.6.1'
-	from tlsa_HHID hhid 
-	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
-		and adult.EntryAge between 18 and 65
-	left outer join tlsa_Enrollment child on child.HouseholdID = hhid.HouseholdID 
-		and child.EntryAge < 18
-	left outer join tlsa_Enrollment noDOB on noDOB.HouseholdID = hhid.HouseholdID 
-		and noDOB.EntryAge in (98,99)
 
-	update hhid
-	set hhid.ActiveHHType = case 
-			when hhid.ExitDate < rpt.ReportStart 
-				or hhid.EntryDate >= rpt.ReportStart then hhid.EntryHHType
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is null
-				and noDOB.EnrollmentID is null then 1
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is not null then 2
-			when adult.EnrollmentID is null 
-				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
-		, hhid.Step = '3.6.2'
-	from tlsa_HHID hhid 
-	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate 
-	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
-		and adult.ActiveAge between 18 and 65
-		and (adult.ExitDate is null or adult.ExitDate >= rpt.ReportStart)
-	left outer join tlsa_Enrollment child on child.HouseholdID = hhid.HouseholdID 
-		and child.ActiveAge < 18
-		and (child.ExitDate is null or child.ExitDate >= rpt.ReportStart)
-	left outer join tlsa_Enrollment noDOB on noDOB.HouseholdID = hhid.HouseholdID 
-		and noDOB.ActiveAge in (98,99)
-		and (noDOB.ExitDate is null or noDOB.ExitDate >= rpt.ReportStart)
+update hhid
+set hhid.EntryHHType = case when hh.hh = 100 then 1
+		when hh.hh in (110, 111) then 2
+		when hh.hh = 10 then 3
+		else 99 end
+	, hhid.Step = '3.6.3'
+from tlsa_HHID hhid 
+inner join (select HouseholdID
+	, sum(distinct case when n.EntryAge between 18 and 65 then 100 
+		when n.EntryAge < 18 then 10 
+		else 1 end) as hh
+		from tlsa_Enrollment n
+		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
 
-	update hhid
-	set hhid.Exit1HHType = case 
-			when hhid.ExitDate < cd.CohortStart 
-				or hhid.EntryDate >= cd.CohortStart then hhid.EntryHHType 
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is null
-				and noDOB.EnrollmentID is null then 1
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is not null then 2
-			when adult.EnrollmentID is null 
-				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
-		, hhid.Step = '3.6.3'
-	from tlsa_HHID hhid
-	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -1
-	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
-		and adult.Exit1Age between 18 and 65 and adult.ExitDate between cd.CohortStart and cd.CohortEnd
-	left outer join tlsa_Enrollment child on child.HouseholdID = hhid.HouseholdID 
-		and child.Exit1Age < 18 and child.ExitDate between cd.CohortStart and cd.CohortEnd
-	left outer join tlsa_Enrollment noDOB on noDOB.HouseholdID = hhid.HouseholdID 
-		and noDOB.Exit1Age in (98,99) and noDOB.ExitDate between cd.CohortStart and cd.CohortEnd
 
-	update hhid
-	set hhid.Exit2HHType = case 
-			when hhid.ExitDate < cd.CohortStart 
-				or hhid.EntryDate >= cd.CohortStart then hhid.EntryHHType 
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is null
-				and noDOB.EnrollmentID is null then 1
-			when adult.EnrollmentID is not null 
-				and child.EnrollmentID is not null then 2
-			when adult.EnrollmentID is null 
-				and child.EnrollmentID is not null
-				and noDOB.EnrollmentID is null then 3	
-			else 99 end
-		, hhid.Step = '3.6.4'
-	from tlsa_HHID hhid
-	inner join tlsa_CohortDates cd on cd.CohortEnd <> hhid.EntryDate and cd.Cohort = -2
-	left outer join tlsa_Enrollment adult on adult.HouseholdID = hhid.HouseholdID 
-		and adult.Exit2Age between 18 and 65 and adult.ExitDate between cd.CohortStart and cd.CohortEnd
-	left outer join tlsa_Enrollment child on child.HouseholdID = hhid.HouseholdID 
-		and child.Exit2Age < 18 and child.ExitDate between cd.CohortStart and cd.CohortEnd
-	left outer join tlsa_Enrollment noDOB on noDOB.HouseholdID = hhid.HouseholdID 
-		and noDOB.Exit2Age in (98,99) and noDOB.ExitDate between cd.CohortStart and cd.CohortEnd
+update hhid
+set hhid.ActiveHHType = case when hhid.ExitDate < cd.CohortStart 
+		or hhid.EntryDate >= cd.CohortStart then hhid.EntryHHType 
+		when hh.hh = 100 then 1
+		when hh.hh in (110, 111) then 2
+		when hh.hh = 10 then 3
+		else 99 end
+	, hhid.Step = '3.6.2'
+from tlsa_HHID hhid 
+inner join tlsa_CohortDates cd on cd.Cohort = 1
+inner join (select HouseholdID
+	, sum(distinct case when n.ActiveAge between 18 and 65 then 100 
+		when n.ActiveAge < 18 then 10 
+		else 1 end) as hh
+		from tlsa_Enrollment n
+		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
+
+update hhid
+set hhid.Exit1HHType = case when hhid.ExitDate < cd.CohortStart 
+		or hhid.EntryDate >= cd.CohortStart then hhid.EntryHHType 
+		when hh.hh = 100 then 1
+		when hh.hh in (110, 111) then 2
+		when hh.hh = 10 then 3
+		else 99 end
+	, hhid.Step = '3.6.3'
+from tlsa_HHID hhid 
+inner join tlsa_CohortDates cd on cd.Cohort = -1
+inner join (select HouseholdID
+	, sum(distinct case when n.Exit1Age between 18 and 65 then 100 
+		when n.Exit1Age < 18 then 10 
+		else 1 end) as hh
+		from tlsa_Enrollment n
+		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
+
+update hhid
+set hhid.Exit2HHType = case when hhid.ExitDate < cd.CohortStart 
+		or hhid.EntryDate >= cd.CohortStart then hhid.EntryHHType 
+		when hh.hh = 100 then 1
+		when hh.hh in (110, 111) then 2
+		when hh.hh = 10 then 3
+		else 99 end
+	, hhid.Step = '3.6.4'
+from tlsa_HHID hhid 
+inner join tlsa_CohortDates cd on cd.Cohort = -2
+inner join (select HouseholdID
+	, sum(distinct case when n.Exit2Age between 18 and 65 then 100 
+		when n.Exit2Age < 18 then 10 
+		else 1 end) as hh
+		from tlsa_Enrollment n
+		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
+
