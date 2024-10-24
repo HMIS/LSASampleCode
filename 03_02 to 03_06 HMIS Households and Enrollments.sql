@@ -267,7 +267,7 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 		and hn.RelationshipToHoH in (1,2,3,4,5)
 		and hn.EntryDate <= isnull(hhid.ExitDate, rpt.ReportEnd)
 		and (hx.ExitDate is null or 
-				(hx.ExitDate > hhid.EntryDate and hx.ExitDate >= rpt.LookbackDate
+				(hx.ExitDate > hhid.EntryDate and hx.ExitDate > rpt.LookbackDate
 					and hx.ExitDate > hn.EntryDate)) 
 
 	-- ES night-by-night
@@ -298,6 +298,7 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 	where hhid.LSAProjectType = 1 
 		and svc.RecordType = 200 and svc.DateDeleted is null
 		and svc.DateProvided >= nbn.EntryDate 
+		and svc.DateProvided >= rpt.LookbackDate 
 		and (nbnx.ExitDate is null or svc.DateProvided < nbnx.ExitDate)
 		and nbn.RelationshipToHoH in (1,2,3,4,5)
 	group by svc.EnrollmentID, nbn.PersonalID, nbn.HouseholdID
@@ -489,6 +490,8 @@ inner join (select HouseholdID
 		when n.ActiveAge < 18 then 10 
 		else 1 end) as hh
 		from tlsa_Enrollment n
+		inner join tlsa_CohortDates cd on cd.Cohort = 1
+		where n.ExitDate is null or n.ExitDate >= cd.CohortStart
 		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
 
 update hhid
@@ -498,7 +501,7 @@ set hhid.Exit1HHType = case when hhid.ExitDate < cd.CohortStart
 		when hh.hh in (110, 111) then 2
 		when hh.hh = 10 then 3
 		else 99 end
-	, hhid.Step = '3.6.3'
+	, hhid.Step = '3.6.4'
 from tlsa_HHID hhid 
 inner join tlsa_CohortDates cd on cd.Cohort = -1
 inner join (select HouseholdID
@@ -506,6 +509,8 @@ inner join (select HouseholdID
 		when n.Exit1Age < 18 then 10 
 		else 1 end) as hh
 		from tlsa_Enrollment n
+		inner join tlsa_CohortDates cd on cd.Cohort = -1
+			and (n.ExitDate is null or n.ExitDate > cd.CohortStart)
 		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
 
 update hhid
@@ -523,5 +528,7 @@ inner join (select HouseholdID
 		when n.Exit2Age < 18 then 10 
 		else 1 end) as hh
 		from tlsa_Enrollment n
+		inner join tlsa_CohortDates cd on cd.Cohort = -2
+			and (n.ExitDate is null or n.ExitDate > cd.CohortStart)
 		group by HouseholdID) hh on hh.HouseholdID = hhid.HouseholdID
 
