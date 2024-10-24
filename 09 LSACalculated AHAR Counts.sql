@@ -576,7 +576,7 @@ Populates and references:
 	inner join lsa_HMISParticipation hp on hp.ProjectID = p.ProjectID 
 	inner join lsa_Report rpt on rpt.ReportStart >= hp.HMISParticipationStatusStartDate
 		and (hp.HMISParticipationStatusEndDate is null or hp.HMISParticipationStatusEndDate > rpt.ReportStart)
-	inner join hmis_Enrollment hn on hn.ProjectID = p.ProjectID and hn.MoveInDate <= rpt.ReportStart 
+	inner join hmis_Enrollment hn on hn.ProjectID = p.ProjectID and hn.EntryDate <= rpt.ReportStart and hn.MoveInDate <= rpt.ReportStart 
 		and hn.MoveInDate >= hn.EntryDate and hn.RelationshipToHoH = 1
 		and hn.EnrollmentCoC = rpt.ReportCoC
 	left outer join hmis_Exit hx on hx.EnrollmentID = hn.EnrollmentID
