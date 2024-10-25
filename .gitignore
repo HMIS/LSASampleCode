@@ -1,0 +1,12 @@
+
+999 truncate intermediate and output tables.sql
+99 LSA SQL from Section 3_2 to End.ps1
+compare speed.sql
+loopstart.sql
+LoopLSAScript.ps1
+LoopLSACandidate.sql
+LoopLSA.sql
+loopend.sql
+initiate loop.sql
+ExecuteLSAScript.ps1
+ExecuteLSA.sql
