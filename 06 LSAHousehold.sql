@@ -11,7 +11,8 @@ FY2024 Changes
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
 
-
+if (select LSAScope from lsa_Report) <> 3
+begin
 
 	truncate table tlsa_Household
 
@@ -1262,3 +1263,8 @@ group by Stat
 		else TotalHomelessDays end 
 	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
 
+end -- END IF LSAScope <> HIC
+
+/*
+	End LSAHousehold
+*/
