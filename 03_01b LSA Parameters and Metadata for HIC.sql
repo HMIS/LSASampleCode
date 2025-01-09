@@ -28,12 +28,12 @@ insert into lsa_Report (
 		)
 	select
 		  right(year(getdate()), 1)*100000000 + cast(format (getdate(),'MMddHHmm') as int)
-		, '1/25/2025'
-		, '1/25/2025'
+		, '1/29/2025'
+		, '1/29/2025'
 		, 'XX-501'
 		, 'Sample Code Inc.'
 		, 'LSA Online'
 		, 'Molly'			
 		, 'molly@squarepegdata.com'
 		, 3					
-		, dateadd(yyyy, -7, '1/25/2025')
+		, dateadd(yyyy, -7, '1/29/2025')
