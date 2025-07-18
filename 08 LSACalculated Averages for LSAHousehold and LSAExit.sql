@@ -1,10 +1,10 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  08 LSACalculated Averages for LSAHousehold and LSAExit.sql  
 
-FY2024 Changes
+FY2025 Changes
 
-	Run code only if the LSAScope is not 'HIC'
+	None
 		
 	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
 

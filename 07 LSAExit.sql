@@ -1,12 +1,10 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  07 LSAExit.sql  
 
-FY2024 Changes
+FY2025 Changes
 		
-	Run code only if the LSAScope is not 'HIC'
-	Use intermediate reporting tables specific to LSAExit (ch_Include_exit, ch_Exclude_exit, ch_Episodes_exit, sys_TimePadded_exit)
-		rather than truncating and re-using the tables used for LSAPerson and LSAHousehold
+	None
 
 	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
