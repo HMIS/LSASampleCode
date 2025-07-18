@@ -1,8 +1,8 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  04_01 Get Project Records.sql
 
-FY2024 Changes
+FY2025 Changes
 		
 	None
 
@@ -24,6 +24,7 @@ FY2024 Changes
 		 , ContinuumProject, ProjectType, HousingType, RRHSubType
 		 , ResidentialAffiliation, TargetPopulation
 		 , HOPWAMedAssistedLivingFac
+		 , PITCount
 		 , DateCreated, DateUpdated, ExportID)
 	select distinct 
 		hp.ProjectID, hp.OrganizationID, left(hp.ProjectName, 200)
@@ -35,6 +36,7 @@ FY2024 Changes
 		, case when hp.RRHSubType = 1 then hp.ResidentialAffiliation else null end
 		, hp.TargetPopulation 
 		, hp.HOPWAMedAssistedLivingFac
+		, PITCount
 		, format(hp.DateCreated, 'yyyy-MM-dd HH:mm:ss')
 		, format(hp.DateUpdated, 'yyyy-MM-dd HH:mm:ss')
 		, rpt.ReportID
