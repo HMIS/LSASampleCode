@@ -1,10 +1,10 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
 
-FY2024 Changes
+FY2025 Changes
 
-		None
+		-- Replace 'AHAR' in column names with 'AIR' (active in residence)
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 	
@@ -125,31 +125,31 @@ FY2024 Changes
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
-		, lp.AHAREST = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIREST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType in (0,1,2,8)) 
-		, lp.AHARHoHEST = (select sum(distinct case hhid.ActiveHHType 
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType in (0,1,2,8)) 
+		, lp.AIRHoHEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR= 1 and n.LSAProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AIR= 1 and n.LSAProjectType in (0,1,2,8)
 					and n.RelationshipToHoH = 1) 
-		, lp.AHARAdultEST = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIRAdultEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType in (0,1,2,8)
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType in (0,1,2,8)
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicEST = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -226,31 +226,31 @@ FY2024 Changes
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 13
 					and n.ActiveAge between 18 and 65) 
-		, lp.AHARRRH = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIRRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13) 
-		, lp.AHARHoHRRH = (select sum(distinct case hhid.ActiveHHType 
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 13) 
+		, lp.AIRHoHRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 13
 					and n.RelationshipToHoH = 1) 
-		, lp.AHARAdultRRH = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIRAdultRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 13
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 13
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicRRH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -327,31 +327,31 @@ FY2024 Changes
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
 				where n.PersonalID = lp.PersonalID and n.Active = 1 and n.LSAProjectType = 3
 					and n.ActiveAge between 18 and 65) 
-		, lp.AHARPSH = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIRPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3) 
-		, lp.AHARHoHPSH = (select sum(distinct case hhid.ActiveHHType 
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 3) 
+		, lp.AIRHoHPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 3
 					and n.RelationshipToHoH = 1) 
-		, lp.AHARAdultPSH = (select sum(distinct case hhid.ActiveHHType 
+		, lp.AIRAdultPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
 					when 2 then 200
 					when 3 then 30
 					else 9 end) 
 				from tlsa_Enrollment n
 				inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID
-				where n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.LSAProjectType = 3
+				where n.PersonalID = lp.PersonalID and n.AIR = 1 and n.LSAProjectType = 3
 					and n.ActiveAge between 18 and 65) 
 		, lp.HHChronicPSH = (select sum(distinct case hhid.ActiveHHType 
 					when 1 then 1000
@@ -452,15 +452,15 @@ FY2024 Changes
 	, lp.AdultEST = case when lp.AdultEST is NULL then -1 else cast(replace(cast(lp.AdultEST as varchar), '0', '') as int) end   
 	, lp.AdultPSH = case when lp.AdultPSH is NULL then -1 else cast(replace(cast(lp.AdultPSH as varchar), '0', '') as int) end   
 	, lp.AdultRRH = case when lp.AdultRRH is NULL then -1 else cast(replace(cast(lp.AdultRRH as varchar), '0', '') as int) end   
-	, lp.AHARAdultEST = case when lp.AHARAdultEST is NULL then -1 else cast(replace(cast(lp.AHARAdultEST as varchar), '0', '') as int) end   
-	, lp.AHARAdultPSH = case when lp.AHARAdultPSH is NULL then -1 else cast(replace(cast(lp.AHARAdultPSH as varchar), '0', '') as int) end 
-	, lp.AHARAdultRRH = case when lp.AHARAdultRRH is NULL then -1 else cast(replace(cast(lp.AHARAdultRRH as varchar), '0', '') as int) end 
-	, lp.AHAREST = case when lp.AHAREST is NULL then -1 else cast(replace(cast(lp.AHAREST as varchar), '0', '') as int) end 
-	, lp.AHARHoHEST = case when lp.AHARHoHEST is NULL then -1 else cast(replace(cast(lp.AHARHoHEST as varchar), '0', '') as int) end 
-	, lp.AHARHoHPSH = case when lp.AHARHoHPSH is NULL then -1 else cast(replace(cast(lp.AHARHoHPSH as varchar), '0', '') as int) end 
-	, lp.AHARHoHRRH = case when lp.AHARHoHRRH is NULL then -1 else cast(replace(cast(lp.AHARHoHRRH as varchar), '0', '') as int) end 
-	, lp.AHARPSH = case when lp.AHARPSH is NULL then -1 else cast(replace(cast(lp.AHARPSH as varchar), '0', '') as int) end 
-	, lp.AHARRRH = case when lp.AHARRRH is NULL then -1 else cast(replace(cast(lp.AHARRRH as varchar), '0', '') as int) end 
+	, lp.AIRAdultEST = case when lp.AIRAdultEST is NULL then -1 else cast(replace(cast(lp.AIRAdultEST as varchar), '0', '') as int) end   
+	, lp.AIRAdultPSH = case when lp.AIRAdultPSH is NULL then -1 else cast(replace(cast(lp.AIRAdultPSH as varchar), '0', '') as int) end 
+	, lp.AIRAdultRRH = case when lp.AIRAdultRRH is NULL then -1 else cast(replace(cast(lp.AIRAdultRRH as varchar), '0', '') as int) end 
+	, lp.AIREST = case when lp.AIREST is NULL then -1 else cast(replace(cast(lp.AIREST as varchar), '0', '') as int) end 
+	, lp.AIRHoHEST = case when lp.AIRHoHEST is NULL then -1 else cast(replace(cast(lp.AIRHoHEST as varchar), '0', '') as int) end 
+	, lp.AIRHoHPSH = case when lp.AIRHoHPSH is NULL then -1 else cast(replace(cast(lp.AIRHoHPSH as varchar), '0', '') as int) end 
+	, lp.AIRHoHRRH = case when lp.AIRHoHRRH is NULL then -1 else cast(replace(cast(lp.AIRHoHRRH as varchar), '0', '') as int) end 
+	, lp.AIRPSH = case when lp.AIRPSH is NULL then -1 else cast(replace(cast(lp.AIRPSH as varchar), '0', '') as int) end 
+	, lp.AIRRRH = case when lp.AIRRRH is NULL then -1 else cast(replace(cast(lp.AIRRRH as varchar), '0', '') as int) end 
 	, lp.HHChronicEST = case when lp.HHChronicEST is NULL then -1 else cast(replace(cast(lp.HHChronicEST as varchar), '0', '') as int) end 
 	, lp.HHChronicPSH = case when lp.HHChronicPSH is NULL then -1 else cast(replace(cast(lp.HHChronicPSH as varchar), '0', '') as int) end 
 	, lp.HHChronicRRH = case when lp.HHChronicRRH is NULL then -1 else cast(replace(cast(lp.HHChronicRRH as varchar), '0', '') as int) end 
@@ -560,40 +560,40 @@ FY2024 Changes
 	-- LSAPerson
 	delete from lsa_Person
 	insert into lsa_Person (RowTotal
-		, Gender, RaceEthnicity, VetStatus, DisabilityStatus
+		, RaceEthnicity, VetStatus, DisabilityStatus
 		, CHTime, CHTimeStatus, DVStatus
-		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AHARAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
-		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AHAREST, AHARHoHEST
-		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AHARAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
-		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
-		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
-		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AIRAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
+		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AIREST, AIRHoHEST
+		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AIRAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
+		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AIRRRH, AIRHoHRRH
+		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AIRAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
+		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AIRPSH, AIRHoHPSH
 		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
 		)
 	select count(distinct PersonalID)
-		, Gender, RaceEthnicity, VetStatus, DisabilityStatus
+		, RaceEthnicity, VetStatus, DisabilityStatus
 		, CHTime, CHTimeStatus, DVStatus
-		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AHARAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
-		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AHAREST, AHARHoHEST
-		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AHARAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
-		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
-		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
-		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AIRAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
+		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AIREST, AIRHoHEST
+		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AIRAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
+		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AIRRRH, AIRHoHRRH
+		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AIRAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
+		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AIRPSH, AIRHoHPSH
 		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
 	from tlsa_Person
 	group by 
-		Gender, RaceEthnicity, VetStatus, DisabilityStatus
+		RaceEthnicity, VetStatus, DisabilityStatus
 		, CHTime, CHTimeStatus, DVStatus
-		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AHARAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
-		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AHAREST, AHARHoHEST
-		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AHARAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
-		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AHARRRH, AHARHoHRRH
-		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AHARAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
-		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AHARPSH, AHARHoHPSH
+		, ESTAgeMin, ESTAgeMax, HHTypeEST, HoHEST, AdultEST, AIRAdultEST, HHChronicEST, HHVetEST, HHDisabilityEST
+		, HHFleeingDVEST, HHAdultAgeAOEST, HHAdultAgeACEST, HHParentEST, AC3PlusEST, AIREST, AIRHoHEST
+		, RRHAgeMin, RRHAgeMax, HHTypeRRH, HoHRRH, AdultRRH, AIRAdultRRH, HHChronicRRH, HHVetRRH, HHDisabilityRRH
+		, HHFleeingDVRRH, HHAdultAgeAORRH, HHAdultAgeACRRH, HHParentRRH, AC3PlusRRH, AIRRRH, AIRHoHRRH
+		, PSHAgeMin, PSHAgeMax, HHTypePSH, HoHPSH, AdultPSH, AIRAdultPSH, HHChronicPSH, HHVetPSH, HHDisabilityPSH
+		, HHFleeingDVPSH, HHAdultAgeAOPSH, HHAdultAgeACPSH, HHParentPSH, AC3PlusPSH, AIRPSH, AIRHoHPSH
 		, RRHSOAgeMin, RRHSOAgeMax, HHTypeRRHSONoMI, HHTypeRRHSOMI
 		, HHTypeES, HHTypeSH, HHTypeTH, HIV, SMI, SUD
 		, ReportID 
