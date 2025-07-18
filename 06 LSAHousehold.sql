@@ -1,10 +1,10 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  06 LSAHousehold.sql  
 
-FY2024 Changes
+FY2025 Changes
 
-		Run code only if the LSAScope is not 'HIC'
+		-- Replace 'AHAR' in column names with 'AIR' (active in residence)
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -893,36 +893,36 @@ set hh.ESTGeography = case when hh.ESTStatus = 0 then -1
 		and st.sysStatus = 5
 
 /*
-	6.17 Set EST/RRH/PSHAHAR
+	6.17 Set EST/RRH/PSHAIR
 */
 	update hh
-	set ESTAHAR = 0, RRHAHAR = 0, PSHAHAR = 0
+	set ESTAIR = 0, RRHAIR = 0, PSHAIR = 0
 		, hh.Step = '6.17.1'
 	from tlsa_Household hh
 
 	update hh
-	set hh.ESTAHAR = 1
+	set hh.ESTAIR = 1
 		, hh.Step = '6.17.2'
 	from tlsa_Household hh
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType 
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID and n.PersonalID = hhid.HoHID
-	where n.AHAR = 1 and hhid.LSAProjectType in (0,1,2,8)
+	where n.AIR = 1 and hhid.LSAProjectType in (0,1,2,8)
 
 	update hh
-	set hh.RRHAHAR = 1
+	set hh.RRHAIR = 1
 		, hh.Step = '6.17.3'
 	from tlsa_Household hh
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType 
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID and n.PersonalID = hhid.HoHID
-	where n.AHAR = 1 and hhid.LSAProjectType = 13 
+	where n.AIR = 1 and hhid.LSAProjectType = 13 
 
 	update hh
-	set hh.PSHAHAR = 1
+	set hh.PSHAIR = 1
 		, hh.Step = '6.17.4'
 	from tlsa_Household hh
 	inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.ActiveHHType = hh.HHType 
 	inner join tlsa_Enrollment n on n.HouseholdID = hhid.HouseholdID and n.PersonalID = hhid.HoHID
-	where n.AHAR = 1 and hhid.LSAProjectType = 3 
+	where n.AIR = 1 and hhid.LSAProjectType = 3 
 
 /*
 	6.18 Set SystemPath for LSAHousehold
@@ -978,7 +978,7 @@ insert into lsa_Household(RowTotal
 	, RRHStatus, RRHMoveIn, RRHGeography, RRHLivingSit, RRHDestination, RRHPreMoveInDays, RRHChronic, RRHVet, RRHDisability, RRHFleeingDV, RRHAC3Plus, RRHAdultAge, RRHParent
 	, PSHStatus, PSHMoveIn, PSHGeography, PSHLivingSit, PSHDestination, PSHHousedDays, PSHChronic, PSHVet, PSHDisability, PSHFleeingDV, PSHAC3Plus, PSHAdultAge, PSHParent
 	, ESDays, THDays, ESTDays, RRHPSHPreMoveInDays, RRHHousedDays, SystemDaysNotPSHHoused, SystemHomelessDays, Other3917Days, TotalHomelessDays
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
+	, SystemPath, ESTAIR, RRHAIR, PSHAIR, RRHSOStatus, RRHSOMoveIn, ReportID 
 )
 select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 	, case when Stat in (1,5) then -1
@@ -1120,7 +1120,7 @@ select count (distinct HoHID + cast(HHType as nvarchar)), Stat
 		when TotalHomelessDays between 731 and 1094 then 1094 
 		when TotalHomelessDays > 1094 then 1095
 		else TotalHomelessDays end 
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
+	, SystemPath, ESTAIR, RRHAIR, PSHAIR, RRHSOStatus, RRHSOMoveIn, ReportID 
 from tlsa_Household
 group by Stat	
 	, case when Stat in (1,5) then -1
@@ -1261,7 +1261,7 @@ group by Stat
 		when TotalHomelessDays between 731 and 1094 then 1094 
 		when TotalHomelessDays > 1094 then 1095
 		else TotalHomelessDays end 
-	, SystemPath, ESTAHAR, RRHAHAR, PSHAHAR, RRHSOStatus, RRHSOMoveIn, ReportID 
+	, SystemPath, ESTAIR, RRHAIR, PSHAIR, RRHSOStatus, RRHSOMoveIn, ReportID 
 
 end -- END IF LSAScope <> HIC
 
