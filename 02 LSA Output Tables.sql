@@ -1,10 +1,11 @@
 /*
-LSA FY2024 Sample Code
+LSA FY2025 Sample Code
 Name:  02 LSA Output Tables.sql 
 
-FY2024 Changes
+FY2025 Changes
 		
-		None
+	-Replace 'AHAR' in column names with 'AIR' (active in residence)  
+	-Drop 'Gender' column from lsa_Person
 
 		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
 
@@ -256,7 +257,6 @@ if object_id ('lsa_Person') is not NULL drop table lsa_Person
 
 create table lsa_Person (
 	RowTotal int not NULL,
-	Gender int not NULL,
 	RaceEthnicity int not NULL,
 	VetStatus int not NULL,
 	DisabilityStatus int not NULL,
@@ -268,7 +268,7 @@ create table lsa_Person (
 	HHTypeEST int not NULL,
 	HoHEST int not NULL,
 	AdultEST int not NULL,
-	AHARAdultEST int not NULL,
+	AIRAdultEST int not NULL,
 	HHChronicEST int not NULL,
 	HHVetEST int not NULL,
 	HHDisabilityEST int not NULL,
@@ -277,14 +277,14 @@ create table lsa_Person (
 	HHAdultAgeACEST int not NULL,
 	HHParentEST int not NULL,
 	AC3PlusEST int not NULL,
-	AHAREST int not NULL,
-	AHARHoHEST int not NULL,
+	AIREST int not NULL,
+	AIRHoHEST int not NULL,
 	RRHAgeMin int not NULL,
 	RRHAgeMax int not NULL,
 	HHTypeRRH int not NULL,
 	HoHRRH int not NULL,
 	AdultRRH int not NULL,
-	AHARAdultRRH int not NULL,
+	AIRAdultRRH int not NULL,
 	HHChronicRRH int not NULL,
 	HHVetRRH int not NULL,
 	HHDisabilityRRH int not NULL,
@@ -293,14 +293,14 @@ create table lsa_Person (
 	HHAdultAgeACRRH int not NULL,
 	HHParentRRH int not NULL,
 	AC3PlusRRH int not NULL,
-	AHARRRH int not NULL,
-	AHARHoHRRH int not NULL,
+	AIRRRH int not NULL,
+	AIRHoHRRH int not NULL,
 	PSHAgeMin int not NULL,
 	PSHAgeMax int not NULL,
 	HHTypePSH int not NULL,
 	HoHPSH int not NULL,
 	AdultPSH int not NULL,
-	AHARAdultPSH int not NULL,
+	AIRAdultPSH int not NULL,
 	HHChronicPSH int not NULL,
 	HHVetPSH int not NULL,
 	HHDisabilityPSH int not NULL,
@@ -309,8 +309,8 @@ create table lsa_Person (
 	HHAdultAgeACPSH int not NULL,
 	HHParentPSH int not NULL,
 	AC3PlusPSH int not NULL,
-	AHARPSH int not NULL,
-	AHARHoHPSH int not NULL,
+	AIRPSH int not NULL,
+	AIRHoHPSH int not NULL,
 	RRHSOAgeMin int not NULL, 
 	RRHSOAgeMax int not NULL, 
 	HHTypeRRHSONoMI int not NULL,
@@ -391,9 +391,9 @@ create table lsa_Household(
 	Other3917Days int not NULL,
 	TotalHomelessDays int not NULL,
 	SystemPath int not NULL,
-	ESTAHAR int not NULL,
-	RRHAHAR int not NULL,
-	PSHAHAR int not NULL,
+	ESTAIR int not NULL,
+	RRHAIR int not NULL,
+	PSHAIR int not NULL,
 	RRHSOStatus int not NULL,
 	RRHSOMoveIn int not NULL,
 	ReportID int not NULL
