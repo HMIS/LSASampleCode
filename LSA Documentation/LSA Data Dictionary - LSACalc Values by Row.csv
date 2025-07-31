@@ -1,0 +1,126 @@
+﻿LSACalculated Requirements / Valid Combinations of Column Values ,,,,,,,
+ReportRow,Row Description,Cohort,Universe,SystemPath,ProjectID,HHType,Population
+LSAHousehold Length of Time Homeless (LOTH),,,,,,,
+1,Average days in ES/SH,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+2,Average days in TH,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+3,Average days in ES/SH or TH,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+4,Average days homeless before move-in to RRH/PSH,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+5,"Average days documented in ES/SH, TH, or homeless before move-in",1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+6,Average days homeless self-reported in 3.917,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+7,Average days homeless total,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+8,Average days housed in RRH,1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+9,Average days documented homeless or housed in RRH (no 3.917),1,-1,-1,NULL,Any,"0, 10-48, and subpops of 10-15"
+LSAHousehold LOTH by System Path,,,,,,,
+1,Average days in ES/SH (by system path),1,-1,"(1,3,5,7,9,10,12)",NULL,Any,"0, 10-17"
+2,Average days in TH (by system path),1,-1,"(2,3,6,7,12)",NULL,Any,"0, 10-17"
+3,Average days in ES/SH or TH (by system path),1,-1,"(3,7,12)",NULL,Any,"0, 10-17"
+4,Average days homeless before move-in to RRH/PSH (by system path),1,-1,4-12,NULL,Any,"0, 10-17"
+5,"Average days documented in ES/SH, TH, or homeless before move-in (by system path)",1,-1,5-12,NULL,Any,"0, 10-17"
+6,Average days homeless self-reported in 3.917 (by system path),1,-1,1-12,NULL,Any,"0, 10-17"
+7,Average days homeless total (by system path),1,-1,1-12,NULL,Any,"0, 10-17"
+8,Average days housed in RRH (by system path),1,-1,"(4,5,6,7,10,11,12)",NULL,Any,"0, 10-17"
+9,Average days documented homeless or housed in RRH (no 3.917) (by system path),1,-1,1-12,NULL,Any,"0, 10-17"
+LSAHousehold PSH/RRH ,,,,,,,
+10,Average days housed in PSH as of exit date (all exits),1,-1,-1,NULL,Any,"0, 10-17"
+11,Average days housed in PSH for households active on last day,1,-1,-1,NULL,Any,"0, 10-17"
+12,Average days in RRH from start to exit with no move-in date,1,-1,-1,NULL,Any,"0, 10-17"
+13,Average days in RRH from start to report end for active homeless,1,-1,-1,NULL,Any,"0, 10-17"
+14,Average days in RRH from start to move-in date for all housed,1,-1,-1,NULL,Any,"0, 10-17"
+15,Average days in RRH from move-in to exit for housed exiters,1,-1,-1,NULL,Any,"0, 10-17"
+16,Average days in RRH from move-in to report end for active housed,1,-1,-1,NULL,Any,"0, 10-17"
+LSAExit by Project Type,,,,,,,
+18,Average days to return after exit from ES,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+19,Average days to return after exit from TH,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+20,Average days to return after exit from SH,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+21,Average days to return after exit from RRH,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+22,Average days to return after exit from PSH,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+63,Average days to return after exit from RRH with no move-in date,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+64,Average days to return after exit from PSH with no move-in date,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+65,Average days to return after exit from RRH-SO with move-in date,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+66,Average days to return after exit from RRH-SO with no move-in date,"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+LSAExit by Population,,,,,,,
+23,Average days to return after exit (all),"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-20, 23-48, and subpops of 10-15"
+LSAExit by System Path,,,,,,,
+24,Average days to return after ES/SH only system path,"0, -1, -2","2, 3, 4",1,NULL,Any,"0, 10-17"
+25,Average days to return after TH system path,"0, -1, -2","2, 3, 4",2,NULL,Any,"0, 10-17"
+26,Average days to return after ES/SH/TH system path,"0, -1, -2","2, 3, 4",3,NULL,Any,"0, 10-17"
+27,Average days to return after RRH only system path,"0, -1, -2","2, 3, 4",4,NULL,Any,"0, 10-17"
+28,Average days to return after ES/SH/RRH system path,"0, -1, -2","2, 3, 4",5,NULL,Any,"0, 10-17"
+29,Average days to return after TH/RRH system path,"0, -1, -2","2, 3, 4",6,NULL,Any,"0, 10-17"
+30,Average days to return after ES/SH/TH/RRH system path,"0, -1, -2","2, 3, 4",7,NULL,Any,"0, 10-17"
+31,Average days to return after PSH only system path,"0, -1, -2","2, 3, 4",8,NULL,Any,"0, 10-17"
+32,Average days to return after ES/SH/PSH system path,"0, -1, -2","2, 3, 4",9,NULL,Any,"0, 10-17"
+33,Average days to return after ES/SH/RRH/PSH system path,"0, -1, -2","2, 3, 4",10,NULL,Any,"0, 10-17"
+34,Average days to return after RRH/PSH system path,"0, -1, -2","2, 3, 4",11,NULL,Any,"0, 10-17"
+35,Average days to return after other system path,"0, -1, -2","2, 3, 4",12,NULL,Any,"0, 10-17"
+36,Average days to return after any system path (excludes those housed in PSH on start date),"0, -1, -2","2, 3, 4",-1,NULL,Any,"0, 10-17"
+LSAExit by Destination,,,,,,,
+101,"Average days to return after exit to Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter","0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+102,"Average days to return after exit to Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)","0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+103,Average days to return after exit to Safe Haven,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+104,Average days to return after exit to Psychiatric hospital or other psychiatric facility,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+105,Average days to return after exit to Substance abuse treatment facility or detox center,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+106,Average days to return after exit to Hospital or other residential non-psychiatric medical facility,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+107,"Average days to return after exit to Jail, prison, or juvenile detention facility","0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+108,Average days to return after exit to Foster care home or foster care group home,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+109,Average days to return after exit to Long-term care facility or nursing home,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+110,Average days to return after exit to Transitional housing for homeless persons (including homeless youth),"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+111,"Average days to return after exit to Staying or living with family, temporary tenure (e.g. room, apartment, or house)","0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+112,"Average days to return after exit to Staying or living with friends, temporary tenure (e.g. room, apartment, or house)","0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+113,Average days to return after exit to Hotel or motel paid for without emergency shelter voucher,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+114,Average days to return after exit to Moved from one HOPWA funded project to HOPWA TH,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+115,Average days to return after exit to Residential project or halfway house with no homeless criteria,"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+116,Average days to return after exit to Host Home (non-crisis),"0, -1, -2",3,-1,NULL,Any,"0, 10-17"
+117,"Average days to return after exit to Rental by client, no ongoing housing subsidy","0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+118,"Average days to return after exit to Owned by client, no ongoing housing subsidy","0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+119,Average days to return after exit to Rental by client - VASH housing subsidy,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+120,Average days to return after exit to Rental by client - Other ongoing subsidy,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+121,"Average days to return after exit to Owned by client, with ongoing housing subsidy","0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+122,"Average days to return after exit to Staying or living with family, permanent tenure","0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+123,"Average days to return after exit to Staying or living with friends, permanent tenure","0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+124,Average days to return after exit to Moved from one HOPWA funded project to HOPWA PH,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+125,Average days to return after exit to Rental by client - GPD TIP housing subsidy,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+126,Average days to return after exit to Rental by client - RRH or equivalent subsidy,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+127,Average days to return after exit to Rental by client - HCV voucher (tenant or project based) (not dedicated),"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+128,Average days to return after exit to Rental by client - Public housing unit,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+129,Average days to return after exit to Rental by client - Emergency Housing Voucher,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+130,Average days to return after exit to Rental by client - Family Unification Program Voucher (FUP),"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+131,Average days to return after exit to Rental by client - Foster Youth to Independence Initiative (FYI),"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+132,Average days to return after exit to Rental by client - Permanent Supportive Housing,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+133,Average days to return after exit to Rental by client - Other permanent housing dedicated for formerly homeless persons,"0, -1, -2",2,-1,NULL,Any,"0, 10-17"
+134,Average days to return after exit to Deceased,"0, -1, -2",4,-1,NULL,Any,"0, 10-17"
+135,Average days to return after exit to destination not provided by client,"0, -1, -2",4,-1,NULL,Any,"0, 10-17"
+136,Average days to return after exit with missing or invalid destination,"0, -1, -2",4,-1,NULL,Any,"0, 10-17"
+AHAR Counts by Project ID,,,,,,,
+53,Count all people in household by household characteristics,"1, 10-13",10,-1,Not NULL,Any,"0, 10-15, 18, 19, 45, 46, 48"
+54,Count households by household characteristics,"1, 10-13",10,-1,Not NULL,Any,"0, 10-15, 18, 19, 45, 46, 48"
+55,Count people by personal characteristics,"1, 10-13",10,-1,Not NULL,Any,"50, 53, 1190, 1191, 1290, 1291"
+56,Count of bed nights by household characteristics,1,10,-1,Not NULL,Any,"0, 10, 11"
+57,Count of bed nights by personal characteristics,1,10,-1,Not NULL,Any,"50, 53"
+AHAR Counts by Project Groups,,,,,,,
+53,Count all people in household ,"1, 10-13",11-16,-1,NULL,Any,"0, 10-15, 18, 19, 45, 46, 48"
+54,Count households ,"1, 10-13",11-16,-1,NULL,Any,"0, 10-15, 18, 19, 45, 46, 48"
+55,Count of people with characteristic ,"1, 10-13",11-16,-1,NULL,Any,"50-77, 86-97, 1190, 1191, 1290, 1291, subpops 53-77 & 97 of pops 50-52"
+56,Count of bed nights by household characteristics,1,11-16,-1,NULL,Any,"0, 10, 11"
+57,Count of bed nights by personal characteristics,1,11-16,-1,NULL,Any,"50, 53"
+DQ Counts,,,,,,,
+901,DQ – Active enrollments in inactive projects,1,10,-1,Not NULL ,0,0
+902,DQ – Exits after project operating end date,1,10,-1,Not NULL ,0,0
+903,DQ – Night-by-night enrollments active 90+ days after last bed night ,1,10,-1,Not NULL ,0,0
+904,DQ – Night-by-night enrollments exited with no bed night on the day prior,1,10,-1,Not NULL ,0,0
+905,DQ – Enrollments without a valid EnrollmentCoC,1,10,-1,Not NULL,0,0
+906,DQ – Enrollments in non-participating projects,1,10,-1,Not NULL ,0,0
+907,DQ – Enrollments without exactly one HoH,1,10,-1,Not NULL ,0,0
+908,DQ – Relationship to HoH,1,10,-1,Not NULL ,0,0
+909,DQ – Household Entry,1,10,-1,Not NULL ,0,0
+910,DQ – Client Entry,1,10,-1,Not NULL,0,0
+911,DQ – Adult/HoH Entry,1,10,-1,Not NULL ,0,0
+912,DQ – Client Exit,1,10,-1,Not NULL ,0,0
+913,DQ – Disabling Condition,1,10,-1,Not NULL ,0,0
+914,DQ – Living Situation,1,10,-1,Not NULL ,0,0
+915,DQ – Length of Stay,1,10,-1,Not NULL,0,0
+916,DQ – Date ES/SH/Street Homelessness Started,1,10,-1,Not NULL ,0,0
+917,DQ – Times ES/SH/Street Homeless Last 3 Years,1,10,-1,Not NULL ,0,0
+918,DQ – Months ES/SH/Street Homeless Last 3 Years,1,10,-1,Not NULL ,0,0
+919,DQ – Destination ,1,10,-1,Not NULL ,0,0
+920,DQ – Date of Birth,1,10,-1,Not NULL,0,0
