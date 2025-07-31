@@ -2,127 +2,63 @@
 
 The universe of HMIS project, client, and enrollment data used to generate the LSA is broad in scope. It uses systemwide enrollment data for HMIS-participating continuum ES, SH, TH, RRH, and PSH projects and includes project descriptor data for OPH projects. It may include enrollments with exit dates and projects with operating end dates as far back as the LookbackDate (ReportStart – 7 years).
 
-The HMIS data required for the LSA are shown below. The fields relevant to the business logic of the report are listed.
-
-**hmis_Affiliation**
-
-**hmis_HMISParticipation**
+The HMIS fields relevant to the business logic of the report are listed below.
 
 **hmis_Client**
-
-PersonalID
-
-SSN
-
-SSNDataQuality
-
-DOB
-
-DOBDataQuality
-
-Race and Ethnicity
-
-VeteranStatus
-
+- PersonalID
+- SSN
+- SSNDataQuality
+- DOB
+- DOBDataQuality
+- Race and Ethnicity
+- VeteranStatus
 **hmis_Enrollment**
-
-EnrollmentID
-
-PersonalID
-
-ProjectID
-
-EntryDate
-
-HouseholdID
-
-RelationshipToHoH
-
-EnrollmentCoC
-
-LivingSituation
-
-RentalSubsidyType
-
-LengthOfStay
-
-PreviousStreetESSH
-
-DateToStreetESSH
-
-TimesHomelessPastThreeYears
-
-MonthsHomelessPastThreeYears
-
-DisablingCondition
-
-MoveInDate
-
+- EnrollmentID
+- PersonalID
+- ProjectID
+- EntryDate
+- HouseholdID
+- RelationshipToHoH
+- EnrollmentCoC
+- LivingSituation
+- RentalSubsidyType
+- LengthOfStay
+- PreviousStreetESSH
+- DateToStreetESSH
+- TimesHomelessPastThreeYears
+- MonthsHomelessPastThreeYears
+- DisablingCondition
+- MoveInDate
 **hmis_HealthAndDV**
-
-EnrollmentID
-
-InformationDate
-
-DomesticViolenceVictim
-
-CurrentlyFleeing
-
+- EnrollmentID
+- InformationDate
+- DomesticViolenceVictim
+- CurrentlyFleeing
 **hmis_Services**
-
-EnrollmentID
-
-DateProvided (BedNightDate)
-
-RecordType
-
+- EnrollmentID
+- DateProvided (*BedNightDate*)
+- RecordType
 **hmis_Exit**
-
 EnrollmentID
-
 ExitDate
-
 Destination
-
 DestinationSubsidyType
-
 **hmis_ProjectCoC**
-
 ProjectID
-
 CoCCode
-
 GeographyType
-
 **hmis_Project**
-
 ProjectID
-
 OperatingEndDate
-
 ContinuumProject
-
 ProjectType
-
-RRHSubTypeMethod
-
-**hmis_Organization**
-
-**hmis_Funder**
-
-**hmis_Inventory**
-
-EnrollmentID
-
-InformationDate
-
-DisabilityType
-
-DisabilityResponse
-
-IndefiniteAndImpairs
-
+RRHSubType
 **hmis_Disabilities**
+EnrollmentID
+InformationDate
+DisabilityType
+DisabilityResponse
+IndefiniteAndImpairs
 
 The business logic in this section defines core concepts: report parameters, reporting cohorts, basic criteria for record selection, and identification of household types in various contexts.
 
