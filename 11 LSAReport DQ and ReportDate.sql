@@ -1,12 +1,13 @@
 /*
-LSA FY2024 Sample Code
+LSA Sample Code
 Name: 11 LSAReport DQ and ReportDate.sql
+https://github.com/HMIS/LSASampleCode
 
-FY2024 Changes
-		
-		None
+Last update: 8/5/2025
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+Source: LSA Programming Specifications v7 
+		Changes from AHAR to AIR column names
+	 
 
 	Please note that if this code is used in production, the first statement in section 11.6 
 	should be reviewed and updated if necessary to set SSNValid to 0 include any system default 
@@ -67,7 +68,7 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 from lsa_Report rpt
 
 /*
-	11.3 HMIS Enrollments Associated with LSA Households But Excluded from LSA Due to Invalid RelatioshipToHoH
+	11.3 HMIS Enrollments Associated with LSA Households But Excluded from LSA Due to Invalid RelationshipToHoH
 */
 
 update rpt
@@ -109,13 +110,13 @@ set rpt.UnduplicatedClient = (select count(distinct PersonalID)
 	from tlsa_Person)
 	, rpt.HouseholdEntry = (select count(distinct HouseholdID)
 		from tlsa_HHID 
-		where Active = 1)
+		where AIR = 1 or (Active = 1 and rpt.LSAScope <> 3))
 	, rpt.ClientEntry = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
-		where Active = 1)
+		where AIR = 1 or (Active = 1 and rpt.LSAScope <> 3))
 	, rpt.AdultHoHEntry = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
-		where Active = 1
+		where (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3))
 		and (ActiveAge between 18 and 65 or RelationshipToHoH = 1))
 	, rpt.ClientExit = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
@@ -175,7 +176,7 @@ left outer join
 update rpt
 set rpt.DisablingCond = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and n.DisabilityStatus = 99
 	)
 from lsa_Report rpt
@@ -184,7 +185,7 @@ update rpt
 set rpt.LivingSituation = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and (hn.LivingSituation is null or hn.LivingSituation in (8,9,99))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
@@ -193,7 +194,7 @@ update rpt
 set rpt.LengthOfStay = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and (hn.LengthOfStay is null or hn.LengthOfStay in (8,9,99))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65))
 from lsa_Report rpt
@@ -202,7 +203,7 @@ update rpt
 set rpt.HomelessDate = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and (hn.DateToStreetESSH > hn.EntryDate
 		 or (hn.DateToStreetESSH is null 
 				and (n.LSAProjectType in (0,1,8)
@@ -219,7 +220,7 @@ update rpt
 set rpt.TimesHomeless = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and (hn.TimesHomelessPastThreeYears is NULL
 		or hn.TimesHomelessPastThreeYears not in (1,2,3,4)) 
 	and (n.LSAProjectType in (0,1,8)
@@ -232,7 +233,7 @@ update rpt
 set rpt.MonthsHomeless = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	inner join hmis_Enrollment hn on n.EnrollmentID = hn.EnrollmentID
-	where n.Active = 1
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	and (hn.MonthsHomelessPastThreeYears is NULL
 		or hn.MonthsHomelessPastThreeYears not between 101 and 113) 
 	and (n.LSAProjectType in (0,1,8)
@@ -246,7 +247,8 @@ set rpt.Destination = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID
 		and x.DateDeleted is null
-	where n.Active = 1 and n.ExitDate is not null
+	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
+		and n.ExitDate is not null
 		and (x.Destination is null
 			or x.Destination in (8,9,17,30,99)
 			or (x.Destination = 435 and x.DestinationSubsidyType is null))
@@ -256,4 +258,4 @@ from lsa_Report rpt
 /*
 	11.8 Set ReportDate for LSAReport
 */
-update lsa_Report set ReportDate = getdate()
+update lsa_Report set ReportDate = getdate() where ReportDate is null

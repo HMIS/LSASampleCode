@@ -1,13 +1,20 @@
 /*
-LSA FY2025 Sample Code
-Name:  05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
+LSA Sample Code
+05_12 to 05_15 LSAPerson Project Group and Population Household Types.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
-
+Source: LSA Programming Specifications v7
+Relevant Sections:
+	5.12.	Set Population Identifiers for Active HMIS Households
+	5.13.	Project Group and Population Household Types - LSAPerson
+		v7 Changes
+		-- Replace 'AHAR' in column names with 'AIR' (active in residence)
+	5.14.	Adult Age Population Identifiers - LSAPerson
+	5.15.	LSAPerson
+		v7 Changes
 		-- Replace 'AHAR' in column names with 'AIR' (active in residence)
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
-	
+
 	5.12 Set Population Identifiers for Active HouseholdIDs
 */
 

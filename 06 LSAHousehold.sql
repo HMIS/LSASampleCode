@@ -1,12 +1,34 @@
 /*
-LSA FY2025 Sample Code
-Name:  06 LSAHousehold.sql  
+LSA Sample Code
+06 LSAHousehold.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
+Last update: 8/5/2025
 
-		-- Replace 'AHAR' in column names with 'AIR' (active in residence)
+Source: LSA Programming Specifications v7 
+	6.1.	Get Distinct Households for LSAHousehold
+	6.2.	Set Population Identifiers for LSAHousehold
+	6.3.	EST/RRH/PSH/RRHSOStatus – LSAHousehold
+	6.4.	RRH/PSH/RRHSOMoveIn – LSAHousehold
+	6.5.	EST/RRH/PSHGeography – LSAHousehold
+	6.6.	EST/RRH/PSHLivingSit – LSAHousehold
+	6.7.	EST/RRH/PSHDestination – LSAHousehold
+	6.8.	EST/RRH/PSH Population Identifiers
+	6.9.	System Engagement Status and Return Time
+	6.10.	RRHPreMoveInDays – LSAHousehold
+	6.11.	Dates Housed in PSH or RRH (sys_Time)
+	6.12.	Get Last Inactive Date
+	6.13.	Get Dates of Other System Use (sys_Time)
+	6.14.	Get Other Dates Homeless from 3.917A/B Living Situation
+			v7 Update - Clarification that DateToStreetESSH must be after LastInactive and before EntryDate in Step 6.14.2
+	6.15.	Set System Use Days for LSAHousehold
+	6.16.	Update EST/RRH/PSH/RRHSOStatus
+	6.17.	Set EST/RRH/PSHAIR 
+			v7 Update - 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names for Steps 6.17.1-6.17.4
+	6.18.	Set SystemPath for LSAHousehold
+	6.19.	LSAHousehold
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+
 
 	6.1 Get Unique Households and Population Identifiers for tlsa_Household
 */
@@ -801,7 +823,7 @@ set hh.ESTGeography = case when hh.ESTStatus = 0 then -1
 		from tlsa_Household hh 
 		inner join tlsa_HHID hhid on hhid.HoHID = hh.HoHID and hhid.EntryHHType = hh.HHType
 		inner join hmis_Enrollment hn on hn.EnrollmentID = hhid.EnrollmentID
-		where hhid.EntryDate > hh.LastInactive
+		where hn.DateToStreetESSH < hhid.EntryDate and hhid.EntryDate > hh.LastInactive
 			and (hhid.LSAProjectType in (0,1,8)
 				or hn.LivingSituation between 100 and 199
 				or (hn.LengthOfStay in (10,11) and hn.PreviousStreetESSH = 1)

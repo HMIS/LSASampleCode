@@ -1,13 +1,12 @@
 /*
-LSA FY2024 Sample Code
+LSA Sample Code
 Name:  10 LSACalculated Data Quality.sql
+https://github.com/HMIS/LSASampleCode
 
-FY2024 Changes
+Last update: 8/5/2025
 
-		None
-
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
-
+Source: LSA Programming Specifications v7
+	
 
 	10.2 Get Counts of Enrollments Active after Operating End Date by ProjectID
 */
@@ -175,7 +174,7 @@ FY2024 Changes
 	select count (distinct hh.HouseholdID), 1, 10, 0, 0, -1, 909, hh.ProjectID, rpt.ReportID, '10.8'
 	from lsa_Report rpt
 	inner join tlsa_HHID hh on hh.EntryDate <= rpt.ReportEnd
-	where hh.Active = 1
+	where hh.AIR = 1 or (hh.Active = 1 and rpt.LSAScope <> 3)
 	group by hh.ProjectID, rpt.ReportID
 /*
 	10.9	DQ – Client Entry
@@ -188,6 +187,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 910, n.ProjectID, rpt.ReportID, '10.9'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	where n.Active = 1
 	group by n.ProjectID, rpt.ReportID
 /*
@@ -201,6 +201,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 911, n.ProjectID, rpt.ReportID, '10.10'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 	group by n.ProjectID, rpt.ReportID
@@ -216,6 +217,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 912, n.ProjectID, rpt.ReportID, '10.11'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.ExitDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	where n.Active = 1
 	group by n.ProjectID, rpt.ReportID
 /*
@@ -229,6 +231,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 913, n.ProjectID, rpt.ReportID, '10.12'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	where n.Active = 1 and n.DisabilityStatus = 99
 	group by n.ProjectID, rpt.ReportID
 /*
@@ -242,6 +245,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 914, n.ProjectID, rpt.ReportID, '10.13'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
@@ -259,6 +263,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 915, n.ProjectID, rpt.ReportID, '10.14'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
@@ -275,6 +280,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 916, n.ProjectID, rpt.ReportID, '10.15'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
@@ -298,6 +304,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 917, n.ProjectID, rpt.ReportID, '10.16'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
@@ -318,6 +325,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 918, n.ProjectID, rpt.ReportID, '10.17'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
 	where n.Active = 1 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
@@ -338,6 +346,7 @@ FY2024 Changes
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 919, n.ProjectID, rpt.ReportID, '10.18'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.ExitDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
 	where n.Active = 1
 		and (x.Destination is NULL or x.Destination in (8,9,17,30,99)
@@ -355,6 +364,7 @@ FY2024 Changes
 	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 920, n.ProjectID, rpt.ReportID, '10.19'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	where n.Active = 1 and n.ActiveAge in (98,99)
 	group by n.ProjectID, rpt.ReportID
 

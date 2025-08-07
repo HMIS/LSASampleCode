@@ -1,12 +1,11 @@
 /*
-LSA FY2025 Sample Code
+LSA Sample Code
 Name:  08 LSACalculated Averages for LSAHousehold and LSAExit.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
+Last update: 8/5/2025
 
-	None
-		
-	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)/
+Source: LSA Programming Specifications v7 
 
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID

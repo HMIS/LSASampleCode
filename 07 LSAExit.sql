@@ -1,12 +1,16 @@
 /*
-LSA FY2025 Sample Code
-Name:  07 LSAExit.sql  
+LSA Sample Code
+07 LSAExit.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
+Last update: 7/31/2025 
+
+
+Source: LSA Programming Specifications  v7
+		Changes in Section 7.8 corresponding to updates in the specs (CHTime and CHTimeStatus)
 		
-	None
-
-	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+	7.	HMIS Business Logic: LSAExit
+			
 
 7.1 Identify Qualifying Exits in Exit Cohort Periods
 */
@@ -354,6 +358,44 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 			and chep.episodeEnd between hoha.CHStart and hoha.LastActive 
 		group by hoha.PersonalID, hoha.Cohort) time_sum on time_sum.PersonalID = ha.PersonalID and time_sum.Cohort = ha.Cohort
 	where ha.CHTime is null
+
+	update ha
+	set ha.CHTimeStatus = 99 
+	from tlsa_ExitHoHAdult ha
+	inner join tlsa_CohortDates cd on cd.Cohort = ha.Cohort
+	inner join tlsa_Enrollment n on n.HouseholdID = ha.QualifyingExitHHID 
+		and n.ExitDate between cd.CohortStart and cd.CohortEnd
+		and n.PersonalID = ha.PersonalID
+	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
+	where (n.RelationshipToHoH = 1 
+			or (cd.Cohort = 0 and n.ActiveAge > 18)
+			or (cd.Cohort = -1 and n.Exit1Age > 18)
+			or (cd.Cohort = -2 and n.Exit2Age > 18))
+		and (ha.CHTime in (0,270) or ha.CHTimeStatus = 3)
+		and (hn.DateToStreetESSH > hn.EntryDate 
+				or (hn.LivingSituation < 100 or hn.LivingSituation is null)
+				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
+				or (n.LSAProjectType not in (0,1,8) and hn.LivingSituation between 200 and 299 
+						and hn.LengthOfStay in (2,3)
+						and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
+				or (n.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
+							and (hn.PreviousStreetESSH is null or hn.PreviousStreetESSH not in (0,1)))
+				or ((n.LSAProjectType in (0,1,8)
+					  or hn.LivingSituation between 100 and 199
+					  or (n.LSAProjectType not in (0,1,8) and hn.LivingSituation between 200 and 299  
+							and hn.LengthOfStay in (2,3)
+							and hn.PreviousStreetESSH = 1)
+					  or (n.LSAProjectType not in (0,1,8) and hn.LengthOfStay in (10,11) 
+							and hn.PreviousStreetESSH = 1)
+					)
+					and (
+						hn.MonthsHomelessPastThreeYears in (8,9,99) 
+							or hn.MonthsHomelessPastThreeYears is null
+							or hn.TimesHomelessPastThreeYears in (8,9,99)
+							or hn.TimesHomelessPastThreeYears is null
+							or hn.DateToStreetESSH is null
+						)
+			))
 
 /*
 	7.9 Population Identifiers for LSAExit

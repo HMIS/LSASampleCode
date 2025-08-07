@@ -1,12 +1,11 @@
 /*
-LSA FY2025 Sample Code
+LSA Sample Code
 Name:  04_01 Get Project Records.sql
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
-		
-	None
+Last update: 8/5/2025
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+Source:  LSA Programming Specifications v7
 
 	4.1 Get Project Records for Export
 		Export records for continuum ES entry/exit (0), ES night-by-night (1), 

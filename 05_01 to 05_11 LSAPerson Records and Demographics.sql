@@ -1,14 +1,35 @@
 /*
-LSA FY2024 Sample Code
-Name:  05_01 to 05_11 LSAPerson.sql  
+LSA Sample Code
+05_01 to 05_11 LSAPerson Records and Demographics.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2024 Changes
+Source: LSA Programming Specifications v7
+Relevant Sections:
+	5.1.	Identify Active and Active in Residence (AIR) HouseholdIDs
+			v7 Updates
+			- 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names (Step 5.1.2)
+			- There must be a bednight in report period to set AIR = 1 for NBN shelters
+	5.2.	Identify Active and Active in Residence (AIR) Enrollments
+			v7 Updates
+			- 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names (Step 5.2.2)
+			- There must be a bednight in report period to set AIR = 1 for NBN shelters
+	5.3.	Get Active Clients for LSAPerson
+			v7 Update
+			- Limit tlsa_Person to people active in residence when LSAScope = 3 (Step 5.3/5.4)
+	5.4.	LSAPerson Demographics
+			v7 Update
+			- Delete logic associated with Gender  (Step 5.3/5.4)
+	5.5.	Time Spent in ES/SH or on the Street – LSAPerson
+	5.6.	Enrollments Relevant to Counting ES/SH/Street Dates
+	5.7.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
+	5.8.	Get Dates to Include in Counts of ES/SH/Street Days (ch_Include)
+	5.9.	Get ES/SH/Street Episodes (ch_Episodes)
+	5.10.	CHTime and CHTimeStatus – LSAPerson
+	5.11.	EST/RRH/PSH/RRHSOAgeMin and EST/RRH/PSH/RRHSOAgeMax – LSAPerson
 
-		None
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode
 
-	5.1 Identify Active and AHAR HouseholdIDs
+	5.1 Identify Active and Active-in-Residence HouseholdIDs
 */
 
 	update hhid
@@ -20,24 +41,18 @@ FY2024 Changes
 	where (hhid.ExitDate is null or hhid.ExitDate >= rpt.ReportStart) 
 
 	update hhid
-	set hhid.AHAR = 1 
+	set hhid.AIR = 1 
 		, hhid.Step = '5.1.2'
-	from tlsa_HHID HHID
-	where hhid.Active = 1 
-		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.LSAProjectType not in (3,13,15)
+	from tlsa_HHID hhid
+	inner join lsa_Report rpt on rpt.ReportEnd >= hhid.EntryDate
+	where (hhid.ExitDate is null or hhid.ExitDate > rpt.ReportStart) 
+		and (hhid.LSAProjectType in (0, 2, 8)
+			or (hhid.LSAProjectType = 1 and hhid.LastBedNight between rpt.ReportStart and rpt.ReportEnd)
+			or (hhid.LSAProjectType in (3,13) and hhid.MoveInDate is not null)
+		)
 		
-	update hhid
-	set hhid.AHAR = 1 
-		, hhid.Step = '5.1.3'
-	from tlsa_HHID HHID
-	where hhid.Active = 1 
-		and hhid.MoveInDate is not null
-		and (hhid.ExitDate is null or hhid.ExitDate > (select ReportStart from lsa_Report)) 
-		and hhid.LSAProjectType in (3,13)
-
 /*
-	5.2  Identify Active and AHAR Enrollments
+	5.2  Identify Active and Active-in-Residence Enrollments
 */
 
 	update n
@@ -50,25 +65,17 @@ FY2024 Changes
 
 
 	update n
-	set n.AHAR = 1
+	set n.AIR = 1
 		, n.Step = '5.2.2'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.AHAR = 1
-	where n.Active = 1
-		and (n.ExitDate is null or n.ExitDate > rpt.ReportStart)
-		and n.LSAProjectType not in (3,13,15)
+	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.AIR = 1
+	where (n.ExitDate is null or n.ExitDate > rpt.ReportStart)
+		and (n.LSAProjectType in (0, 2, 8)
+			or (n.LSAProjectType = 1 and n.LastBedNight between rpt.ReportStart and rpt.ReportEnd)
+			or (n.LSAProjectType in (3,13) and n.MoveInDate is not null)
+		)
 	
-	update n
-	set n.AHAR = 1 
-		, n.Step = '5.2.3'
-	from lsa_Report rpt
-	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_HHID hhid on hhid.HouseholdID = n.HouseholdID and hhid.AHAR = 1
-	where n.Active = 1 
-		and n.MoveInDate is not null
-		and (n.ExitDate is null or n.ExitDate > (select ReportStart from lsa_Report)) 
-		and n.LSAProjectType in (3,13)
 /*
 	5.3 Get Active Clients for LSAPerson 
 	5.4 LSAPerson Demographics 
@@ -76,7 +83,7 @@ FY2024 Changes
 	truncate table tlsa_Person
 
 	insert into tlsa_Person (PersonalID, HoHAdult, 
-		VetStatus, DisabilityStatus, DVStatus, Gender, RaceEthnicity
+		VetStatus, DisabilityStatus, DVStatus, RaceEthnicity
 		, ReportID, Step)
 	select distinct n.PersonalID
 		, HoHAdult.stat
@@ -95,28 +102,6 @@ FY2024 Changes
 			when DV.stat = 10 then 0 
 			when DV.stat is null then 99
 			else DV.stat end 	
-		, case 
-			when c.GenderNone in (8,9) then 98
-			when c.GenderNone = 99 then 99
-			when (c.Woman = 1
-					or c.Man = 1
-					or c.NonBinary = 1
-					or c.CulturallySpecific = 1 
-					or c.Transgender = 1 
-					or c.Questioning = 1
-					or c.DifferentIdentity = 1) then 
-						(select cast (
-							(case when c.Man = 1 then '1' else '' end
-							+ case when c.CulturallySpecific = 1 then '2' else '' end 
-							+ case when c.DifferentIdentity = 1 then '3' else '' end
-							+ case when c.NonBinary = 1 then '4' else '' end
-							+ case when c.Transgender = 1 then '5' else '' end
-							+ case when c.Questioning = 1 then '6' else '' end
-							+ case when c.Woman = 1 then '0' else '' end
-							) as int)
-						from hmis_Client g
-						where g.PersonalID = c.PersonalID)
-			else 99 end
 		, case 
 			when c.RaceNone in (8,9) then 98
 			when c.RaceNone = 99 then 99
@@ -141,7 +126,8 @@ FY2024 Changes
 		, rpt.ReportID
 		, '5.3/5.4'
 	from lsa_Report rpt
-	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd and n.Active = 1
+	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd 
+		and (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 	inner join 
 	--   HoHAdult identifies people served as heads of household or adults at any time in the report period.
 	--     There is no corresponding column in lsa_Person -- it is only used to identify records for which 
@@ -152,19 +138,22 @@ FY2024 Changes
 		  + max(case when n.RelationshipToHoH <> 1 then 0
 			else 2 end) as stat
 		--Equals:  0=Not HoH or Adult, 1=Adult, 2=HoH, 3=Both
-		from tlsa_Enrollment n
-		where n.Active = 1
+		from lsa_Report rpt
+		inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+		where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 		group by n.PersonalID) HoHAdult on HoHAdult.PersonalID = n.PersonalID
 	inner join hmis_Client c on c.PersonalID = n.PersonalID
 	left outer join 
 		(select n.PersonalID, max(n.DisabilityStatus) as stat
-		from tlsa_Enrollment n
-		where n.Active = 1
+		from lsa_Report rpt
+		inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+		where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 		group by n.PersonalID) Disability on Disability.PersonalID = n.PersonalID
 	left outer join 
 		(select n.PersonalID, min(n.DVStatus) as stat
-		from tlsa_Enrollment n
-		where n.Active = 1
+		from lsa_Report rpt
+		inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
+		where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
 		group by n.PersonalID) DV on DV.PersonalID = n.PersonalID	
 
 	update lp
@@ -172,24 +161,24 @@ FY2024 Changes
 		when chk.PersonalID is not null then 0
 		else -1 end
 	from tlsa_Person lp
-	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.HIV = 1
-	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AIR = 1 and n.ActiveAge between 18 and 65 and n.HIV = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AIR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
 
 	update lp
 	set lp.SMI = case when n.PersonalID is not null then 1
 		when chk.PersonalID is not null then 0
 		else -1 end
 	from tlsa_Person lp
-	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.SMI = 1
-	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AIR = 1 and n.ActiveAge between 18 and 65 and n.SMI = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AIR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
 
 	update lp
 	set lp.SUD = case when n.PersonalID is not null then 1
 		when chk.PersonalID is not null then 0
 		else -1 end
 	from tlsa_Person lp
-	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AHAR = 1 and n.ActiveAge between 18 and 65 and n.SUD = 1
-	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AHAR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
+	left outer join tlsa_Enrollment n on n.PersonalID = lp.PersonalID and n.AIR = 1 and n.ActiveAge between 18 and 65 and n.SUD = 1
+	left outer join (select distinct n.PersonalID from tlsa_Enrollment n where n.AIR = 1 and n.ActiveAge between 18 and 65) chk on chk.PersonalID = lp.PersonalID
 
 	update lp
 	set lp.DisabilityStatus = 1

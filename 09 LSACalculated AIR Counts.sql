@@ -1,15 +1,19 @@
 /*
-LSA FY2025 Sample Code
+LSA Sample Code
 Name:  09 LSACalculated AIR Counts.sql  
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
+Last update: 8/5/2025
+-- File name changed from '09 LSACalculated AHAR Counts' to '09 LSACalculated AIR Counts'
 
+Source: LSA Programming Specifications v7 
+	
+	Changes
 	-- File name changed from '09 LSACalculated AHAR Counts' to '09 LSACalculated AIR Counts'
 	-- Replace 'AHAR' in column names with 'AIR' (active in residence)
 	-- Deleted step 9.1.26 (populations associated with gender)
 	
-	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
-	
+
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
 	ref_RowPopulations - Required Populations for each RowID 

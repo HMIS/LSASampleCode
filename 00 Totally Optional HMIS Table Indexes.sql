@@ -1,9 +1,13 @@
 /*
+LSA Sample Code
+00 Totally Optional HMIS Table Indexes.sql
+https://github.com/HMIS/LSASampleCode
 
-LSA FY2025 Sample Code
-Name:  00 Totally Optional HMIS Table Indexes.sql
+Author: Molly McEvilley
+Last Update: 7/31/2025
 
 */
+
 	if not exists (select * from sys.indexes where name = 'ix_hmis_Enrollment_TimesHomelessPastThreeYears_MonthsHomelessPastThreeYears')
 	begin
 		create nonclustered index ix_hmis_Enrollment_TimesHomelessPastThreeYears_MonthsHomelessPastThreeYears on hmis_Enrollment (TimesHomelessPastThreeYears, MonthsHomelessPastThreeYears) include (EnrollmentID)
@@ -52,9 +56,10 @@ Name:  00 Totally Optional HMIS Table Indexes.sql
 	begin
 		create nonclustered index ix_hmis_Enrollment_MonthsHomelessPastThreeYears on hmis_Enrollment (MonthsHomelessPastThreeYears) include (EnrollmentID, LivingSituation, PreviousStreetESSH)
 	end
+	
 	if not exists (select * from sys.indexes where name = 'ix_hmis_Exit_DateDeleted')
 	begin
-		create nonclustered index ix_hmis_Exit_DateDeleted on hmis_Exit (DateDeleted) include (EnrollmentID, ExitDate)
+		create nonclustered index ix_hmis_Exit_DateDeleted on hmis_Exit (DateDeleted) include (EnrollmentID, ExitDate, Destination, DestinationSubsidyType)
 	end
 	if not exists (select * from sys.indexes where name = 'ix_hmis_Exit_ExitDate_Destination')
 	begin

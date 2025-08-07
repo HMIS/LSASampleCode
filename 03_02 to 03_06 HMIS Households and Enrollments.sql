@@ -1,19 +1,21 @@
 /*
-LSA FY2024 Sample Code
-Name:	03_02 to 03_06 HMIS Households and Enrollments.sql 
+LSA Sample Code
+03_02 to 03_06 HMIS Households and Enrollments.sql 
+https://github.com/HMIS/LSASampleCode
+Last update: 8/7/2025
 
-FY2024 Changes
+Source: LSA Programming Specifications v7 
+	3.2.	LSA Reporting Cohorts and Dates (tlsa_CohortDates)
+	3.3.	HMIS Household Enrollments (tlsa_HHID)
+	3.4.	HMIS Client Enrollments (tlsa_Enrollment)		
+	3.5.	Enrollment Ages (tlsa_Enrollment)
+	3.6.	Household Types (tlsa_HHID)
+	5.4		LSAPerson Demographics (HIV, SMI, and SUD)
 
-		3.2 - Set ReportEnd = ReportStart if LSAScope = HIC
-			- Set Exit and Point-in-Time Cohort dates only if LSAScope <> HIC
-		3.3 - Adjust entry/exit dates to align with period of projects' HMIS participation if the dates conflict
-			     and limit reported bednights to periods of HMIS participation
-		3.3.1 - Operating end dates and HMIS participation end dates are considered inactive; enrollment dates 
-				and bed nights must be < operating/HMIS end dates in order to be relevant. 
-
-	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+*/
 
 
+/*
 	3.2 Cohort Dates 
 */
 

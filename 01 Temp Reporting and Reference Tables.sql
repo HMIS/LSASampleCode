@@ -1,16 +1,41 @@
 /*
-LSA FY2025 Sample Code 
-Name:  01 Temp Reporting and Reference Tables.sql
+LSA Sample Code
+01 Temp Reporting and Reference Tables.sql
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
-	
-	-Extend ref_Calendar through 9/30/2026
-	-Replace 'AHAR' in column names with 'AIR' (active in residence)  
-	-Drop 'Gender' column from tlsa_Person
-	-Remove gender-related populations from insert statements to ref_PopHHTypes and ref_RowPopulations
+Author: Molly McEvilley
+Last Update: 7/31/2025
 
+Source: LSA Programming Specifications v7
+Relevant Sections:
+	3.2.	LSA Reporting Cohorts and Dates (tlsa_CohortDates)
+	3.3.	HMIS Household Enrollments (tlsa_HHID)
+			v7 Updates
+			- column 'AHAR' renamed 'AIR' (active in residence) 
+	3.4.	HMIS Client Enrollments (tlsa_Enrollment)
+			v7 Updates
+			- tlsa_Enrollment - column 'AHAR' renamed 'AIR' (active in residence) 
+	5.		HMIS Business Logic: LSAPerson (tlsa_Person)
+			v7 Updates
+			- Drop Gender column
+			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
+	6.3.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
+	6.4.	Get Dates to Include in Counts of ES/SH/Street Days (ch_Include)
+	6.5.	Get ES/SH/Street Episodes (ch_Episodes)
+	   		
+	- ref_PopHHTypes
+		- Remove gender-related populations from insert statements
+	- ref_RowPopulations
+		- Remove gender-related populations from insert statements
+			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
 
-	(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
+Utilities Update:
+	- Extend ref_Calendar through 9/30/2026
+	- ref_PopHHTypes
+		- Remove gender-related populations from insert statements
+	- ref_RowPopulations
+		- Remove gender-related populations from insert statements
+			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
 
 It is not necessary to execute this code every time the LSA is run -- only 
 if/when there are changes to it.   It drops (if tables exist) and creates
@@ -134,8 +159,8 @@ create table tlsa_Enrollment (
 	)
 
 	create index ix_tlsa_Enrollment_AIR on tlsa_Enrollment (AIR) include (PersonalID)
---create index ix_tlsa_Enrollment_PersonalID_AIR on tlsa_Enrollment (PersonalID, AIR)
---create index ix_tlsa_Enrollment_Active on tlsa_Enrollment (Active) include (RelationshipToHoH, ProjectID, EntryDate, ActiveAge)
+	create index ix_tlsa_Enrollment_PersonalID_AIR on tlsa_Enrollment (PersonalID, AIR)
+	--create index ix_tlsa_Enrollment_Active on tlsa_Enrollment (Active) include (RelationshipToHoH, ProjectID, EntryDate, ActiveAge)
 
 if object_id ('tlsa_Person') is not NULL drop table tlsa_Person
 
@@ -232,6 +257,8 @@ if object_id ('ch_Include') is not NULL drop table ch_Include
 	create table ch_Include(
 	PersonalID nvarchar(32) not NULL,
 	ESSHStreetDate date not NULL,
+	episodeEnd date,
+	episodeDays int,
 	Step nvarchar(10) not NULL,
 	constraint pk_ch_Include primary key clustered (PersonalID, ESSHStreetDate)
 	)
@@ -387,6 +414,29 @@ create table tlsa_Household(
 		)
 		;
 
+	if object_id ('ch_Exclude_x') is not NULL drop table ch_Exclude_x
+
+		create table ch_Exclude_x (
+		PersonalID nvarchar(32) not NULL,
+		xStart date not NULL,
+		xEnd date not NULL,
+		Step nvarchar(10) not NULL
+		)
+		;
+
+	if object_id ('ch_Include_x') is not NULL drop table ch_Include_x
+	
+		create table ch_Include_x (
+		PersonalID nvarchar(32) not NULL,
+		ESSHStreetDate date not NULL,
+		epStart int,
+		episodeEnd date,
+		episodeDays int,
+		Step nvarchar(10) not NULL,
+		constraint pk_ch_Include_x primary key clustered (PersonalID, ESSHStreetDate)
+		)
+		;
+
 	if object_id ('ch_Include_exit') is not NULL drop table ch_Include_exit
 	
 		create table ch_Include_exit (
@@ -425,12 +475,15 @@ create table tlsa_Household(
 	create table tlsa_ExitHoHAdult(
 		PersonalID nvarchar(32) not null,
 		QualifyingExitHHID nvarchar(32),
+		EnrollmentID nvarchar(32),
 		Cohort int not NULL,
 		DisabilityStatus int,
 		CHStart date,
 		LastActive date,
 		CHTime int,
 		CHTimeStatus int,
+		DVStatus int,
+		Age int, 
 		Step nvarchar(10) not NULL,
 		constraint pk_tlsa_ExitHoHAdult primary key (PersonalID, QualifyingExitHHID, Cohort)
 		)

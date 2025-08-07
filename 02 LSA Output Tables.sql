@@ -1,14 +1,29 @@
 /*
-LSA FY2025 Sample Code
+LSA Sample Code
 Name:  02 LSA Output Tables.sql 
+https://github.com/HMIS/LSASampleCode
 
-FY2025 Changes
-		
-	-Replace 'AHAR' in column names with 'AIR' (active in residence)  
-	-Drop 'Gender' column from lsa_Person
+Author:  Molly McEvilley
+Last Update: 7/31/2025
 
-		(Detailed revision history maintained at https://github.com/HMIS/LSASampleCode)
-
+Source: LSA Programming Specifications v7  
+	2.1.	Project.csv
+	2.2.	Organization.csv
+	2.3.	Funder.csv
+	2.4.	ProjectCoC.csv
+	2.5.	Inventory.csv
+	2.6.	HMISParticipation.csv
+	2.7.	Affiliation.csv
+	2.8.	LSAReport.csv
+	2.9.	LSAPerson.csv
+			v7 Updates
+			- Drop Gender column
+			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
+	2.10.	LSAHousehold.csv
+			v7 Update
+			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
+	2.11.	LSAExit.csv
+	2.12.	LSACalculated.csv
 
 	It is not necessary to execute this code every time the LSA is run -- only 
 	if/when there are changes to it.  It creates tables in the structure of the 
