@@ -8,6 +8,7 @@ Last update: 7/31/2025
 
 Source: LSA Programming Specifications  v7
 		Changes in Section 7.8 corresponding to updates in the specs (CHTime and CHTimeStatus)
+		Changes in step 7.9.2 corresponding to HMIS column name change from Latinaeo to Latinao
 		
 	7.	HMIS Business Logic: LSAExit
 			
@@ -415,7 +416,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 						when ha.CHTime in (365, 400) and ha.DisabilityStatus = 99 then 3
 						when ha.CHTime in (365, 400) and ha.DisabilityStatus = 0 then 4
 						when ha.CHTime = 270 and ha.DisabilityStatus = 1 and ha.CHTimeStatus = 99 then 5
-						when ha.CHTime = 270 and ha.DisabilityStatus = 1 and ha.CHTimeStatus <> 99 then 6
+						when ha.CHTime = 270 and ha.DisabilityStatus = 1 then 6
 						when ha.CHTimeStatus = 99 and ha.DisabilityStatus <> 0 then 9
 						else null end) as ch
 		from tlsa_ExitHoHAdult ha
@@ -449,7 +450,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 					or r.BlackAfAmerican = 1
 					or r.NativeHIPacific = 1
 					or r.White = 1
-					or r.HispanicLatinaeo = 1
+					or r.HispanicLatinao = 1
 					or r.MidEastNAfrican = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
@@ -457,7 +458,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
 							+ case when r.NativeHIPacific = 1 then '4' else '' end
 							+ case when r.White = 1 then '5' else '' end
-							+ case when r.HispanicLatinaeo = 1 then '6' else '' end
+							+ case when r.HispanicLatinao = 1 then '6' else '' end
 							+ case when r.MidEastNAfrican = 1 then '7' else '' end) as int))
 			else 99 end 
 			from hmis_Client r
