@@ -412,29 +412,6 @@ create table tlsa_Household(
 		)
 		;
 
-	if object_id ('ch_Exclude_x') is not NULL drop table ch_Exclude_x
-
-		create table ch_Exclude_x (
-		PersonalID nvarchar(32) not NULL,
-		xStart date not NULL,
-		xEnd date not NULL,
-		Step nvarchar(10) not NULL
-		)
-		;
-
-	if object_id ('ch_Include_x') is not NULL drop table ch_Include_x
-	
-		create table ch_Include_x (
-		PersonalID nvarchar(32) not NULL,
-		ESSHStreetDate date not NULL,
-		epStart int,
-		episodeEnd date,
-		episodeDays int,
-		Step nvarchar(10) not NULL,
-		constraint pk_ch_Include_x primary key clustered (PersonalID, ESSHStreetDate)
-		)
-		;
-
 	if object_id ('ch_Include_exit') is not NULL drop table ch_Include_exit
 	
 		create table ch_Include_exit (
