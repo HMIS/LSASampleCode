@@ -4,7 +4,7 @@ LSA Sample Code
 https://github.com/HMIS/LSASampleCode
 
 Author: Molly McEvilley
-Last Update: 7/31/2025
+Last Update: 8/21/2025
 
 Source: LSA Programming Specifications v7
 Relevant Sections:
@@ -257,8 +257,6 @@ if object_id ('ch_Include') is not NULL drop table ch_Include
 	create table ch_Include(
 	PersonalID nvarchar(32) not NULL,
 	ESSHStreetDate date not NULL,
-	episodeEnd date,
-	episodeDays int,
 	Step nvarchar(10) not NULL,
 	constraint pk_ch_Include primary key clustered (PersonalID, ESSHStreetDate)
 	)
@@ -482,8 +480,6 @@ create table tlsa_Household(
 		LastActive date,
 		CHTime int,
 		CHTimeStatus int,
-		DVStatus int,
-		Age int, 
 		Step nvarchar(10) not NULL,
 		constraint pk_tlsa_ExitHoHAdult primary key (PersonalID, QualifyingExitHHID, Cohort)
 		)
@@ -877,7 +873,6 @@ insert into ref_PopHHTypes (PopID, HHType) values (77, 1);
 insert into ref_PopHHTypes (PopID, HHType) values (77, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (77, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (77, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (78, 0);
 insert into ref_PopHHTypes (PopID, HHType) values (86, 0);
 insert into ref_PopHHTypes (PopID, HHType) values (86, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (86, 3);
@@ -1404,38 +1399,6 @@ insert into ref_PopHHTypes (PopID, HHType) values (5077, 0);
 insert into ref_PopHHTypes (PopID, HHType) values (5077, 1);
 insert into ref_PopHHTypes (PopID, HHType) values (5077, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5077, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5078, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5078, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5078, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5078, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5079, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5079, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5079, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5079, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5080, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5080, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5080, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5080, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5081, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5081, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5081, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5081, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5082, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5082, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5082, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5082, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5083, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5083, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5083, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5083, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5084, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5084, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5084, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5084, 99);
-insert into ref_PopHHTypes (PopID, HHType) values (5085, 0);
-insert into ref_PopHHTypes (PopID, HHType) values (5085, 1);
-insert into ref_PopHHTypes (PopID, HHType) values (5085, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5085, 99);
 insert into ref_PopHHTypes (PopID, HHType) values (5097, 0);
 insert into ref_PopHHTypes (PopID, HHType) values (5097, 1);
 insert into ref_PopHHTypes (PopID, HHType) values (5097, 2);
