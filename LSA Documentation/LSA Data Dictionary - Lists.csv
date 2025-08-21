@@ -1,921 +1,921 @@
-ï»¿ListNumber,ListName,Values,Text Value,,,,,,,,,,
-1,LSAScope,1,Systemwide,,,,,,,,,,
-1,LSAScope,2,Project-focused,,,,,,,,,,
-1,LSAScope,3,HIC,,,,,,,,,,
-2,Stat,1,Engage with continuum for first time or after at least 730 days inactive,,,,,,,,,,
-2,Stat,2,Return 15-730 days after exit to permanent destination,,,,,,,,,,
-2,Stat,3,Re-engage 15-730 days after exit to temporary destination,,,,,,,,,,
-2,Stat,4,Re-engage 15-730 days after exit to unknown destination,,,,,,,,,,
-2,Stat,5,Continuously engaged,,,,,,,,,,
-3,ReturnTime,-1,Not applicable ,,,,,,,,,,
-3,ReturnTime,30,15-30 days,,,,,,,,,,
-3,ReturnTime,60,31-60 days,,,,,,,,,,
-3,ReturnTime,90,61-90 days,,,,,,,,,,
-3,ReturnTime,180,91-180 days,,,,,,,,,,
-3,ReturnTime,365,181-365 days,,,,,,,,,,
-3,ReturnTime,547,366-547 days,,,,,,,,,,
-3,ReturnTime,730,548-730 days,,,,,,,,,,
-4,HHType,1,AO (adult only),,,,,,,,,,
-4,HHType,2,AC (adult & child),,,,,,,,,,
-4,HHType,3,CO (child only),,,,,,,,,,
-4,HHType,99,UN (unknown),,,,,,,,,,
-5,NoYes,0,No,,,,,,,,,,
-5,NoYes,1,Yes,,,,,,,,,,
-6,RaceEthnicityLSA,1,"American Indian, Alaska Native, or Indigenous",,,,,,,,,,
-6,RaceEthnicityLSA,2,Asian or Asian American,,,,,,,,,,
-6,RaceEthnicityLSA,3,"Black, African American, or African",,,,,,,,,,
-6,RaceEthnicityLSA,4,Native Hawaiian or Pacific Islander,,,,,,,,,,
-6,RaceEthnicityLSA,5,White,,,,,,,,,,
-6,RaceEthnicityLSA,6,Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,7,Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,12,"American Indian, Alaska Native, or Indigenous & Asian or Asian American",,,,,,,,,,
-6,RaceEthnicityLSA,13,"American Indian, Alaska Native, or Indigenous & Black, African American, or African",,,,,,,,,,
-6,RaceEthnicityLSA,14,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,15,"American Indian, Alaska Native, or Indigenous & White",,,,,,,,,,
-6,RaceEthnicityLSA,16,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,17,"American Indian, Alaska Native, or Indigenous & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,23,"Asian or Asian American & Black, African American, or African",,,,,,,,,,
-6,RaceEthnicityLSA,24,Asian or Asian American & Native Hawaiian or Pacific Islander,,,,,,,,,,
-6,RaceEthnicityLSA,25,Asian or Asian American & White,,,,,,,,,,
-6,RaceEthnicityLSA,26,Asian or Asian American & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,27,Asian or Asian American & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,34,"Black, African American, or African & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,35,"Black, African American, or African & White",,,,,,,,,,
-6,RaceEthnicityLSA,36,"Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,37,"Black, African American, or African & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,45,Native Hawaiian or Pacific Islander & White,,,,,,,,,,
-6,RaceEthnicityLSA,46,Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,47,Native Hawaiian or Pacific Islander & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,56,White & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,57,White & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,67,Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,98,Data not provided by client,,,,,,,,,,
-6,RaceEthnicityLSA,99,Data not collected or invalid,,,,,,,,,,
-6,RaceEthnicityLSA,123,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African",,,,,,,,,,
-6,RaceEthnicityLSA,124,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,125,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White",,,,,,,,,,
-6,RaceEthnicityLSA,126,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,127,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,134,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,135,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White",,,,,,,,,,
-6,RaceEthnicityLSA,136,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,137,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,145,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,146,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,147,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,156,"American Indian, Alaska Native, or Indigenous & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,157,"American Indian, Alaska Native, or Indigenous & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,167,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,234,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,235,"Asian or Asian American & Black, African American, or African & White",,,,,,,,,,
-6,RaceEthnicityLSA,236,"Asian or Asian American & Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,237,"Asian or Asian American & Black, African American, or African & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,245,Asian or Asian American & Native Hawaiian or Pacific Islander & White,,,,,,,,,,
-6,RaceEthnicityLSA,246,Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,247,Asian or Asian American & Native Hawaiian or Pacific Islander & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,256,Asian or Asian American & White & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,257,Asian or Asian American & White & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,267,Asian or Asian American & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,345,"Black, African American, or African & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,346,"Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,347,"Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,356,"Black, African American, or African & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,357,"Black, African American, or African & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,367,"Black, African American, or African & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,456,Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,457,Native Hawaiian or Pacific Islander & White & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,467,Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,567,White & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,1234,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander",,,,,,,,,,
-6,RaceEthnicityLSA,1235,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White",,,,,,,,,,
-6,RaceEthnicityLSA,1236,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1237,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1245,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,1246,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1247,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1256,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1257,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1267,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1345,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,1346,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1347,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1356,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1357,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1367,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1456,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,1457,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1467,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1567,"American Indian, Alaska Native, or Indigenous & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,2345,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,2346,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,2347,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,2356,"Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,2357,"Asian or Asian American & Black, African American, or African & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,2367,"Asian or Asian American & Black, African American, or African & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,2456,Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o,,,,,,,,,,
-6,RaceEthnicityLSA,2457,Asian or Asian American & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,2467,Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,2567,Asian or Asian American & White & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,3456,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,3457,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,3467,"Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,3567,"Black, African American, or African & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,4567,Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,12345,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White",,,,,,,,,,
-6,RaceEthnicityLSA,12346,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,12347,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,12356,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,12357,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,12367,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,12456,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,12457,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,12467,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,12567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,13456,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,13457,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,13467,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,13567,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,14567,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,23456,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,23457,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,23467,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,23567,"Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,24567,Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African,,,,,,,,,,
-6,RaceEthnicityLSA,34567,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,123456,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o",,,,,,,,,,
-6,RaceEthnicityLSA,123457,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,123467,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,123567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,124567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,134567,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,234567,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-6,RaceEthnicityLSA,1234567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/e/o & Middle Eastern or North African",,,,,,,,,,
-8,ZeroToThree,0,None,,,,,,,,,,
-8,ZeroToThree,1,One,,,,,,,,,,
-8,ZeroToThree,2,Two,,,,,,,,,,
-8,ZeroToThree,3,Three or more,,,,,,,,,,
-9,HHAdultAge,-1,n/a ,,,,,,,,,,
-9,HHAdultAge,18,The oldest adult is between 18 and 21,,,,,,,,,,
-9,HHAdultAge,24,The oldest adult is between 22 and 24,,,,,,,,,,
-9,HHAdultAge,25,At least one adult is 25 or older; at least one is under 55,,,,,,,,,,
-9,HHAdultAge,55,All adults are 55 or older,,,,,,,,,,
-10,ProjectGroupStatus,0,Not served in project group,,,,,,,,,,
-10,ProjectGroupStatus,2,Served in contiguous period prior to report start only,,,,,,,,,,
-10,ProjectGroupStatus,11,Entered prior to report period; active on last day,,,,,,,,,,
-10,ProjectGroupStatus,12,Enrolled prior to report period; exited during report period,,,,,,,,,,
-10,ProjectGroupStatus,21,Entered during report period; active on last day,,,,,,,,,,
-10,ProjectGroupStatus,22,Entered and exited during report period,,,,,,,,,,
-11,MoveInStatus,-1,Not applicable ,,,,,,,,,,
-11,MoveInStatus,0,Not placed,,,,,,,,,,
-11,MoveInStatus,1,Placed in current report period,,,,,,,,,,
-11,MoveInStatus,2,Placed prior to current report period,,,,,,,,,,
-12,LOTHDays ,0,0 days,,,,,,,,,,
-12,LOTHDays ,7,1-7 days,,,,,,,,,,
-12,LOTHDays ,30,8-30 days,,,,,,,,,,
-12,LOTHDays ,60,31-60 days,,,,,,,,,,
-12,LOTHDays ,90,61-90 days,,,,,,,,,,
-12,LOTHDays ,180,91-180 days,,,,,,,,,,
-12,LOTHDays ,365,181-365 days,,,,,,,,,,
-12,LOTHDays ,547,366-547 days,,,,,,,,,,
-12,LOTHDays ,730,548-730 days,,,,,,,,,,
-12,LOTHDays ,1094,731-1094 days,,,,,,,,,,
-12,LOTHDays ,1095,1095 days+,,,,,,,,,,
-13,GeographyLSA,-1,Not applicable ,,,,,,,,,,
-13,GeographyLSA,1,Urban,,,,,,,,,,
-13,GeographyLSA,2,Suburban,,,,,,,,,,
-13,GeographyLSA,3,Rural,,,,,,,,,,
-13,GeographyLSA,99,Unknown,,,,,,,,,,
-14,LivingSitLSA,-1,Not applicable,,,,,,,,,,
-14,LivingSitLSA,98,Data not provided by client,,,,,,,,,,
-14,LivingSitLSA,99,Data missing or invalid,,,,,,,,,,
-14,LivingSitLSA,101,"Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter",,,,,,,,,,
-14,LivingSitLSA,116,"Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",,,,,,,,,,
-14,LivingSitLSA,118,Safe Haven,,,,,,,,,,
-14,LivingSitLSA,204,Psychiatric hospital or other psychiatric facility,,,,,,,,,,
-14,LivingSitLSA,205,Substance abuse treatment facility or detox center,,,,,,,,,,
-14,LivingSitLSA,206,Hospital or other residential non-psychiatric medical facility,,,,,,,,,,
-14,LivingSitLSA,207,"Jail, prison, or juvenile detention facility",,,,,,,,,,
-14,LivingSitLSA,215,Foster care home or foster care group home,,,,,,,,,,
-14,LivingSitLSA,225,Long-term care facility or nursing home,,,,,,,,,,
-14,LivingSitLSA,302,Transitional housing for homeless persons (including homeless youth),,,,,,,,,,
-14,LivingSitLSA,314,Hotel or motel paid for without emergency shelter voucher,,,,,,,,,,
-14,LivingSitLSA,329,Residential project or halfway house with no homeless criteria,,,,,,,,,,
-14,LivingSitLSA,332,Host Home (non-crisis),,,,,,,,,,
-14,LivingSitLSA,335,"Staying or living in a family memberâ€™s room, apartment, or house",,,,,,,,,,
-14,LivingSitLSA,336,"Staying or living in a friendâ€™s room, apartment, or house",,,,,,,,,,
-14,LivingSitLSA,410,"Rental by client, no ongoing housing subsidy",,,,,,,,,,
-14,LivingSitLSA,411,"Owned by client, no ongoing housing subsidy",,,,,,,,,,
-14,LivingSitLSA,419,Rental by client - VASH housing subsidy,,,,,,,,,,
-14,LivingSitLSA,420,Rental by client - Other ongoing subsidy,,,,,,,,,,
-14,LivingSitLSA,421,"Owned by client, with ongoing housing subsidy",,,,,,,,,,
-14,LivingSitLSA,428,Rental by client - GPD TIP housing subsidy,,,,,,,,,,
-14,LivingSitLSA,431,Rental by client - RRH or equivalent subsidy,,,,,,,,,,
-14,LivingSitLSA,433,Rental by client - HCV voucher (tenant or project based) (not dedicated),,,,,,,,,,
-14,LivingSitLSA,434,Rental by client - Public housing unit,,,,,,,,,,
-14,LivingSitLSA,436,Rental by client - Emergency Housing Voucher,,,,,,,,,,
-14,LivingSitLSA,437,Rental by client - Family Unification Program Voucher (FUP),,,,,,,,,,
-14,LivingSitLSA,438,Rental by client - Foster Youth to Independence Initiative (FYI),,,,,,,,,,
-14,LivingSitLSA,439,Rental by client - Permanent Supportive Housing,,,,,,,,,,
-14,LivingSitLSA,440,Rental by client - Other permanent housing dedicated for formerly homeless persons,,,,,,,,,,
-15,DestinationLSA,-1,Not applicable,,,,,,,,,,
-15,DestinationLSA,24,Deceased,,,,,,,,,,
-15,DestinationLSA,98,Data not provided by client,,,,,,,,,,
-15,DestinationLSA,99,Data missing or invalid,,,,,,,,,,
-15,DestinationLSA,101,"Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter",,,,,,,,,,
-15,DestinationLSA,116,"Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",,,,,,,,,,
-15,DestinationLSA,118,Safe Haven,,,,,,,,,,
-15,DestinationLSA,204,Psychiatric hospital or other psychiatric facility,,,,,,,,,,
-15,DestinationLSA,205,Substance abuse treatment facility or detox center,,,,,,,,,,
-15,DestinationLSA,206,Hospital or other residential non-psychiatric medical facility,,,,,,,,,,
-15,DestinationLSA,207,"Jail, prison, or juvenile detention facility",,,,,,,,,,
-15,DestinationLSA,215,Foster care home or foster care group home,,,,,,,,,,
-15,DestinationLSA,225,Long-term care facility or nursing home,,,,,,,,,,
-15,DestinationLSA,302,Transitional housing for homeless persons (including homeless youth),,,,,,,,,,
-15,DestinationLSA,312,"Staying or living with family, temporary tenure (e.g. room, apartment, or house)",,,,,,,,,,
-15,DestinationLSA,313,"Staying or living with friends, temporary tenure (e.g. room, apartment, or house)",,,,,,,,,,
-15,DestinationLSA,314,Hotel or motel paid for without emergency shelter voucher,,,,,,,,,,
-15,DestinationLSA,327,Moved from one HOPWA funded project to HOPWA TH,,,,,,,,,,
-15,DestinationLSA,329,Residential project or halfway house with no homeless criteria,,,,,,,,,,
-15,DestinationLSA,332,Host Home (non-crisis),,,,,,,,,,
-15,DestinationLSA,410,"Rental by client, no ongoing housing subsidy",,,,,,,,,,
-15,DestinationLSA,411,"Owned by client, no ongoing housing subsidy",,,,,,,,,,
-15,DestinationLSA,419,Rental by client - VASH housing subsidy,,,,,,,,,,
-15,DestinationLSA,420,Rental by client - Other ongoing subsidy,,,,,,,,,,
-15,DestinationLSA,421,"Owned by client, with ongoing housing subsidy",,,,,,,,,,
-15,DestinationLSA,422,"Staying or living with family, permanent tenure",,,,,,,,,,
-15,DestinationLSA,423,"Staying or living with friends, permanent tenure",,,,,,,,,,
-15,DestinationLSA,426,Moved from one HOPWA funded project to HOPWA PH,,,,,,,,,,
-15,DestinationLSA,428,Rental by client - GPD TIP housing subsidy,,,,,,,,,,
-15,DestinationLSA,431,Rental by client - RRH or equivalent subsidy,,,,,,,,,,
-15,DestinationLSA,433,Rental by client - HCV voucher (tenant or project based) (not dedicated),,,,,,,,,,
-15,DestinationLSA,434,Rental by client - Public housing unit,,,,,,,,,,
-15,DestinationLSA,436,Rental by client - Emergency Housing Voucher,,,,,,,,,,
-15,DestinationLSA,437,Rental by client - Family Unification Program Voucher (FUP),,,,,,,,,,
-15,DestinationLSA,438,Rental by client - Foster Youth to Independence Initiative (FYI),,,,,,,,,,
-15,DestinationLSA,439,Rental by client - Permanent Supportive Housing,,,,,,,,,,
-15,DestinationLSA,440,Rental by client - Other permanent housing dedicated for formerly homeless persons,,,,,,,,,,
-16,TimeHousedInPSH,0,None,,,,,,,,,,
-16,TimeHousedInPSH,3,Up to 3 months,,,,,,,,,,
-16,TimeHousedInPSH,6,3-6 months,,,,,,,,,,
-16,TimeHousedInPSH,12,6-12 months,,,,,,,,,,
-16,TimeHousedInPSH,24,12-24 months,,,,,,,,,,
-16,TimeHousedInPSH,36,25-36 months,,,,,,,,,,
-16,TimeHousedInPSH,48,37-48 months,,,,,,,,,,
-16,TimeHousedInPSH,60,49-60 months,,,,,,,,,,
-16,TimeHousedInPSH,84,5-7 years,,,,,,,,,,
-16,TimeHousedInPSH,120,8-10 years,,,,,,,,,,
-16,TimeHousedInPSH,121,10+ years,,,,,,,,,,
-17,SystemPath,-1,Not applicable,,,,,,,,,,
-17,SystemPath,1,ES/SH only,,,,,,,,,,
-17,SystemPath,2,TH only,,,,,,,,,,
-17,SystemPath,3,ES/SH + TH only,,,,,,,,,,
-17,SystemPath,4,RRH only,,,,,,,,,,
-17,SystemPath,5,ES/SH + RRH only,,,,,,,,,,
-17,SystemPath,6,TH + RRH only,,,,,,,,,,
-17,SystemPath,7,ES/SH + TH + RRH only,,,,,,,,,,
-17,SystemPath,8,PSH only,,,,,,,,,,
-17,SystemPath,9,ES/SH + PSH only,,,,,,,,,,
-17,SystemPath,10,ES/SH + RRH + PSH only,,,,,,,,,,
-17,SystemPath,11,RRH + PSH only,,,,,,,,,,
-17,SystemPath,12,All other combinations,,,,,,,,,,
-18,AgeGroupLSA,-1,n/a â€“ not served in project group,,,,,,,,,,
-18,AgeGroupLSA,0,<1,,,,,,,,,,
-18,AgeGroupLSA,2,1 to 2,,,,,,,,,,
-18,AgeGroupLSA,5,3 to 5,,,,,,,,,,
-18,AgeGroupLSA,17,6 to 17,,,,,,,,,,
-18,AgeGroupLSA,21,18 to 21 ,,,,,,,,,,
-18,AgeGroupLSA,24,22 to 24 ,,,,,,,,,,
-18,AgeGroupLSA,34,25 to 34,,,,,,,,,,
-18,AgeGroupLSA,44,35 to 44,,,,,,,,,,
-18,AgeGroupLSA,54,45 to 54 ,,,,,,,,,,
-18,AgeGroupLSA,64,55 to 64,,,,,,,,,,
-18,AgeGroupLSA,65,65 and Older,,,,,,,,,,
-18,AgeGroupLSA,98,Data not provided by client,,,,,,,,,,
-18,AgeGroupLSA,99,Data not collected or invalid,,,,,,,,,,
-20,NoYesOthersLSA,-1,Not applicable,,,,,,,,,,
-20,NoYesOthersLSA,0,No,,,,,,,,,,
-20,NoYesOthersLSA,1,Yes,,,,,,,,,,
-20,NoYesOthersLSA,98,Data not provided by client,,,,,,,,,,
-20,NoYesOthersLSA,99,Data not collected or invalid,,,,,,,,,,
-21,CHTime,-1,Not applicable,,,,,,,,,,
-21,CHTime,0,0-269 days,,,,,,,,,,
-21,CHTime,270,270-364 days,,,,,,,,,,
-21,CHTime,365,365+ days,,,,,,,,,,
-21,CHTime,400,12 or more months in three years (3.917),,,,,,,,,,
-22,CHTimeStatus,-1,Not applicable,,,,,,,,,,
-22,CHTimeStatus,1,At least one continuous 365+ period,,,,,,,,,,
-22,CHTimeStatus,2,4 or more times in ES/SH/Street,,,,,,,,,,
-22,CHTimeStatus,3,Less than 4 times in ES/SH/Street,,,,,,,,,,
-22,CHTimeStatus,99,Unknown,,,,,,,,,,
-23,DVStatus,-1,Not applicable,,,,,,,,,,
-23,DVStatus,0,No history of DV reported,,,,,,,,,,
-23,DVStatus,1,"DV survivor, currently fleeing",,,,,,,,,,
-23,DVStatus,2,"DV survivor, not currently fleeing",,,,,,,,,,
-23,DVStatus,3,"DV survivor, unknown if currently fleeing",,,,,,,,,,
-23,DVStatus,98,Data not provided by client,,,,,,,,,,
-23,DVStatus,99,Data not collected or invalid,,,,,,,,,,
-24,HHTypeCombos,-1,Not applicable,,,,,,,,,,
-24,HHTypeCombos,1,AO,,,,,,,,,,
-24,HHTypeCombos,2,AC,,,,,,,,,,
-24,HHTypeCombos,3,CO,,,,,,,,,,
-24,HHTypeCombos,9,UN,,,,,,,,,,
-24,HHTypeCombos,12,AO and AC,,,,,,,,,,
-24,HHTypeCombos,13,AO and CO,,,,,,,,,,
-24,HHTypeCombos,19,AO and UN,,,,,,,,,,
-24,HHTypeCombos,23,AC and CO,,,,,,,,,,
-24,HHTypeCombos,29,AC and UN,,,,,,,,,,
-24,HHTypeCombos,39,CO and UN,,,,,,,,,,
-24,HHTypeCombos,123,"AO, AC, and CO",,,,,,,,,,
-24,HHTypeCombos,129,"AO, AC, and UN",,,,,,,,,,
-24,HHTypeCombos,139,"AO, CO, and UN",,,,,,,,,,
-24,HHTypeCombos,239,"AC, CO, and UN",,,,,,,,,,
-24,HHTypeCombos,1239,"AO, AC, CO, and UN",,,,,,,,,,
-25,HHTypeCombosNoCO,-1,Not applicable,,,,,,,,,,
-25,HHTypeCombosNoCO,1,AO,,,,,,,,,,
-25,HHTypeCombosNoCO,2,AC,,,,,,,,,,
-25,HHTypeCombosNoCO,9,UN,,,,,,,,,,
-25,HHTypeCombosNoCO,12,AO and AC,,,,,,,,,,
-25,HHTypeCombosNoCO,19,AO and UN,,,,,,,,,,
-25,HHTypeCombosNoCO,29,AC and UN,,,,,,,,,,
-25,HHTypeCombosNoCO,129,"AO, AC, and UN",,,,,,,,,,
-27,ExitCohorts,-2,Exit in period (ReportStart - 2 years) to (ReportEnd â€“ 2 years),,,,,,,,,,
-27,ExitCohorts,-1,Exit in period (ReportStart - 1 year) to (ReportEnd â€“ 1 year),,,,,,,,,,
-27,ExitCohorts,0,"Exit in period (ReportStart) to (ReportEnd â€“ 6 months). If ReportEnd â€“ 6 months < ReportStart, use ReportEnd. ",,,,,,,,,,
-28,ExitFrom,2,ES,,,,,,,,,,
-28,ExitFrom,3,TH,,,,,,,,,,
-28,ExitFrom,4,SH,,,,,,,,,,
-28,ExitFrom,5,RRH after move-in to PH,,,,,,,,,,
-28,ExitFrom,6,PSH after move-in to PH,,,,,,,,,,
-28,ExitFrom,7,RRH without placement in PH,,,,,,,,,,
-28,ExitFrom,8,PSH without placement in PH,,,,,,,,,,
-28,ExitFrom,9,RRH-SO after move-in to PH,,,,,,,,,,
-28,ExitFrom,10,RRH-SO without placement in PH,,,,,,,,,,
-29,CohortsAll,-2,Exit in period (ReportStart - 2 years) to (ReportEnd â€“ 2 years),,,,,,,,,,
-29,CohortsAll,-1,Exit in period (ReportStart - 1 year) to (ReportEnd â€“ 1 year),,,,,,,,,,
-29,CohortsAll,0,Exit in period ReportStart to the later of (ReportEnd â€“ 6 months) or ReportEnd,,,,,,,,,,
-29,CohortsAll,1,Active in the current report period,,,,,,,,,,
-29,CohortsAll,10,Active October 31,,,,,,,,,,
-29,CohortsAll,11,Active January 31,,,,,,,,,,
-29,CohortsAll,12,Active April 30,,,,,,,,,,
-29,CohortsAll,13,Active July 31,,,,,,,,,,
-30,Universe,-1,All,,,,,,,,,,
-30,Universe,2,Return to continuum 15-730 days after exit to permanent destination,,,,,,,,,,
-30,Universe,3,Re-engage with continuum 15-730 days after exit to temporary destination,,,,,,,,,,
-30,Universe,4,Re-engage with continuum 15-730 days after exit to unknown destination,,,,,,,,,,
-30,Universe,10,Project-level,,,,,,,,,,
-30,Universe,11,ES Project Type,,,,,,,,,,
-30,Universe,12,SH Project Type,,,,,,,,,,
-30,Universe,13,TH Project Type,,,,,,,,,,
-30,Universe,14,Housed in RRH,,,,,,,,,,
-30,Universe,15,Housed in PSH,,,,,,,,,,
-30,Universe,16,ES/SH/TH Project Type,,,,,,,,,,
-30,Universe,17,Enrolled in RRH,,,,,,,,,,
-30,Universe,18,Enrolled in PSH,,,,,,,,,,
-31,HHTypeCalc,0,All,,,,,,,,,,
-31,HHTypeCalc,1,AO (adult only),,,,,,,,,,
-31,HHTypeCalc,2,AC (adult & child),,,,,,,,,,
-31,HHTypeCalc,3,CO (child only),,,,,,,,,,
-31,HHTypeCalc,99,UN (unknown),,,,,,,,,,
-32,Population,0,All,,,,,,,,,,
-32,Population,10,Youth Household 18-21,,,,,,,,,,
-32,Population,11,Youth Household 22-24,,,,,,,,,,
-32,Population,12,Parenting Youth Household 18-24,,,,,,,,,,
-32,Population,13,Veteran Household,,,,,,,,,,
-32,Population,14,Non-Veteran Household 25+,,,,,,,,,,
-32,Population,15,Chronically Homeless Household,,,,,,,,,,
-32,Population,16,Long-Term Homeless,,,,,,,,,,
-32,Population,17,Annual Inflow Homeless,,,,,,,,,,
-32,Population,18,Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,19,Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,20,First Time Homeless Household,,,,,,,,,,
-32,Population,21,Household Returning After Exit to PH,,,,,,,,,,
-32,Population,22,Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,23,"American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,24,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,25,Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,26,Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,27,"Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,28,"Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,29,Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,30,Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,31,Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,32,Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,33,Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,34,White (only) HoH,,,,,,,,,,
-32,Population,35,White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,36,Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,37,Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,38,"American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,39,Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,40,"Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,41,Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,42,Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,43,Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,44,White (any combination) HoH,,,,,,,,,,
-32,Population,45,Senior Household 55+,,,,,,,,,,
-32,Population,46,Parenting Child Household,,,,,,,,,,
-32,Population,47,Household with 3+ Children,,,,,,,,,,
-32,Population,48,Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,50,Veteran,,,,,,,,,,
-32,Population,51,Parenting Youth 18-24 ,,,,,,,,,,
-32,Population,52,Parenting Child,,,,,,,,,,
-32,Population,53,Chronically Homeless Adult/HoH,,,,,,,,,,
-32,Population,54,Disabled Adult/HoH,,,,,,,,,,
-32,Population,55,Fleeing Domestic Violence,,,,,,,,,,
-32,Population,56,"American Indian, Alaska Native, or Indigenous (only)",,,,,,,,,,
-32,Population,57,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,58,Asian or Asian American (only),,,,,,,,,,
-32,Population,59,Asian or Asian American & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,60,"Black, African American, or African (only)",,,,,,,,,,
-32,Population,61,"Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,62,Hispanic/Latina/e/o (only),,,,,,,,,,
-32,Population,63,Middle Eastern or North African (only),,,,,,,,,,
-32,Population,64,Middle Eastern or North African & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,65,Native Hawaiian or Pacific Islander (only),,,,,,,,,,
-32,Population,66,Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,67,White (only),,,,,,,,,,
-32,Population,68,White & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,69,Multi-Racial (not Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,70,Multi-Racial & Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,71,"American Indian, Alaska Native, or Indigenous (any combination)",,,,,,,,,,
-32,Population,72,Asian or Asian American (any combination),,,,,,,,,,
-32,Population,73,"Black, African American, or African & Any Other (any combination)",,,,,,,,,,
-32,Population,74,Hispanic/Latina/e/o (any combination),,,,,,,,,,
-32,Population,75,Middle Eastern or North African & Any Other (any combination),,,,,,,,,,
-32,Population,76,Native Hawaiian or Pacific Islander & Any Other (any combination),,,,,,,,,,
-32,Population,77,White (any combination),,,,,,,,,,
-32,Population,86,Less than 1 year,,,,,,,,,,
-32,Population,87,1 to 2 years,,,,,,,,,,
-32,Population,88,3 to 5 years,,,,,,,,,,
-32,Population,89,6 to 17 years,,,,,,,,,,
-32,Population,90,18 to 21 years,,,,,,,,,,
-32,Population,91,22 to 24 years,,,,,,,,,,
-32,Population,92,25 to 34 years,,,,,,,,,,
-32,Population,93,35 to 44 years,,,,,,,,,,
-32,Population,94,45 to 54 years,,,,,,,,,,
-32,Population,95,55 to 64 years,,,,,,,,,,
-32,Population,96,65 and older,,,,,,,,,,
-32,Population,97,Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1015,Youth Household 18-21 - Chronically Homeless Household,,,,,,,,,,
-32,Population,1018,Youth Household 18-21 - Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,1019,Youth Household 18-21 - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1020,Youth Household 18-21 - First Time Homeless Household,,,,,,,,,,
-32,Population,1021,Youth Household 18-21 - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1022,Youth Household 18-21 - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1023,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1024,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1025,Youth Household 18-21 - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1026,Youth Household 18-21 - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1027,"Youth Household 18-21 - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1028,"Youth Household 18-21 - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1029,Youth Household 18-21 - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1030,Youth Household 18-21 - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1031,Youth Household 18-21 - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1032,Youth Household 18-21 - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1033,Youth Household 18-21 - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1034,Youth Household 18-21 - White (only) HoH,,,,,,,,,,
-32,Population,1035,Youth Household 18-21 - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1036,Youth Household 18-21 - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1037,Youth Household 18-21 - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1038,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1039,Youth Household 18-21 - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1040,"Youth Household 18-21 - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1041,Youth Household 18-21 - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1042,Youth Household 18-21 - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1043,Youth Household 18-21 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1044,Youth Household 18-21 - White (any combination) HoH,,,,,,,,,,
-32,Population,1048,Youth Household 18-21 - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1115,Youth Household 22-24 - Chronically Homeless Household,,,,,,,,,,
-32,Population,1118,Youth Household 22-24 - Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,1119,Youth Household 22-24 - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1120,Youth Household 22-24 - First Time Homeless Household,,,,,,,,,,
-32,Population,1121,Youth Household 22-24 - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1122,Youth Household 22-24 - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1123,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1124,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1125,Youth Household 22-24 - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1126,Youth Household 22-24 - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1127,"Youth Household 22-24 - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1128,"Youth Household 22-24 - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1129,Youth Household 22-24 - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1130,Youth Household 22-24 - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1131,Youth Household 22-24 - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1132,Youth Household 22-24 - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1133,Youth Household 22-24 - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1134,Youth Household 22-24 - White (only) HoH,,,,,,,,,,
-32,Population,1135,Youth Household 22-24 - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1136,Youth Household 22-24 - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1137,Youth Household 22-24 - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1138,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1139,Youth Household 22-24 - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1140,"Youth Household 22-24 - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1141,Youth Household 22-24 - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1142,Youth Household 22-24 - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1143,Youth Household 22-24 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1144,Youth Household 22-24 - White (any combination) HoH,,,,,,,,,,
-32,Population,1148,Youth Household 22-24 - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1190,Age 18-21 in AO Youth Household,,,,,,,,,,
-32,Population,1191,Age 22-24 in AO Youth Household,,,,,,,,,,
-32,Population,1215,Parenting Youth Household 18-24 - Chronically Homeless Household,,,,,,,,,,
-32,Population,1218,Parenting Youth Household 18-24 - Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,1219,Parenting Youth Household 18-24 - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1220,Parenting Youth Household 18-24 - First Time Homeless Household,,,,,,,,,,
-32,Population,1221,Parenting Youth Household 18-24 - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1222,Parenting Youth Household 18-24 - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1223,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1224,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1225,Parenting Youth Household 18-24 - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1226,Parenting Youth Household 18-24 - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1227,"Parenting Youth Household 18-24 - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1228,"Parenting Youth Household 18-24 - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1229,Parenting Youth Household 18-24 - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1230,Parenting Youth Household 18-24 - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1231,Parenting Youth Household 18-24 - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1232,Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1233,Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1234,Parenting Youth Household 18-24 - White (only) HoH,,,,,,,,,,
-32,Population,1235,Parenting Youth Household 18-24 - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1236,Parenting Youth Household 18-24 - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1237,Parenting Youth Household 18-24 - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1238,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1239,Parenting Youth Household 18-24 - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1240,"Parenting Youth Household 18-24 - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1241,Parenting Youth Household 18-24 - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1242,Parenting Youth Household 18-24 - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1243,Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1244,Parenting Youth Household 18-24 - White (any combination) HoH,,,,,,,,,,
-32,Population,1248,Parenting Youth Household 18-24 - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1290,Age 18-21 in AC Parenting Youth Household,,,,,,,,,,
-32,Population,1291,Age 22-24 in AC Parenting Youth Household,,,,,,,,,,
-32,Population,1315,Veteran Household - Chronically Homeless Household,,,,,,,,,,
-32,Population,1318,Veteran Household - Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,1319,Veteran Household - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1320,Veteran Household - First Time Homeless Household,,,,,,,,,,
-32,Population,1321,Veteran Household - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1322,Veteran Household - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1323,"Veteran Household - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1324,"Veteran Household - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1325,Veteran Household - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1326,Veteran Household - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1327,"Veteran Household - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1328,"Veteran Household - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1329,Veteran Household - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1330,Veteran Household - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1331,Veteran Household - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1332,Veteran Household - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1333,Veteran Household - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1334,Veteran Household - White (only) HoH,,,,,,,,,,
-32,Population,1335,Veteran Household - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1336,Veteran Household - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1337,Veteran Household - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1338,"Veteran Household - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1339,Veteran Household - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1340,"Veteran Household - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1341,Veteran Household - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1342,Veteran Household - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1343,Veteran Household - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1344,Veteran Household - White (any combination) HoH,,,,,,,,,,
-32,Population,1345,Veteran Household - Senior Household 55+,,,,,,,,,,
-32,Population,1347,Veteran Household - Household with 3+ Children,,,,,,,,,,
-32,Population,1348,Veteran Household - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1415,Non-Veteran Household 25+ - Chronically Homeless Household,,,,,,,,,,
-32,Population,1418,Non-Veteran Household 25+ - Household with Disabled Adult/HoH,,,,,,,,,,
-32,Population,1419,Non-Veteran Household 25+ - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1420,Non-Veteran Household 25+ - First Time Homeless Household,,,,,,,,,,
-32,Population,1421,Non-Veteran Household 25+ - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1422,Non-Veteran Household 25+ - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1423,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1424,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1425,Non-Veteran Household 25+ - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1426,Non-Veteran Household 25+ - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1427,"Non-Veteran Household 25+ - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1428,"Non-Veteran Household 25+ - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1429,Non-Veteran Household 25+ - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1430,Non-Veteran Household 25+ - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1431,Non-Veteran Household 25+ - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1432,Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1433,Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1434,Non-Veteran Household 25+ - White (only) HoH,,,,,,,,,,
-32,Population,1435,Non-Veteran Household 25+ - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1436,Non-Veteran Household 25+ - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1437,Non-Veteran Household 25+ - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1438,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1439,Non-Veteran Household 25+ - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1440,"Non-Veteran Household 25+ - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1441,Non-Veteran Household 25+ - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1442,Non-Veteran Household 25+ - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1443,Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1444,Non-Veteran Household 25+ - White (any combination) HoH,,,,,,,,,,
-32,Population,1445,Non-Veteran Household 25+ - Senior Household 55+,,,,,,,,,,
-32,Population,1448,Non-Veteran Household 25+ - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,1519,Chronically Homeless Household - Household Fleeing Domestic Violence,,,,,,,,,,
-32,Population,1520,Chronically Homeless Household - First Time Homeless Household,,,,,,,,,,
-32,Population,1521,Chronically Homeless Household - Household Returning After Exit to PH,,,,,,,,,,
-32,Population,1522,Chronically Homeless Household - Household Placed in PSH during Report Period,,,,,,,,,,
-32,Population,1523,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous (only) HoH",,,,,,,,,,
-32,Population,1524,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1525,Chronically Homeless Household - Asian or Asian American (only) HoH,,,,,,,,,,
-32,Population,1526,Chronically Homeless Household - Asian or Asian American & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1527,"Chronically Homeless Household - Black, African American, or African (only) HoH",,,,,,,,,,
-32,Population,1528,"Chronically Homeless Household - Black, African American, or African & Hispanic/Latina/e/o HoH",,,,,,,,,,
-32,Population,1529,Chronically Homeless Household - Hispanic/Latina/e/o (only) HoH,,,,,,,,,,
-32,Population,1530,Chronically Homeless Household - Middle Eastern or North African (only) HoH,,,,,,,,,,
-32,Population,1531,Chronically Homeless Household - Middle Eastern or North African & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1532,Chronically Homeless Household - Native Hawaiian or Pacific Islander (only) HoH,,,,,,,,,,
-32,Population,1533,Chronically Homeless Household - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1534,Chronically Homeless Household - White (only) HoH,,,,,,,,,,
-32,Population,1535,Chronically Homeless Household - White & Hispanic/Latina/e/o HoH,,,,,,,,,,
-32,Population,1536,Chronically Homeless Household - Multi-Racial (not Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1537,Chronically Homeless Household - Multi-Racial & Hispanic/Latina/e/o) HoH,,,,,,,,,,
-32,Population,1538,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous (any combination) HoH",,,,,,,,,,
-32,Population,1539,Chronically Homeless Household - Asian or Asian American (any combination) HoH,,,,,,,,,,
-32,Population,1540,"Chronically Homeless Household - Black, African American, or African & Any Other (any combination) HoH",,,,,,,,,,
-32,Population,1541,Chronically Homeless Household - Hispanic/Latina/e/o (any combination) HoH,,,,,,,,,,
-32,Population,1542,Chronically Homeless Household - Middle Eastern or North African & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1543,Chronically Homeless Household - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH,,,,,,,,,,
-32,Population,1544,Chronically Homeless Household - White (any combination) HoH,,,,,,,,,,
-32,Population,1545,Chronically Homeless Household - Senior Household 55+,,,,,,,,,,
-32,Population,1546,Chronically Homeless Household - Parenting Children,,,,,,,,,,
-32,Population,1547,Chronically Homeless Household - Household with 3+ Children,,,,,,,,,,
-32,Population,1548,Chronically Homeless Household - Domestic Violence Survivors Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,5053,Veteran - Chronically Homeless Adult/HoH,,,,,,,,,,
-32,Population,5054,Veteran - Disabled Adult/HoH,,,,,,,,,,
-32,Population,5055,Veteran - Fleeing Domestic Violence,,,,,,,,,,
-32,Population,5056,"Veteran - American Indian, Alaska Native, or Indigenous (only)",,,,,,,,,,
-32,Population,5057,"Veteran - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5058,Veteran - Asian or Asian American (only),,,,,,,,,,
-32,Population,5059,Veteran - Asian or Asian American & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5060,"Veteran - Black, African American, or African (only)",,,,,,,,,,
-32,Population,5061,"Veteran - Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5062,Veteran - Hispanic/Latina/e/o (only),,,,,,,,,,
-32,Population,5063,Veteran - Middle Eastern or North African (only),,,,,,,,,,
-32,Population,5064,Veteran - Middle Eastern or North African & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5065,Veteran - Native Hawaiian or Pacific Islander (only),,,,,,,,,,
-32,Population,5066,Veteran - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5067,Veteran - White (only),,,,,,,,,,
-32,Population,5068,Veteran - White & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5069,Veteran - Multi-Racial (not Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5070,Veteran - Multi-Racial & Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5071,"Veteran - American Indian, Alaska Native, or Indigenous (any combination)",,,,,,,,,,
-32,Population,5072,Veteran - Asian or Asian American (any combination),,,,,,,,,,
-32,Population,5073,"Veteran - Black, African American, or African & Any Other (any combination)",,,,,,,,,,
-32,Population,5074,Veteran - Hispanic/Latina/e/o (any combination),,,,,,,,,,
-32,Population,5075,Veteran - Middle Eastern or North African & Any Other (any combination),,,,,,,,,,
-32,Population,5076,Veteran - Native Hawaiian or Pacific Islander & Any Other (any combination),,,,,,,,,,
-32,Population,5077,Veteran - White (any combination),,,,,,,,,,
-32,Population,5097,Veteran - Domestic Violence Survivor Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,5153,Parenting Youth 18-24  - Chronically Homeless Adult/HoH,,,,,,,,,,
-32,Population,5154,Parenting Youth 18-24  - Disabled Adult/HoH,,,,,,,,,,
-32,Population,5155,Parenting Youth 18-24  - Fleeing Domestic Violence,,,,,,,,,,
-32,Population,5156,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous (only)",,,,,,,,,,
-32,Population,5157,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5158,Parenting Youth 18-24  - Asian or Asian American (only),,,,,,,,,,
-32,Population,5159,Parenting Youth 18-24  - Asian or Asian American & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5160,"Parenting Youth 18-24  - Black, African American, or African (only)",,,,,,,,,,
-32,Population,5161,"Parenting Youth 18-24  - Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5162,Parenting Youth 18-24  - Hispanic/Latina/e/o (only),,,,,,,,,,
-32,Population,5163,Parenting Youth 18-24  - Middle Eastern or North African (only),,,,,,,,,,
-32,Population,5164,Parenting Youth 18-24  - Middle Eastern or North African & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5165,Parenting Youth 18-24  - Native Hawaiian or Pacific Islander (only),,,,,,,,,,
-32,Population,5166,Parenting Youth 18-24  - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5167,Parenting Youth 18-24  - White (only),,,,,,,,,,
-32,Population,5168,Parenting Youth 18-24  - White & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5169,Parenting Youth 18-24  - Multi-Racial (not Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5170,Parenting Youth 18-24  - Multi-Racial & Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5171,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous (any combination)",,,,,,,,,,
-32,Population,5172,Parenting Youth 18-24  - Asian or Asian American (any combination),,,,,,,,,,
-32,Population,5173,"Parenting Youth 18-24  - Black, African American, or African & Any Other (any combination)",,,,,,,,,,
-32,Population,5174,Parenting Youth 18-24  - Hispanic/Latina/e/o (any combination),,,,,,,,,,
-32,Population,5175,Parenting Youth 18-24  - Middle Eastern or North African & Any Other (any combination),,,,,,,,,,
-32,Population,5176,Parenting Youth 18-24  - Native Hawaiian or Pacific Islander & Any Other (any combination),,,,,,,,,,
-32,Population,5177,Parenting Youth 18-24  - White (any combination),,,,,,,,,,
-32,Population,5197,Parenting Youth 18-24 - Domestic Violence Survivor Not Identified as Currently Fleeing,,,,,,,,,,
-32,Population,5253,Parenting Child - Chronically Homeless Adult/HoH,,,,,,,,,,
-32,Population,5254,Parenting Child - Disabled Adult/HoH,,,,,,,,,,
-32,Population,5255,Parenting Child - Fleeing Domestic Violence,,,,,,,,,,
-32,Population,5256,"Parenting Child - American Indian, Alaska Native, or Indigenous (only)",,,,,,,,,,
-32,Population,5257,"Parenting Child - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5258,Parenting Child - Asian or Asian American (only),,,,,,,,,,
-32,Population,5259,Parenting Child - Asian or Asian American & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5260,"Parenting Child - Black, African American, or African (only)",,,,,,,,,,
-32,Population,5261,"Parenting Child - Black, African American, or African & Hispanic/Latina/e/o",,,,,,,,,,
-32,Population,5262,Parenting Child - Hispanic/Latina/e/o (only),,,,,,,,,,
-32,Population,5263,Parenting Child - Middle Eastern or North African (only),,,,,,,,,,
-32,Population,5264,Parenting Child - Middle Eastern or North African & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5265,Parenting Child - Native Hawaiian or Pacific Islander (only),,,,,,,,,,
-32,Population,5266,Parenting Child - Native Hawaiian or Pacific Islander & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5267,Parenting Child - White (only),,,,,,,,,,
-32,Population,5268,Parenting Child - White & Hispanic/Latina/e/o,,,,,,,,,,
-32,Population,5269,Parenting Child - Multi-Racial (not Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5270,Parenting Child - Multi-Racial & Hispanic/Latina/e/o),,,,,,,,,,
-32,Population,5271,"Parenting Child - American Indian, Alaska Native, or Indigenous (any combination)",,,,,,,,,,
-32,Population,5272,Parenting Child - Asian or Asian American (any combination),,,,,,,,,,
-32,Population,5273,"Parenting Child - Black, African American, or African & Any Other (any combination)",,,,,,,,,,
-32,Population,5274,Parenting Child - Hispanic/Latina/e/o (any combination),,,,,,,,,,
-32,Population,5275,Parenting Child - Middle Eastern or North African & Any Other (any combination),,,,,,,,,,
-32,Population,5276,Parenting Child - Native Hawaiian or Pacific Islander & Any Other (any combination),,,,,,,,,,
-32,Population,5277,Parenting Child - White (any combination),,,,,,,,,,
-32,Population,5297,Parenting Child - Domestic Violence Survivor Not Identified as Currently Fleeing,,,,,,,,,,
-33,ReportRow,1,Average days in ES/SH,,,,,,,,,,
-33,ReportRow,2,Average days in TH,,,,,,,,,,
-33,ReportRow,3,Average days in ES/SH or TH,,,,,,,,,,
-33,ReportRow,4,Average days homeless before move-in to RRH/PSH,,,,,,,,,,
-33,ReportRow,5,"Average days documented in ES/SH, TH, or homeless before move-in",,,,,,,,,,
-33,ReportRow,6,Average days homeless self-reported in 3.917,,,,,,,,,,
-33,ReportRow,7,Average days homeless total,,,,,,,,,,
-33,ReportRow,8,Average days housed in RRH,,,,,,,,,,
-33,ReportRow,9,Average days documented homeless or housed in RRH (no 3.917),,,,,,,,,,
-33,ReportRow,10,Average days housed in PSH as of exit date (all exits),,,,,,,,,,
-33,ReportRow,11,Average days housed in PSH for households active on last day,,,,,,,,,,
-33,ReportRow,12,Average days in RRH from start to exit with no move-in date,,,,,,,,,,
-33,ReportRow,13,Average days in RRH from start to report end for active homeless,,,,,,,,,,
-33,ReportRow,14,Average days in RRH from start to move-in date for all housed,,,,,,,,,,
-33,ReportRow,15,Average days in RRH from move-in to exit for housed exiters,,,,,,,,,,
-33,ReportRow,16,Average days in RRH from move-in to report end for active housed,,,,,,,,,,
-33,ReportRow,18,Average days to return after exit from ES,,,,,,,,,,
-33,ReportRow,19,Average days to return after exit from TH,,,,,,,,,,
-33,ReportRow,20,Average days to return after exit from SH,,,,,,,,,,
-33,ReportRow,21,Average days to return after exit from RRH,,,,,,,,,,
-33,ReportRow,22,Average days to return after exit from PSH,,,,,,,,,,
-33,ReportRow,23,Average days to return after exit (all),,,,,,,,,,
-33,ReportRow,24,Average days to return after ES/SH only system path,,,,,,,,,,
-33,ReportRow,25,Average days to return after TH system path,,,,,,,,,,
-33,ReportRow,26,Average days to return after ES/SH/TH system path,,,,,,,,,,
-33,ReportRow,27,Average days to return after RRH only system path,,,,,,,,,,
-33,ReportRow,28,Average days to return after ES/SH/RRH system path,,,,,,,,,,
-33,ReportRow,29,Average days to return after TH/RRH system path,,,,,,,,,,
-33,ReportRow,30,Average days to return after ES/SH/TH/RRH system path,,,,,,,,,,
-33,ReportRow,31,Average days to return after PSH only system path,,,,,,,,,,
-33,ReportRow,32,Average days to return after ES/SH/PSH system path,,,,,,,,,,
-33,ReportRow,33,Average days to return after ES/SH/RRH/PSH system path,,,,,,,,,,
-33,ReportRow,34,Average days to return after RRH/PSH system path,,,,,,,,,,
-33,ReportRow,35,Average days to return after other system path,,,,,,,,,,
-33,ReportRow,36,Average days to return after any system path (excludes those housed in PSH on start date),,,,,,,,,,
-33,ReportRow,53,Count all people in household,,,,,,,,,,
-33,ReportRow,54,Count households,,,,,,,,,,
-33,ReportRow,55,Count of people with characteristic,,,,,,,,,,
-33,ReportRow,56,Count of bed nights for people in household,,,,,,,,,,
-33,ReportRow,57,Count of bed nights for people with characteristic,,,,,,,,,,
-33,ReportRow,63,Average days to return after exit from RRH with no move-in date,,,,,,,,,,
-33,ReportRow,64,Average days to return after exit from PSH with no move-in date,,,,,,,,,,
-33,ReportRow,65,Average days to return after exit from RRH-SO with move-in date,,,,,,,,,,
-33,ReportRow,66,Average days to return after exit from RRH-SO with no move-in date,,,,,,,,,,
-33,ReportRow,101,"Average days to return after exit to Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter",,,,,,,,,,
-33,ReportRow,102,"Average days to return after exit to Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)",,,,,,,,,,
-33,ReportRow,103,Average days to return after exit to Safe Haven,,,,,,,,,,
-33,ReportRow,104,Average days to return after exit to Psychiatric hospital or other psychiatric facility,,,,,,,,,,
-33,ReportRow,105,Average days to return after exit to Substance abuse treatment facility or detox center,,,,,,,,,,
-33,ReportRow,106,Average days to return after exit to Hospital or other residential non-psychiatric medical facility,,,,,,,,,,
-33,ReportRow,107,"Average days to return after exit to Jail, prison, or juvenile detention facility",,,,,,,,,,
-33,ReportRow,108,Average days to return after exit to Foster care home or foster care group home,,,,,,,,,,
-33,ReportRow,109,Average days to return after exit to Long-term care facility or nursing home,,,,,,,,,,
-33,ReportRow,110,Average days to return after exit to Transitional housing for homeless persons (including homeless youth),,,,,,,,,,
-33,ReportRow,111,"Average days to return after exit to Staying or living with family, temporary tenure (e.g. room, apartment, or house)",,,,,,,,,,
-33,ReportRow,112,"Average days to return after exit to Staying or living with friends, temporary tenure (e.g. room, apartment, or house)",,,,,,,,,,
-33,ReportRow,113,Average days to return after exit to Hotel or motel paid for without emergency shelter voucher,,,,,,,,,,
-33,ReportRow,114,Average days to return after exit to Moved from one HOPWA funded project to HOPWA TH,,,,,,,,,,
-33,ReportRow,115,Average days to return after exit to Residential project or halfway house with no homeless criteria,,,,,,,,,,
-33,ReportRow,116,Average days to return after exit to Host Home (non-crisis),,,,,,,,,,
-33,ReportRow,117,"Average days to return after exit to Rental by client, no ongoing housing subsidy",,,,,,,,,,
-33,ReportRow,118,"Average days to return after exit to Owned by client, no ongoing housing subsidy",,,,,,,,,,
-33,ReportRow,119,Average days to return after exit to Rental by client with VASH housing subsidy,,,,,,,,,,
-33,ReportRow,120,Average days to return after exit to Rental by client with Other ongoing subsidy,,,,,,,,,,
-33,ReportRow,121,"Average days to return after exit to Owned by client, with ongoing housing subsidy",,,,,,,,,,
-33,ReportRow,122,"Average days to return after exit to Staying or living with family, permanent tenure",,,,,,,,,,
-33,ReportRow,123,"Average days to return after exit to Staying or living with friends, permanent tenure",,,,,,,,,,
-33,ReportRow,124,Average days to return after exit to Moved from one HOPWA funded project to HOPWA PH,,,,,,,,,,
-33,ReportRow,125,Average days to return after exit to Rental by client with GPD TIP housing subsidy,,,,,,,,,,
-33,ReportRow,126,Average days to return after exit to Rental by client with RRH or equivalent subsidy,,,,,,,,,,
-33,ReportRow,127,Average days to return after exit to Rental by client with HCV voucher (tenant or project based) (not dedicated),,,,,,,,,,
-33,ReportRow,128,Average days to return after exit to Rental by client with Public housing unit,,,,,,,,,,
-33,ReportRow,129,Average days to return after exit to Rental by client with Emergency Housing Voucher,,,,,,,,,,
-33,ReportRow,130,Average days to return after exit to Rental by client with Family Unification Program Voucher (FUP),,,,,,,,,,
-33,ReportRow,131,Average days to return after exit to Rental by client with Foster Youth to Independence Initiative (FYI),,,,,,,,,,
-33,ReportRow,132,Average days to return after exit to Permanent Supportive Housing,,,,,,,,,,
-33,ReportRow,133,Average days to return after exit to Other permanent housing dedicated for formerly homeless persons,,,,,,,,,,
-33,ReportRow,134,Average days to return after exit to Deceased,,,,,,,,,,
-33,ReportRow,135,Average days to return after exit to destination not provided by client,,,,,,,,,,
-33,ReportRow,136,Average days to return after exit with missing/invalid destination,,,,,,,,,,
-33,ReportRow,901,DQ â€“ Active enrollments in inactive projects,,,,,,,,,,
-33,ReportRow,902,DQ â€“ Exits after project operating end date,,,,,,,,,,
-33,ReportRow,903,DQ â€“ Night-by-night enrollments active 90+ days after last bed night ,,,,,,,,,,
-33,ReportRow,904,DQ â€“ Night-by-night enrollments exited with no bed night on the day prior,,,,,,,,,,
-33,ReportRow,905,DQ â€“ Enrollments without a valid EnrollmentCoC,,,,,,,,,,
-33,ReportRow,906,DQ â€“ Enrollments in non-participating projects,,,,,,,,,,
-33,ReportRow,907,DQ â€“ Enrollments without exactly one HoH,,,,,,,,,,
-33,ReportRow,908,DQ â€“ Relationship to HoH,,,,,,,,,,
-33,ReportRow,909,DQ â€“ Household Entry,,,,,,,,,,
-33,ReportRow,910,DQ â€“ Client Entry,,,,,,,,,,
-33,ReportRow,911,DQ â€“ Adult/HoH Entry,,,,,,,,,,
-33,ReportRow,912,DQ â€“ Client Exit,,,,,,,,,,
-33,ReportRow,913,DQ â€“ Disabling Condition,,,,,,,,,,
-33,ReportRow,914,DQ â€“ Living Situation,,,,,,,,,,
-33,ReportRow,915,DQ â€“ Length of Stay,,,,,,,,,,
-33,ReportRow,916,DQ â€“ Date ES/SH/Street Homelessness Started,,,,,,,,,,
-33,ReportRow,917,DQ â€“ Times ES/SH/Street Homeless Last 3 Years,,,,,,,,,,
-33,ReportRow,918,DQ â€“ Months ES/SH/Street Homeless Last 3 Years,,,,,,,,,,
-33,ReportRow,919,DQ â€“ Destination ,,,,,,,,,,
-33,ReportRow,920,DQ â€“ Date of Birth,,,,,,,,,,
-34,ProjectType,0,ES entry/exit,,,,,,,,,,
-34,ProjectType,1,ES night-by-night,,,,,,,,,,
-34,ProjectType,2,TH,,,,,,,,,,
-34,ProjectType,3,PSH,,,,,,,,,,
-34,ProjectType,8,SH,,,,,,,,,,
-34,ProjectType,9,OPH (no services),,,,,,,,,,
-34,ProjectType,10,OPH (no disability requirement),,,,,,,,,,
-34,ProjectType,13,RRH,,,,,,,,,,
-35,RRHSubType,1,RRH: Services Only,,,,,,,,,,
-35,RRHSubType,2,RRH: Housing with or without Services,,,,,,,,,,
-36,TargetPopulation,1,Domestic violence victims,,,,,,,,,,
-36,TargetPopulation,3,People with HIV/AIDS,,,,,,,,,,
-36,TargetPopulation,4,Not applicable,,,,,,,,,,
-37,HousingType,1,Site-based â€“ single site,,,,,,,,,,
-37,HousingType,2,Site-based â€“ clustered / multiple sites,,,,,,,,,,
-37,HousingType,3,Tenant-based - scattered site,,,,,,,,,,
-38,Funder,1,HUD:  CoC â€“ Homelessness Prevention (High Performing Comm.  Only),,,,,,,,,,
-38,Funder,2,HUD:  CoC â€“ Permanent Supportive Housing,,,,,,,,,,
-38,Funder,3,HUD:  CoC â€“ Rapid Re-Housing,,,,,,,,,,
-38,Funder,4,HUD:  CoC â€“ Supportive Services Only,,,,,,,,,,
-38,Funder,5,HUD:  CoC â€“ Transitional Housing,,,,,,,,,,
-38,Funder,6,HUD:  CoC â€“ Safe Haven,,,,,,,,,,
-38,Funder,7,HUD:  CoC â€“ Single Room Occupancy (SRO),,,,,,,,,,
-38,Funder,8,HUD:  ESG â€“ Emergency Shelter (operating and/or essential services),,,,,,,,,,
-38,Funder,9,HUD:  ESG â€“ Homelessness Prevention,,,,,,,,,,
-38,Funder,10,HUD:  ESG â€“ Rapid Rehousing,,,,,,,,,,
-38,Funder,11,HUD:  ESG â€“ Street Outreach,,,,,,,,,,
-38,Funder,13,HUD:  HOPWA â€“ Hotel/Motel Vouchers,,,,,,,,,,
-38,Funder,14,HUD:  HOPWA â€“ Housing Information,,,,,,,,,,
-38,Funder,15,HUD:  HOPWA â€“ Permanent Housing (facility based or TBRA),,,,,,,,,,
-38,Funder,16,HUD:  HOPWA â€“ Permanent Housing Placement ,,,,,,,,,,
-38,Funder,17,"HUD:  HOPWA â€“ Short-Term Rent, Mortgage, Utility assistance",,,,,,,,,,
-38,Funder,18,HUD:  HOPWA â€“ Short-Term Supportive Facility,,,,,,,,,,
-38,Funder,19,HUD:  HOPWA â€“ Transitional Housing (facility based or TBRA),,,,,,,,,,
-38,Funder,20,HUD:  HUD/VASH,,,,,,,,,,
-38,Funder,21,HHS:  PATH â€“ Street Outreach & Supportive Services Only,,,,,,,,,,
-38,Funder,22,HHS:  RHY â€“ Basic Center Program (prevention and shelter),,,,,,,,,,
-38,Funder,23,HHS:  RHY â€“ Maternity Group Home for Pregnant and Parenting Youth,,,,,,,,,,
-38,Funder,24,HHS:  RHY â€“ Transitional Living Program,,,,,,,,,,
-38,Funder,25,HHS:  RHY â€“ Street Outreach Project,,,,,,,,,,
-38,Funder,26,HHS:  RHY â€“ Demonstration Project**,,,,,,,,,,
-38,Funder,27,VA:  CRS Contract Residential Services,,,,,,,,,,
-38,Funder,29,VA:  Domiciliary Care,,,,,,,,,,
-38,Funder,30,VA:  Community Contract Safe Haven Program,,,,,,,,,,
-38,Funder,33,VA:  Supportive Services for Veteran Families,,,,,,,,,,
-38,Funder,34,Not applicable,,,,,,,,,,
-38,Funder,35,HUD:  Pay for Success,,,,,,,,,,
-38,Funder,36,HUD:  Public and Indian Housing (PIH) Programs,,,,,,,,,,
-38,Funder,37,VA:  Grant Per Diem â€“ Bridge Housing,,,,,,,,,,
-38,Funder,38,VA:  Grant Per Diem â€“ Low Demand,,,,,,,,,,
-38,Funder,39,VA:  Grant Per Diem â€“ Hospital to Housing,,,,,,,,,,
-38,Funder,40,VA:  Grant Per Diem â€“ Clinical Treatment,,,,,,,,,,
-38,Funder,41,VA:  Grant Per Diem â€“ Service Intensive Transitional Housing,,,,,,,,,,
-38,Funder,42,VA:  Grant Per Diem â€“ Transition in Place,,,,,,,,,,
-38,Funder,43,HUD:  CoC Youth Demonstration Program (YHDP),,,,,,,,,,
-38,Funder,44,HUD:  CoC Joint Component TH/RRH,,,,,,,,,,
-38,Funder,45,VA:  Grant Per Diem â€“ Case Management/Housing Retention,,,,,,,,,,
-38,Funder,46,Local or Other Funding Source,,,,,,,,,,
-38,Funder,50,HUD: HOME,,,,,,,,,,
-38,Funder,51,HUD: HOME (ARP),,,,,,,,,,
-38,Funder,52,HUD: PIH (Emergency Housing Voucher),,,,,,,,,,
-38,Funder,53,HUD: ESG-RUSH,,,,,,,,,,
-38,Funder,54,HUD: Unsheltered Special NOFO,,,,,,,,,,
-38,Funder,55,HUD: Rural Special NOFO,,,,,,,,,,
-38,Funder,56,HUD: CoC Builds,,,,,,,,,,
-39,HHTypeHMIS,1,Households without children,,,,,,,,,,
-39,HHTypeHMIS,3,Households with at least one adult and one child,,,,,,,,,,
-39,HHTypeHMIS,4,Households with only children,,,,,,,,,,
-40,Availability,1,Year-round,,,,,,,,,,
-40,Availability,2,Seasonal,,,,,,,,,,
-40,Availability,3,Overflow,,,,,,,,,,
-41,BedType,1,Facility-based,,,,,,,,,,
-41,BedType,2,Voucher,,,,,,,,,,
-41,BedType,3,Other,,,,,,,,,,
-42,GeographyType,1,Urban,,,,,,,,,,
-42,GeographyType,2,Suburban,,,,,,,,,,
-42,GeographyType,3,Rural,,,,,,,,,,
-42,GeographyType,99,Unknown / data not collected,,,,,,,,,,
-43,HHChronic,0,Not Chronically Homeless (no missing data),,,,,,,,,,
-43,HHChronic,1,Chronically Homeless,,,,,,,,,,
-43,HHChronic,2,Long-Term Homeless with Disability,,,,,,,,,,
-43,HHChronic,3,Long-Term Homeless Missing Disability Info,,,,,,,,,,
-43,HHChronic,4,Long-Term Homeless without Disability,,,,,,,,,,
-43,HHChronic,5,Homeless > 6 Months with Disability (missing data),,,,,,,,,,
-43,HHChronic,6,Homeless > 6 Months with Disability (no missing data),,,,,,,,,,
-43,HHChronic,9,CH Status Unknown (missing data),,,,,,,,,,
-44,NoYesNA,0,No,,,,,,,,,,
-44,NoYesNA,1,Yes,,,,,,,,,,
-44,NoYesNA,-1,Not applicable,,,,,,,,,,
-45,NoYesHOPWA,0,No,,,,,,,,,,
-45,NoYesHOPWA,1,Yes,,,,,,,,,,
-45,NoYesHOPWA,2,Non-HOPWA Funded Project,,,,,,,,,,
-46,DisabilityStatus,-1,Not applicable,,,,,,,,,,
-46,DisabilityStatus,0,Not disabled,,,,,,,,,,
-46,DisabilityStatus,1,Disabled,,,,,,,,,,
-46,DisabilityStatus,99,Unknown,,,,,,,,,,
-47,HMISParticipationType,0,Not Participating,,,,,,,,,,
-47,HMISParticipationType,1,HMIS Participating,,,,,,,,,,
-47,HMISParticipationType,2,Comparable Database Participating,,,,,,,,,,
-48,HHFleeingDV,0,No Reported History of DV,,,,,,,,,,
-48,HHFleeingDV,1,Household Fleeing Domestic Violence,,,,,,,,,,
-48,HHFleeingDV,2,Domestic Violence Survivors not  Currently Fleeing,,,,,,,,,,
-48,HHFleeingDV,3,Domestic Violence Survivors (Unknown if Currently Fleeing),,,,,,,,,,
+id,name,intValue,textValue
+1,"LSAScope",1,"Systemwide"
+1,"LSAScope",2,"Project-focused"
+1,"LSAScope",3,"HIC"
+2,"Stat",1,"Engage with continuum for first time or after at least 730 days inactive"
+2,"Stat",2,"Return 15-730 days after exit to permanent destination"
+2,"Stat",3,"Re-engage 15-730 days after exit to temporary destination"
+2,"Stat",4,"Re-engage 15-730 days after exit to unknown destination"
+2,"Stat",5,"Continuously engaged"
+3,"ReturnTime",-1,"Not applicable "
+3,"ReturnTime",30,"15-30 days"
+3,"ReturnTime",60,"31-60 days"
+3,"ReturnTime",90,"61-90 days"
+3,"ReturnTime",180,"91-180 days"
+3,"ReturnTime",365,"181-365 days"
+3,"ReturnTime",547,"366-547 days"
+3,"ReturnTime",730,"548-730 days"
+4,"HHType",1,"AO (adult only)"
+4,"HHType",2,"AC (adult & child)"
+4,"HHType",3,"CO (child only)"
+4,"HHType",99,"UN (unknown)"
+5,"NoYes",0,"No"
+5,"NoYes",1,"Yes"
+6,"RaceEthnicityLSA",1,"American Indian, Alaska Native, or Indigenous"
+6,"RaceEthnicityLSA",2,"Asian or Asian American"
+6,"RaceEthnicityLSA",3,"Black, African American, or African"
+6,"RaceEthnicityLSA",4,"Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",5,"White"
+6,"RaceEthnicityLSA",6,"Hispanic/Latina/o"
+6,"RaceEthnicityLSA",7,"Middle Eastern or North African"
+6,"RaceEthnicityLSA",12,"American Indian, Alaska Native, or Indigenous & Asian or Asian American"
+6,"RaceEthnicityLSA",13,"American Indian, Alaska Native, or Indigenous & Black, African American, or African"
+6,"RaceEthnicityLSA",14,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",15,"American Indian, Alaska Native, or Indigenous & White"
+6,"RaceEthnicityLSA",16,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",17,"American Indian, Alaska Native, or Indigenous & Middle Eastern or North African"
+6,"RaceEthnicityLSA",23,"Asian or Asian American & Black, African American, or African"
+6,"RaceEthnicityLSA",24,"Asian or Asian American & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",25,"Asian or Asian American & White"
+6,"RaceEthnicityLSA",26,"Asian or Asian American & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",27,"Asian or Asian American & Middle Eastern or North African"
+6,"RaceEthnicityLSA",34,"Black, African American, or African & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",35,"Black, African American, or African & White"
+6,"RaceEthnicityLSA",36,"Black, African American, or African & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",37,"Black, African American, or African & Middle Eastern or North African"
+6,"RaceEthnicityLSA",45,"Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",46,"Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",47,"Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",56,"White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",57,"White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",67,"Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",98,"Data not provided by client"
+6,"RaceEthnicityLSA",99,"Data not collected or invalid"
+6,"RaceEthnicityLSA",123,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African"
+6,"RaceEthnicityLSA",124,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",125,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White"
+6,"RaceEthnicityLSA",126,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",127,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Middle Eastern or North African"
+6,"RaceEthnicityLSA",134,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",135,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White"
+6,"RaceEthnicityLSA",136,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",137,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Middle Eastern or North African"
+6,"RaceEthnicityLSA",145,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",146,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",147,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",156,"American Indian, Alaska Native, or Indigenous & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",157,"American Indian, Alaska Native, or Indigenous & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",167,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",234,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",235,"Asian or Asian American & Black, African American, or African & White"
+6,"RaceEthnicityLSA",236,"Asian or Asian American & Black, African American, or African & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",237,"Asian or Asian American & Black, African American, or African & Middle Eastern or North African"
+6,"RaceEthnicityLSA",245,"Asian or Asian American & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",246,"Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",247,"Asian or Asian American & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",256,"Asian or Asian American & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",257,"Asian or Asian American & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",267,"Asian or Asian American & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",345,"Black, African American, or African & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",346,"Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",347,"Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",356,"Black, African American, or African & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",357,"Black, African American, or African & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",367,"Black, African American, or African & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",456,"Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",457,"Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",467,"Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",567,"White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1234,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander"
+6,"RaceEthnicityLSA",1235,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White"
+6,"RaceEthnicityLSA",1236,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1237,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1245,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",1246,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1247,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1256,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1257,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1267,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1345,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",1346,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1347,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1356,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1357,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1367,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1456,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",1457,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1467,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1567,"American Indian, Alaska Native, or Indigenous & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2345,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",2346,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",2347,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2356,"Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",2357,"Asian or Asian American & Black, African American, or African & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2367,"Asian or Asian American & Black, African American, or African & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2456,"Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",2457,"Asian or Asian American & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2467,"Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",2567,"Asian or Asian American & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",3456,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",3457,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",3467,"Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",3567,"Black, African American, or African & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",4567,"Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12345,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White"
+6,"RaceEthnicityLSA",12346,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",12347,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12356,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",12357,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12367,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12456,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",12457,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12467,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",12567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",13456,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",13457,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",13467,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",13567,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",14567,"American Indian, Alaska Native, or Indigenous & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",23456,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",23457,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",23467,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",23567,"Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",24567,"Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",34567,"Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",123456,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o"
+6,"RaceEthnicityLSA",123457,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Middle Eastern or North African"
+6,"RaceEthnicityLSA",123467,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",123567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",124567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",134567,"American Indian, Alaska Native, or Indigenous & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",234567,"Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+6,"RaceEthnicityLSA",1234567,"American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African"
+8,"ZeroToThree",0,"None"
+8,"ZeroToThree",1,"One"
+8,"ZeroToThree",2,"Two"
+8,"ZeroToThree",3,"Three or more"
+9,"HHAdultAge",-1,"n/a "
+9,"HHAdultAge",18,"The oldest adult is between 18 and 21"
+9,"HHAdultAge",24,"The oldest adult is between 22 and 24"
+9,"HHAdultAge",25,"At least one adult is 25 or older; at least one is under 55"
+9,"HHAdultAge",55,"All adults are 55 or older"
+10,"ProjectGroupStatus",0,"Not served in project group"
+10,"ProjectGroupStatus",2,"Served in contiguous period prior to report start only"
+10,"ProjectGroupStatus",11,"Entered prior to report period; active on last day"
+10,"ProjectGroupStatus",12,"Enrolled prior to report period; exited during report period"
+10,"ProjectGroupStatus",21,"Entered during report period; active on last day"
+10,"ProjectGroupStatus",22,"Entered and exited during report period"
+11,"MoveInStatus",-1,"Not applicable "
+11,"MoveInStatus",0,"Not placed"
+11,"MoveInStatus",1,"Placed in current report period"
+11,"MoveInStatus",2,"Placed prior to current report period"
+12,"LOTHDays ",0,"0 days"
+12,"LOTHDays ",7,"1-7 days"
+12,"LOTHDays ",30,"8-30 days"
+12,"LOTHDays ",60,"31-60 days"
+12,"LOTHDays ",90,"61-90 days"
+12,"LOTHDays ",180,"91-180 days"
+12,"LOTHDays ",365,"181-365 days"
+12,"LOTHDays ",547,"366-547 days"
+12,"LOTHDays ",730,"548-730 days"
+12,"LOTHDays ",1094,"731-1094 days"
+12,"LOTHDays ",1095,"1095 days+"
+13,"GeographyLSA",-1,"Not applicable "
+13,"GeographyLSA",1,"Urban"
+13,"GeographyLSA",2,"Suburban"
+13,"GeographyLSA",3,"Rural"
+13,"GeographyLSA",99,"Unknown"
+14,"LivingSitLSA",-1,"Not applicable"
+14,"LivingSitLSA",98,"Data not provided by client"
+14,"LivingSitLSA",99,"Data missing or invalid"
+14,"LivingSitLSA",101,"Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter"
+14,"LivingSitLSA",116,"Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)"
+14,"LivingSitLSA",118,"Safe Haven"
+14,"LivingSitLSA",204,"Psychiatric hospital or other psychiatric facility"
+14,"LivingSitLSA",205,"Substance abuse treatment facility or detox center"
+14,"LivingSitLSA",206,"Hospital or other residential non-psychiatric medical facility"
+14,"LivingSitLSA",207,"Jail, prison, or juvenile detention facility"
+14,"LivingSitLSA",215,"Foster care home or foster care group home"
+14,"LivingSitLSA",225,"Long-term care facility or nursing home"
+14,"LivingSitLSA",302,"Transitional housing for homeless persons (including homeless youth)"
+14,"LivingSitLSA",314,"Hotel or motel paid for without emergency shelter voucher"
+14,"LivingSitLSA",329,"Residential project or halfway house with no homeless criteria"
+14,"LivingSitLSA",332,"Host Home (non-crisis)"
+14,"LivingSitLSA",335,"Staying or living in a family member’s room, apartment, or house"
+14,"LivingSitLSA",336,"Staying or living in a friend’s room, apartment, or house"
+14,"LivingSitLSA",410,"Rental by client, no ongoing housing subsidy"
+14,"LivingSitLSA",411,"Owned by client, no ongoing housing subsidy"
+14,"LivingSitLSA",419,"Rental by client - VASH housing subsidy"
+14,"LivingSitLSA",420,"Rental by client - Other ongoing subsidy"
+14,"LivingSitLSA",421,"Owned by client, with ongoing housing subsidy"
+14,"LivingSitLSA",428,"Rental by client - GPD TIP housing subsidy"
+14,"LivingSitLSA",431,"Rental by client - RRH or equivalent subsidy"
+14,"LivingSitLSA",433,"Rental by client - HCV voucher (tenant or project based) (not dedicated)"
+14,"LivingSitLSA",434,"Rental by client - Public housing unit"
+14,"LivingSitLSA",436,"Rental by client - Emergency Housing Voucher"
+14,"LivingSitLSA",437,"Rental by client - Family Unification Program Voucher (FUP)"
+14,"LivingSitLSA",438,"Rental by client - Foster Youth to Independence Initiative (FYI)"
+14,"LivingSitLSA",439,"Rental by client - Permanent Supportive Housing"
+14,"LivingSitLSA",440,"Rental by client - Other permanent housing dedicated for formerly homeless persons"
+15,"DestinationLSA",-1,"Not applicable"
+15,"DestinationLSA",24,"Deceased"
+15,"DestinationLSA",98,"Data not provided by client"
+15,"DestinationLSA",99,"Data missing or invalid"
+15,"DestinationLSA",101,"Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter"
+15,"DestinationLSA",116,"Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)"
+15,"DestinationLSA",118,"Safe Haven"
+15,"DestinationLSA",204,"Psychiatric hospital or other psychiatric facility"
+15,"DestinationLSA",205,"Substance abuse treatment facility or detox center"
+15,"DestinationLSA",206,"Hospital or other residential non-psychiatric medical facility"
+15,"DestinationLSA",207,"Jail, prison, or juvenile detention facility"
+15,"DestinationLSA",215,"Foster care home or foster care group home"
+15,"DestinationLSA",225,"Long-term care facility or nursing home"
+15,"DestinationLSA",302,"Transitional housing for homeless persons (including homeless youth)"
+15,"DestinationLSA",312,"Staying or living with family, temporary tenure (e.g. room, apartment, or house)"
+15,"DestinationLSA",313,"Staying or living with friends, temporary tenure (e.g. room, apartment, or house)"
+15,"DestinationLSA",314,"Hotel or motel paid for without emergency shelter voucher"
+15,"DestinationLSA",327,"Moved from one HOPWA funded project to HOPWA TH"
+15,"DestinationLSA",329,"Residential project or halfway house with no homeless criteria"
+15,"DestinationLSA",332,"Host Home (non-crisis)"
+15,"DestinationLSA",410,"Rental by client, no ongoing housing subsidy"
+15,"DestinationLSA",411,"Owned by client, no ongoing housing subsidy"
+15,"DestinationLSA",419,"Rental by client - VASH housing subsidy"
+15,"DestinationLSA",420,"Rental by client - Other ongoing subsidy"
+15,"DestinationLSA",421,"Owned by client, with ongoing housing subsidy"
+15,"DestinationLSA",422,"Staying or living with family, permanent tenure"
+15,"DestinationLSA",423,"Staying or living with friends, permanent tenure"
+15,"DestinationLSA",426,"Moved from one HOPWA funded project to HOPWA PH"
+15,"DestinationLSA",428,"Rental by client - GPD TIP housing subsidy"
+15,"DestinationLSA",431,"Rental by client - RRH or equivalent subsidy"
+15,"DestinationLSA",433,"Rental by client - HCV voucher (tenant or project based) (not dedicated)"
+15,"DestinationLSA",434,"Rental by client - Public housing unit"
+15,"DestinationLSA",436,"Rental by client - Emergency Housing Voucher"
+15,"DestinationLSA",437,"Rental by client - Family Unification Program Voucher (FUP)"
+15,"DestinationLSA",438,"Rental by client - Foster Youth to Independence Initiative (FYI)"
+15,"DestinationLSA",439,"Rental by client - Permanent Supportive Housing"
+15,"DestinationLSA",440,"Rental by client - Other permanent housing dedicated for formerly homeless persons"
+16,"TimeHousedInPSH",0,"None"
+16,"TimeHousedInPSH",3,"Up to 3 months"
+16,"TimeHousedInPSH",6,"3-6 months"
+16,"TimeHousedInPSH",12,"6-12 months"
+16,"TimeHousedInPSH",24,"12-24 months"
+16,"TimeHousedInPSH",36,"25-36 months"
+16,"TimeHousedInPSH",48,"37-48 months"
+16,"TimeHousedInPSH",60,"49-60 months"
+16,"TimeHousedInPSH",84,"5-7 years"
+16,"TimeHousedInPSH",120,"8-10 years"
+16,"TimeHousedInPSH",121,"10+ years"
+17,"SystemPath",-1,"Not applicable"
+17,"SystemPath",1,"ES/SH only"
+17,"SystemPath",2,"TH only"
+17,"SystemPath",3,"ES/SH + TH only"
+17,"SystemPath",4,"RRH only"
+17,"SystemPath",5,"ES/SH + RRH only"
+17,"SystemPath",6,"TH + RRH only"
+17,"SystemPath",7,"ES/SH + TH + RRH only"
+17,"SystemPath",8,"PSH only"
+17,"SystemPath",9,"ES/SH + PSH only"
+17,"SystemPath",10,"ES/SH + RRH + PSH only"
+17,"SystemPath",11,"RRH + PSH only"
+17,"SystemPath",12,"All other combinations"
+18,"AgeGroupLSA",-1,"n/a – not served in project group"
+18,"AgeGroupLSA",0,"<1"
+18,"AgeGroupLSA",2,"1 to 2"
+18,"AgeGroupLSA",5,"3 to 5"
+18,"AgeGroupLSA",17,"6 to 17"
+18,"AgeGroupLSA",21,"18 to 21 "
+18,"AgeGroupLSA",24,"22 to 24 "
+18,"AgeGroupLSA",34,"25 to 34"
+18,"AgeGroupLSA",44,"35 to 44"
+18,"AgeGroupLSA",54,"45 to 54 "
+18,"AgeGroupLSA",64,"55 to 64"
+18,"AgeGroupLSA",65,"65 and Older"
+18,"AgeGroupLSA",98,"Data not provided by client"
+18,"AgeGroupLSA",99,"Data not collected or invalid"
+20,"NoYesOthersLSA",-1,"Not applicable"
+20,"NoYesOthersLSA",0,"No"
+20,"NoYesOthersLSA",1,"Yes"
+20,"NoYesOthersLSA",98,"Data not provided by client"
+20,"NoYesOthersLSA",99,"Data not collected or invalid"
+21,"CHTime",-1,"Not applicable"
+21,"CHTime",0,"0-269 days"
+21,"CHTime",270,"270-364 days"
+21,"CHTime",365,"365+ days"
+21,"CHTime",400,"12 or more months in three years (3.917)"
+22,"CHTimeStatus",-1,"Not applicable"
+22,"CHTimeStatus",1,"At least one continuous 365+ period"
+22,"CHTimeStatus",2,"4 or more times in ES/SH/Street"
+22,"CHTimeStatus",3,"Less than 4 times in ES/SH/Street"
+22,"CHTimeStatus",99,"Unknown"
+23,"DVStatus",-1,"Not applicable"
+23,"DVStatus",0,"No history of DV reported"
+23,"DVStatus",1,"DV survivor, currently fleeing"
+23,"DVStatus",2,"DV survivor, not currently fleeing"
+23,"DVStatus",3,"DV survivor, unknown if currently fleeing"
+23,"DVStatus",98,"Data not provided by client"
+23,"DVStatus",99,"Data not collected or invalid"
+24,"HHTypeCombos",-1,"Not applicable"
+24,"HHTypeCombos",1,"AO"
+24,"HHTypeCombos",2,"AC"
+24,"HHTypeCombos",3,"CO"
+24,"HHTypeCombos",9,"UN"
+24,"HHTypeCombos",12,"AO and AC"
+24,"HHTypeCombos",13,"AO and CO"
+24,"HHTypeCombos",19,"AO and UN"
+24,"HHTypeCombos",23,"AC and CO"
+24,"HHTypeCombos",29,"AC and UN"
+24,"HHTypeCombos",39,"CO and UN"
+24,"HHTypeCombos",123,"AO, AC, and CO"
+24,"HHTypeCombos",129,"AO, AC, and UN"
+24,"HHTypeCombos",139,"AO, CO, and UN"
+24,"HHTypeCombos",239,"AC, CO, and UN"
+24,"HHTypeCombos",1239,"AO, AC, CO, and UN"
+25,"HHTypeCombosNoCO",-1,"Not applicable"
+25,"HHTypeCombosNoCO",1,"AO"
+25,"HHTypeCombosNoCO",2,"AC"
+25,"HHTypeCombosNoCO",9,"UN"
+25,"HHTypeCombosNoCO",12,"AO and AC"
+25,"HHTypeCombosNoCO",19,"AO and UN"
+25,"HHTypeCombosNoCO",29,"AC and UN"
+25,"HHTypeCombosNoCO",129,"AO, AC, and UN"
+27,"ExitCohorts",-2,"Exit in period (ReportStart - 2 years) to (ReportEnd – 2 years)"
+27,"ExitCohorts",-1,"Exit in period (ReportStart - 1 year) to (ReportEnd – 1 year)"
+27,"ExitCohorts",0,"Exit in period (ReportStart) to (ReportEnd – 6 months). If ReportEnd – 6 months < ReportStart, use ReportEnd. "
+28,"ExitFrom",2,"ES"
+28,"ExitFrom",3,"TH"
+28,"ExitFrom",4,"SH"
+28,"ExitFrom",5,"RRH after move-in to PH"
+28,"ExitFrom",6,"PSH after move-in to PH"
+28,"ExitFrom",7,"RRH without placement in PH"
+28,"ExitFrom",8,"PSH without placement in PH"
+28,"ExitFrom",9,"RRH-SO after move-in to PH"
+28,"ExitFrom",10,"RRH-SO without placement in PH"
+29,"CohortsAll",-2,"Exit in period (ReportStart - 2 years) to (ReportEnd – 2 years)"
+29,"CohortsAll",-1,"Exit in period (ReportStart - 1 year) to (ReportEnd – 1 year)"
+29,"CohortsAll",0,"Exit in period ReportStart to the later of (ReportEnd – 6 months) or ReportEnd"
+29,"CohortsAll",1,"Active in the current report period"
+29,"CohortsAll",10,"Active October 31"
+29,"CohortsAll",11,"Active January 31"
+29,"CohortsAll",12,"Active April 30"
+29,"CohortsAll",13,"Active July 31"
+30,"Universe",-1,"All"
+30,"Universe",2,"Return to continuum 15-730 days after exit to permanent destination"
+30,"Universe",3,"Re-engage with continuum 15-730 days after exit to temporary destination"
+30,"Universe",4,"Re-engage with continuum 15-730 days after exit to unknown destination"
+30,"Universe",10,"Project-level"
+30,"Universe",11,"ES Project Type"
+30,"Universe",12,"SH Project Type"
+30,"Universe",13,"TH Project Type"
+30,"Universe",14,"Housed in RRH"
+30,"Universe",15,"Housed in PSH"
+30,"Universe",16,"ES/SH/TH Project Type"
+30,"Universe",17,"Enrolled in RRH"
+30,"Universe",18,"Enrolled in PSH"
+31,"HHTypeCalc",0,"All"
+31,"HHTypeCalc",1,"AO (adult only)"
+31,"HHTypeCalc",2,"AC (adult & child)"
+31,"HHTypeCalc",3,"CO (child only)"
+31,"HHTypeCalc",99,"UN (unknown)"
+32,"Population",0,"All"
+32,"Population",10,"Youth Household 18-21"
+32,"Population",11,"Youth Household 22-24"
+32,"Population",12,"Parenting Youth Household 18-24"
+32,"Population",13,"Veteran Household"
+32,"Population",14,"Non-Veteran Household 25+"
+32,"Population",15,"Chronically Homeless Household"
+32,"Population",16,"Long-Term Homeless"
+32,"Population",17,"Annual Inflow Homeless"
+32,"Population",18,"Household with Disabled Adult/HoH"
+32,"Population",19,"Household Fleeing Domestic Violence"
+32,"Population",20,"First Time Homeless Household"
+32,"Population",21,"Household Returning After Exit to PH"
+32,"Population",22,"Household Placed in PSH during Report Period"
+32,"Population",23,"American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",24,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",25,"Asian or Asian American (only) HoH"
+32,"Population",26,"Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",27,"Black, African American, or African (only) HoH"
+32,"Population",28,"Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",29,"Hispanic/Latina/o (only) HoH"
+32,"Population",30,"Middle Eastern or North African (only) HoH"
+32,"Population",31,"Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",32,"Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",33,"Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",34,"White (only) HoH"
+32,"Population",35,"White & Hispanic/Latina/o HoH"
+32,"Population",36,"Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",37,"Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",38,"American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",39,"Asian or Asian American (any combination) HoH"
+32,"Population",40,"Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",41,"Hispanic/Latina/o (any combination) HoH"
+32,"Population",42,"Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",43,"Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",44,"White (any combination) HoH"
+32,"Population",45,"Senior Household 55+"
+32,"Population",46,"Parenting Child Household"
+32,"Population",47,"Household with 3+ Children"
+32,"Population",48,"Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",50,"Veteran"
+32,"Population",51,"Parenting Youth 18-24 "
+32,"Population",52,"Parenting Child"
+32,"Population",53,"Chronically Homeless Adult/HoH"
+32,"Population",54,"Disabled Adult/HoH"
+32,"Population",55,"Fleeing Domestic Violence"
+32,"Population",56,"American Indian, Alaska Native, or Indigenous (only)"
+32,"Population",57,"American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o"
+32,"Population",58,"Asian or Asian American (only)"
+32,"Population",59,"Asian or Asian American & Hispanic/Latina/o"
+32,"Population",60,"Black, African American, or African (only)"
+32,"Population",61,"Black, African American, or African & Hispanic/Latina/o"
+32,"Population",62,"Hispanic/Latina/o (only)"
+32,"Population",63,"Middle Eastern or North African (only)"
+32,"Population",64,"Middle Eastern or North African & Hispanic/Latina/o"
+32,"Population",65,"Native Hawaiian or Pacific Islander (only)"
+32,"Population",66,"Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+32,"Population",67,"White (only)"
+32,"Population",68,"White & Hispanic/Latina/o"
+32,"Population",69,"Multi-Racial (not Hispanic/Latina/o)"
+32,"Population",70,"Multi-Racial & Hispanic/Latina/o)"
+32,"Population",71,"American Indian, Alaska Native, or Indigenous (any combination)"
+32,"Population",72,"Asian or Asian American (any combination)"
+32,"Population",73,"Black, African American, or African & Any Other (any combination)"
+32,"Population",74,"Hispanic/Latina/o (any combination)"
+32,"Population",75,"Middle Eastern or North African & Any Other (any combination)"
+32,"Population",76,"Native Hawaiian or Pacific Islander & Any Other (any combination)"
+32,"Population",77,"White (any combination)"
+32,"Population",86,"Less than 1 year"
+32,"Population",87,"1 to 2 years"
+32,"Population",88,"3 to 5 years"
+32,"Population",89,"6 to 17 years"
+32,"Population",90,"18 to 21 years"
+32,"Population",91,"22 to 24 years"
+32,"Population",92,"25 to 34 years"
+32,"Population",93,"35 to 44 years"
+32,"Population",94,"45 to 54 years"
+32,"Population",95,"55 to 64 years"
+32,"Population",96,"65 and older"
+32,"Population",97,"Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1015,"Youth Household 18-21 - Chronically Homeless Household"
+32,"Population",1018,"Youth Household 18-21 - Household with Disabled Adult/HoH"
+32,"Population",1019,"Youth Household 18-21 - Household Fleeing Domestic Violence"
+32,"Population",1020,"Youth Household 18-21 - First Time Homeless Household"
+32,"Population",1021,"Youth Household 18-21 - Household Returning After Exit to PH"
+32,"Population",1022,"Youth Household 18-21 - Household Placed in PSH during Report Period"
+32,"Population",1023,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1024,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1025,"Youth Household 18-21 - Asian or Asian American (only) HoH"
+32,"Population",1026,"Youth Household 18-21 - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1027,"Youth Household 18-21 - Black, African American, or African (only) HoH"
+32,"Population",1028,"Youth Household 18-21 - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1029,"Youth Household 18-21 - Hispanic/Latina/o (only) HoH"
+32,"Population",1030,"Youth Household 18-21 - Middle Eastern or North African (only) HoH"
+32,"Population",1031,"Youth Household 18-21 - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1032,"Youth Household 18-21 - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1033,"Youth Household 18-21 - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1034,"Youth Household 18-21 - White (only) HoH"
+32,"Population",1035,"Youth Household 18-21 - White & Hispanic/Latina/o HoH"
+32,"Population",1036,"Youth Household 18-21 - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1037,"Youth Household 18-21 - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1038,"Youth Household 18-21 - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1039,"Youth Household 18-21 - Asian or Asian American (any combination) HoH"
+32,"Population",1040,"Youth Household 18-21 - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1041,"Youth Household 18-21 - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1042,"Youth Household 18-21 - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1043,"Youth Household 18-21 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1044,"Youth Household 18-21 - White (any combination) HoH"
+32,"Population",1048,"Youth Household 18-21 - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1115,"Youth Household 22-24 - Chronically Homeless Household"
+32,"Population",1118,"Youth Household 22-24 - Household with Disabled Adult/HoH"
+32,"Population",1119,"Youth Household 22-24 - Household Fleeing Domestic Violence"
+32,"Population",1120,"Youth Household 22-24 - First Time Homeless Household"
+32,"Population",1121,"Youth Household 22-24 - Household Returning After Exit to PH"
+32,"Population",1122,"Youth Household 22-24 - Household Placed in PSH during Report Period"
+32,"Population",1123,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1124,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1125,"Youth Household 22-24 - Asian or Asian American (only) HoH"
+32,"Population",1126,"Youth Household 22-24 - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1127,"Youth Household 22-24 - Black, African American, or African (only) HoH"
+32,"Population",1128,"Youth Household 22-24 - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1129,"Youth Household 22-24 - Hispanic/Latina/o (only) HoH"
+32,"Population",1130,"Youth Household 22-24 - Middle Eastern or North African (only) HoH"
+32,"Population",1131,"Youth Household 22-24 - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1132,"Youth Household 22-24 - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1133,"Youth Household 22-24 - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1134,"Youth Household 22-24 - White (only) HoH"
+32,"Population",1135,"Youth Household 22-24 - White & Hispanic/Latina/o HoH"
+32,"Population",1136,"Youth Household 22-24 - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1137,"Youth Household 22-24 - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1138,"Youth Household 22-24 - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1139,"Youth Household 22-24 - Asian or Asian American (any combination) HoH"
+32,"Population",1140,"Youth Household 22-24 - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1141,"Youth Household 22-24 - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1142,"Youth Household 22-24 - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1143,"Youth Household 22-24 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1144,"Youth Household 22-24 - White (any combination) HoH"
+32,"Population",1148,"Youth Household 22-24 - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1190,"Age 18-21 in AO Youth Household"
+32,"Population",1191,"Age 22-24 in AO Youth Household"
+32,"Population",1215,"Parenting Youth Household 18-24 - Chronically Homeless Household"
+32,"Population",1218,"Parenting Youth Household 18-24 - Household with Disabled Adult/HoH"
+32,"Population",1219,"Parenting Youth Household 18-24 - Household Fleeing Domestic Violence"
+32,"Population",1220,"Parenting Youth Household 18-24 - First Time Homeless Household"
+32,"Population",1221,"Parenting Youth Household 18-24 - Household Returning After Exit to PH"
+32,"Population",1222,"Parenting Youth Household 18-24 - Household Placed in PSH during Report Period"
+32,"Population",1223,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1224,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1225,"Parenting Youth Household 18-24 - Asian or Asian American (only) HoH"
+32,"Population",1226,"Parenting Youth Household 18-24 - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1227,"Parenting Youth Household 18-24 - Black, African American, or African (only) HoH"
+32,"Population",1228,"Parenting Youth Household 18-24 - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1229,"Parenting Youth Household 18-24 - Hispanic/Latina/o (only) HoH"
+32,"Population",1230,"Parenting Youth Household 18-24 - Middle Eastern or North African (only) HoH"
+32,"Population",1231,"Parenting Youth Household 18-24 - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1232,"Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1233,"Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1234,"Parenting Youth Household 18-24 - White (only) HoH"
+32,"Population",1235,"Parenting Youth Household 18-24 - White & Hispanic/Latina/o HoH"
+32,"Population",1236,"Parenting Youth Household 18-24 - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1237,"Parenting Youth Household 18-24 - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1238,"Parenting Youth Household 18-24 - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1239,"Parenting Youth Household 18-24 - Asian or Asian American (any combination) HoH"
+32,"Population",1240,"Parenting Youth Household 18-24 - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1241,"Parenting Youth Household 18-24 - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1242,"Parenting Youth Household 18-24 - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1243,"Parenting Youth Household 18-24 - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1244,"Parenting Youth Household 18-24 - White (any combination) HoH"
+32,"Population",1248,"Parenting Youth Household 18-24 - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1290,"Age 18-21 in AC Parenting Youth Household"
+32,"Population",1291,"Age 22-24 in AC Parenting Youth Household"
+32,"Population",1315,"Veteran Household - Chronically Homeless Household"
+32,"Population",1318,"Veteran Household - Household with Disabled Adult/HoH"
+32,"Population",1319,"Veteran Household - Household Fleeing Domestic Violence"
+32,"Population",1320,"Veteran Household - First Time Homeless Household"
+32,"Population",1321,"Veteran Household - Household Returning After Exit to PH"
+32,"Population",1322,"Veteran Household - Household Placed in PSH during Report Period"
+32,"Population",1323,"Veteran Household - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1324,"Veteran Household - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1325,"Veteran Household - Asian or Asian American (only) HoH"
+32,"Population",1326,"Veteran Household - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1327,"Veteran Household - Black, African American, or African (only) HoH"
+32,"Population",1328,"Veteran Household - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1329,"Veteran Household - Hispanic/Latina/o (only) HoH"
+32,"Population",1330,"Veteran Household - Middle Eastern or North African (only) HoH"
+32,"Population",1331,"Veteran Household - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1332,"Veteran Household - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1333,"Veteran Household - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1334,"Veteran Household - White (only) HoH"
+32,"Population",1335,"Veteran Household - White & Hispanic/Latina/o HoH"
+32,"Population",1336,"Veteran Household - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1337,"Veteran Household - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1338,"Veteran Household - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1339,"Veteran Household - Asian or Asian American (any combination) HoH"
+32,"Population",1340,"Veteran Household - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1341,"Veteran Household - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1342,"Veteran Household - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1343,"Veteran Household - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1344,"Veteran Household - White (any combination) HoH"
+32,"Population",1345,"Veteran Household - Senior Household 55+"
+32,"Population",1347,"Veteran Household - Household with 3+ Children"
+32,"Population",1348,"Veteran Household - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1415,"Non-Veteran Household 25+ - Chronically Homeless Household"
+32,"Population",1418,"Non-Veteran Household 25+ - Household with Disabled Adult/HoH"
+32,"Population",1419,"Non-Veteran Household 25+ - Household Fleeing Domestic Violence"
+32,"Population",1420,"Non-Veteran Household 25+ - First Time Homeless Household"
+32,"Population",1421,"Non-Veteran Household 25+ - Household Returning After Exit to PH"
+32,"Population",1422,"Non-Veteran Household 25+ - Household Placed in PSH during Report Period"
+32,"Population",1423,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1424,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1425,"Non-Veteran Household 25+ - Asian or Asian American (only) HoH"
+32,"Population",1426,"Non-Veteran Household 25+ - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1427,"Non-Veteran Household 25+ - Black, African American, or African (only) HoH"
+32,"Population",1428,"Non-Veteran Household 25+ - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1429,"Non-Veteran Household 25+ - Hispanic/Latina/o (only) HoH"
+32,"Population",1430,"Non-Veteran Household 25+ - Middle Eastern or North African (only) HoH"
+32,"Population",1431,"Non-Veteran Household 25+ - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1432,"Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1433,"Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1434,"Non-Veteran Household 25+ - White (only) HoH"
+32,"Population",1435,"Non-Veteran Household 25+ - White & Hispanic/Latina/o HoH"
+32,"Population",1436,"Non-Veteran Household 25+ - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1437,"Non-Veteran Household 25+ - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1438,"Non-Veteran Household 25+ - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1439,"Non-Veteran Household 25+ - Asian or Asian American (any combination) HoH"
+32,"Population",1440,"Non-Veteran Household 25+ - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1441,"Non-Veteran Household 25+ - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1442,"Non-Veteran Household 25+ - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1443,"Non-Veteran Household 25+ - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1444,"Non-Veteran Household 25+ - White (any combination) HoH"
+32,"Population",1445,"Non-Veteran Household 25+ - Senior Household 55+"
+32,"Population",1448,"Non-Veteran Household 25+ - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",1519,"Chronically Homeless Household - Household Fleeing Domestic Violence"
+32,"Population",1520,"Chronically Homeless Household - First Time Homeless Household"
+32,"Population",1521,"Chronically Homeless Household - Household Returning After Exit to PH"
+32,"Population",1522,"Chronically Homeless Household - Household Placed in PSH during Report Period"
+32,"Population",1523,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous (only) HoH"
+32,"Population",1524,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o HoH"
+32,"Population",1525,"Chronically Homeless Household - Asian or Asian American (only) HoH"
+32,"Population",1526,"Chronically Homeless Household - Asian or Asian American & Hispanic/Latina/o HoH"
+32,"Population",1527,"Chronically Homeless Household - Black, African American, or African (only) HoH"
+32,"Population",1528,"Chronically Homeless Household - Black, African American, or African & Hispanic/Latina/o HoH"
+32,"Population",1529,"Chronically Homeless Household - Hispanic/Latina/o (only) HoH"
+32,"Population",1530,"Chronically Homeless Household - Middle Eastern or North African (only) HoH"
+32,"Population",1531,"Chronically Homeless Household - Middle Eastern or North African & Hispanic/Latina/o HoH"
+32,"Population",1532,"Chronically Homeless Household - Native Hawaiian or Pacific Islander (only) HoH"
+32,"Population",1533,"Chronically Homeless Household - Native Hawaiian or Pacific Islander & Hispanic/Latina/o HoH"
+32,"Population",1534,"Chronically Homeless Household - White (only) HoH"
+32,"Population",1535,"Chronically Homeless Household - White & Hispanic/Latina/o HoH"
+32,"Population",1536,"Chronically Homeless Household - Multi-Racial (not Hispanic/Latina/o) HoH"
+32,"Population",1537,"Chronically Homeless Household - Multi-Racial & Hispanic/Latina/o) HoH"
+32,"Population",1538,"Chronically Homeless Household - American Indian, Alaska Native, or Indigenous (any combination) HoH"
+32,"Population",1539,"Chronically Homeless Household - Asian or Asian American (any combination) HoH"
+32,"Population",1540,"Chronically Homeless Household - Black, African American, or African & Any Other (any combination) HoH"
+32,"Population",1541,"Chronically Homeless Household - Hispanic/Latina/o (any combination) HoH"
+32,"Population",1542,"Chronically Homeless Household - Middle Eastern or North African & Any Other (any combination) HoH"
+32,"Population",1543,"Chronically Homeless Household - Native Hawaiian or Pacific Islander & Any Other (any combination) HoH"
+32,"Population",1544,"Chronically Homeless Household - White (any combination) HoH"
+32,"Population",1545,"Chronically Homeless Household - Senior Household 55+"
+32,"Population",1546,"Chronically Homeless Household - Parenting Children"
+32,"Population",1547,"Chronically Homeless Household - Household with 3+ Children"
+32,"Population",1548,"Chronically Homeless Household - Domestic Violence Survivors Not Identified as Currently Fleeing"
+32,"Population",5053,"Veteran - Chronically Homeless Adult/HoH"
+32,"Population",5054,"Veteran - Disabled Adult/HoH"
+32,"Population",5055,"Veteran - Fleeing Domestic Violence"
+32,"Population",5056,"Veteran - American Indian, Alaska Native, or Indigenous (only)"
+32,"Population",5057,"Veteran - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o"
+32,"Population",5058,"Veteran - Asian or Asian American (only)"
+32,"Population",5059,"Veteran - Asian or Asian American & Hispanic/Latina/o"
+32,"Population",5060,"Veteran - Black, African American, or African (only)"
+32,"Population",5061,"Veteran - Black, African American, or African & Hispanic/Latina/o"
+32,"Population",5062,"Veteran - Hispanic/Latina/o (only)"
+32,"Population",5063,"Veteran - Middle Eastern or North African (only)"
+32,"Population",5064,"Veteran - Middle Eastern or North African & Hispanic/Latina/o"
+32,"Population",5065,"Veteran - Native Hawaiian or Pacific Islander (only)"
+32,"Population",5066,"Veteran - Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+32,"Population",5067,"Veteran - White (only)"
+32,"Population",5068,"Veteran - White & Hispanic/Latina/o"
+32,"Population",5069,"Veteran - Multi-Racial (not Hispanic/Latina/o)"
+32,"Population",5070,"Veteran - Multi-Racial & Hispanic/Latina/o)"
+32,"Population",5071,"Veteran - American Indian, Alaska Native, or Indigenous (any combination)"
+32,"Population",5072,"Veteran - Asian or Asian American (any combination)"
+32,"Population",5073,"Veteran - Black, African American, or African & Any Other (any combination)"
+32,"Population",5074,"Veteran - Hispanic/Latina/o (any combination)"
+32,"Population",5075,"Veteran - Middle Eastern or North African & Any Other (any combination)"
+32,"Population",5076,"Veteran - Native Hawaiian or Pacific Islander & Any Other (any combination)"
+32,"Population",5077,"Veteran - White (any combination)"
+32,"Population",5097,"Veteran - Domestic Violence Survivor Not Identified as Currently Fleeing"
+32,"Population",5153,"Parenting Youth 18-24  - Chronically Homeless Adult/HoH"
+32,"Population",5154,"Parenting Youth 18-24  - Disabled Adult/HoH"
+32,"Population",5155,"Parenting Youth 18-24  - Fleeing Domestic Violence"
+32,"Population",5156,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous (only)"
+32,"Population",5157,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o"
+32,"Population",5158,"Parenting Youth 18-24  - Asian or Asian American (only)"
+32,"Population",5159,"Parenting Youth 18-24  - Asian or Asian American & Hispanic/Latina/o"
+32,"Population",5160,"Parenting Youth 18-24  - Black, African American, or African (only)"
+32,"Population",5161,"Parenting Youth 18-24  - Black, African American, or African & Hispanic/Latina/o"
+32,"Population",5162,"Parenting Youth 18-24  - Hispanic/Latina/o (only)"
+32,"Population",5163,"Parenting Youth 18-24  - Middle Eastern or North African (only)"
+32,"Population",5164,"Parenting Youth 18-24  - Middle Eastern or North African & Hispanic/Latina/o"
+32,"Population",5165,"Parenting Youth 18-24  - Native Hawaiian or Pacific Islander (only)"
+32,"Population",5166,"Parenting Youth 18-24  - Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+32,"Population",5167,"Parenting Youth 18-24  - White (only)"
+32,"Population",5168,"Parenting Youth 18-24  - White & Hispanic/Latina/o"
+32,"Population",5169,"Parenting Youth 18-24  - Multi-Racial (not Hispanic/Latina/o)"
+32,"Population",5170,"Parenting Youth 18-24  - Multi-Racial & Hispanic/Latina/o)"
+32,"Population",5171,"Parenting Youth 18-24  - American Indian, Alaska Native, or Indigenous (any combination)"
+32,"Population",5172,"Parenting Youth 18-24  - Asian or Asian American (any combination)"
+32,"Population",5173,"Parenting Youth 18-24  - Black, African American, or African & Any Other (any combination)"
+32,"Population",5174,"Parenting Youth 18-24  - Hispanic/Latina/o (any combination)"
+32,"Population",5175,"Parenting Youth 18-24  - Middle Eastern or North African & Any Other (any combination)"
+32,"Population",5176,"Parenting Youth 18-24  - Native Hawaiian or Pacific Islander & Any Other (any combination)"
+32,"Population",5177,"Parenting Youth 18-24  - White (any combination)"
+32,"Population",5197,"Parenting Youth 18-24 - Domestic Violence Survivor Not Identified as Currently Fleeing"
+32,"Population",5253,"Parenting Child - Chronically Homeless Adult/HoH"
+32,"Population",5254,"Parenting Child - Disabled Adult/HoH"
+32,"Population",5255,"Parenting Child - Fleeing Domestic Violence"
+32,"Population",5256,"Parenting Child - American Indian, Alaska Native, or Indigenous (only)"
+32,"Population",5257,"Parenting Child - American Indian, Alaska Native, or Indigenous & Hispanic/Latina/o"
+32,"Population",5258,"Parenting Child - Asian or Asian American (only)"
+32,"Population",5259,"Parenting Child - Asian or Asian American & Hispanic/Latina/o"
+32,"Population",5260,"Parenting Child - Black, African American, or African (only)"
+32,"Population",5261,"Parenting Child - Black, African American, or African & Hispanic/Latina/o"
+32,"Population",5262,"Parenting Child - Hispanic/Latina/o (only)"
+32,"Population",5263,"Parenting Child - Middle Eastern or North African (only)"
+32,"Population",5264,"Parenting Child - Middle Eastern or North African & Hispanic/Latina/o"
+32,"Population",5265,"Parenting Child - Native Hawaiian or Pacific Islander (only)"
+32,"Population",5266,"Parenting Child - Native Hawaiian or Pacific Islander & Hispanic/Latina/o"
+32,"Population",5267,"Parenting Child - White (only)"
+32,"Population",5268,"Parenting Child - White & Hispanic/Latina/o"
+32,"Population",5269,"Parenting Child - Multi-Racial (not Hispanic/Latina/o)"
+32,"Population",5270,"Parenting Child - Multi-Racial & Hispanic/Latina/o)"
+32,"Population",5271,"Parenting Child - American Indian, Alaska Native, or Indigenous (any combination)"
+32,"Population",5272,"Parenting Child - Asian or Asian American (any combination)"
+32,"Population",5273,"Parenting Child - Black, African American, or African & Any Other (any combination)"
+32,"Population",5274,"Parenting Child - Hispanic/Latina/o (any combination)"
+32,"Population",5275,"Parenting Child - Middle Eastern or North African & Any Other (any combination)"
+32,"Population",5276,"Parenting Child - Native Hawaiian or Pacific Islander & Any Other (any combination)"
+32,"Population",5277,"Parenting Child - White (any combination)"
+32,"Population",5297,"Parenting Child - Domestic Violence Survivor Not Identified as Currently Fleeing"
+33,"ReportRow",1,"Average days in ES/SH"
+33,"ReportRow",2,"Average days in TH"
+33,"ReportRow",3,"Average days in ES/SH or TH"
+33,"ReportRow",4,"Average days homeless before move-in to RRH/PSH"
+33,"ReportRow",5,"Average days documented in ES/SH, TH, or homeless before move-in"
+33,"ReportRow",6,"Average days homeless self-reported in 3.917"
+33,"ReportRow",7,"Average days homeless total"
+33,"ReportRow",8,"Average days housed in RRH"
+33,"ReportRow",9,"Average days documented homeless or housed in RRH (no 3.917)"
+33,"ReportRow",10,"Average days housed in PSH as of exit date (all exits)"
+33,"ReportRow",11,"Average days housed in PSH for households active on last day"
+33,"ReportRow",12,"Average days in RRH from start to exit with no move-in date"
+33,"ReportRow",13,"Average days in RRH from start to report end for active homeless"
+33,"ReportRow",14,"Average days in RRH from start to move-in date for all housed"
+33,"ReportRow",15,"Average days in RRH from move-in to exit for housed exiters"
+33,"ReportRow",16,"Average days in RRH from move-in to report end for active housed"
+33,"ReportRow",18,"Average days to return after exit from ES"
+33,"ReportRow",19,"Average days to return after exit from TH"
+33,"ReportRow",20,"Average days to return after exit from SH"
+33,"ReportRow",21,"Average days to return after exit from RRH"
+33,"ReportRow",22,"Average days to return after exit from PSH"
+33,"ReportRow",23,"Average days to return after exit (all)"
+33,"ReportRow",24,"Average days to return after ES/SH only system path"
+33,"ReportRow",25,"Average days to return after TH system path"
+33,"ReportRow",26,"Average days to return after ES/SH/TH system path"
+33,"ReportRow",27,"Average days to return after RRH only system path"
+33,"ReportRow",28,"Average days to return after ES/SH/RRH system path"
+33,"ReportRow",29,"Average days to return after TH/RRH system path"
+33,"ReportRow",30,"Average days to return after ES/SH/TH/RRH system path"
+33,"ReportRow",31,"Average days to return after PSH only system path"
+33,"ReportRow",32,"Average days to return after ES/SH/PSH system path"
+33,"ReportRow",33,"Average days to return after ES/SH/RRH/PSH system path"
+33,"ReportRow",34,"Average days to return after RRH/PSH system path"
+33,"ReportRow",35,"Average days to return after other system path"
+33,"ReportRow",36,"Average days to return after any system path (excludes those housed in PSH on start date)"
+33,"ReportRow",53,"Count all people in household"
+33,"ReportRow",54,"Count households"
+33,"ReportRow",55,"Count of people with characteristic"
+33,"ReportRow",56,"Count of bed nights for people in household"
+33,"ReportRow",57,"Count of bed nights for people with characteristic"
+33,"ReportRow",63,"Average days to return after exit from RRH with no move-in date"
+33,"ReportRow",64,"Average days to return after exit from PSH with no move-in date"
+33,"ReportRow",65,"Average days to return after exit from RRH-SO with move-in date"
+33,"ReportRow",66,"Average days to return after exit from RRH-SO with no move-in date"
+33,"ReportRow",101,"Average days to return after exit to Emergency shelter, including hotel or motel paid for with emergency shelter voucher, Host Home shelter"
+33,"ReportRow",102,"Average days to return after exit to Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)"
+33,"ReportRow",103,"Average days to return after exit to Safe Haven"
+33,"ReportRow",104,"Average days to return after exit to Psychiatric hospital or other psychiatric facility"
+33,"ReportRow",105,"Average days to return after exit to Substance abuse treatment facility or detox center"
+33,"ReportRow",106,"Average days to return after exit to Hospital or other residential non-psychiatric medical facility"
+33,"ReportRow",107,"Average days to return after exit to Jail, prison, or juvenile detention facility"
+33,"ReportRow",108,"Average days to return after exit to Foster care home or foster care group home"
+33,"ReportRow",109,"Average days to return after exit to Long-term care facility or nursing home"
+33,"ReportRow",110,"Average days to return after exit to Transitional housing for homeless persons (including homeless youth)"
+33,"ReportRow",111,"Average days to return after exit to Staying or living with family, temporary tenure (e.g. room, apartment, or house)"
+33,"ReportRow",112,"Average days to return after exit to Staying or living with friends, temporary tenure (e.g. room, apartment, or house)"
+33,"ReportRow",113,"Average days to return after exit to Hotel or motel paid for without emergency shelter voucher"
+33,"ReportRow",114,"Average days to return after exit to Moved from one HOPWA funded project to HOPWA TH"
+33,"ReportRow",115,"Average days to return after exit to Residential project or halfway house with no homeless criteria"
+33,"ReportRow",116,"Average days to return after exit to Host Home (non-crisis)"
+33,"ReportRow",117,"Average days to return after exit to Rental by client, no ongoing housing subsidy"
+33,"ReportRow",118,"Average days to return after exit to Owned by client, no ongoing housing subsidy"
+33,"ReportRow",119,"Average days to return after exit to Rental by client with VASH housing subsidy"
+33,"ReportRow",120,"Average days to return after exit to Rental by client with Other ongoing subsidy"
+33,"ReportRow",121,"Average days to return after exit to Owned by client, with ongoing housing subsidy"
+33,"ReportRow",122,"Average days to return after exit to Staying or living with family, permanent tenure"
+33,"ReportRow",123,"Average days to return after exit to Staying or living with friends, permanent tenure"
+33,"ReportRow",124,"Average days to return after exit to Moved from one HOPWA funded project to HOPWA PH"
+33,"ReportRow",125,"Average days to return after exit to Rental by client with GPD TIP housing subsidy"
+33,"ReportRow",126,"Average days to return after exit to Rental by client with RRH or equivalent subsidy"
+33,"ReportRow",127,"Average days to return after exit to Rental by client with HCV voucher (tenant or project based) (not dedicated)"
+33,"ReportRow",128,"Average days to return after exit to Rental by client with Public housing unit"
+33,"ReportRow",129,"Average days to return after exit to Rental by client with Emergency Housing Voucher"
+33,"ReportRow",130,"Average days to return after exit to Rental by client with Family Unification Program Voucher (FUP)"
+33,"ReportRow",131,"Average days to return after exit to Rental by client with Foster Youth to Independence Initiative (FYI)"
+33,"ReportRow",132,"Average days to return after exit to Permanent Supportive Housing"
+33,"ReportRow",133,"Average days to return after exit to Other permanent housing dedicated for formerly homeless persons"
+33,"ReportRow",134,"Average days to return after exit to Deceased"
+33,"ReportRow",135,"Average days to return after exit to destination not provided by client"
+33,"ReportRow",136,"Average days to return after exit with missing/invalid destination"
+33,"ReportRow",901,"DQ – Active enrollments in inactive projects"
+33,"ReportRow",902,"DQ – Exits after project operating end date"
+33,"ReportRow",903,"DQ – Night-by-night enrollments active 90+ days after last bed night "
+33,"ReportRow",904,"DQ – Night-by-night enrollments exited with no bed night on the day prior"
+33,"ReportRow",905,"DQ – Enrollments without a valid EnrollmentCoC"
+33,"ReportRow",906,"DQ – Enrollments in non-participating projects"
+33,"ReportRow",907,"DQ – Enrollments without exactly one HoH"
+33,"ReportRow",908,"DQ – Relationship to HoH"
+33,"ReportRow",909,"DQ – Household Entry"
+33,"ReportRow",910,"DQ – Client Entry"
+33,"ReportRow",911,"DQ – Adult/HoH Entry"
+33,"ReportRow",912,"DQ – Client Exit"
+33,"ReportRow",913,"DQ – Disabling Condition"
+33,"ReportRow",914,"DQ – Living Situation"
+33,"ReportRow",915,"DQ – Length of Stay"
+33,"ReportRow",916,"DQ – Date ES/SH/Street Homelessness Started"
+33,"ReportRow",917,"DQ – Times ES/SH/Street Homeless Last 3 Years"
+33,"ReportRow",918,"DQ – Months ES/SH/Street Homeless Last 3 Years"
+33,"ReportRow",919,"DQ – Destination "
+33,"ReportRow",920,"DQ – Date of Birth"
+34,"ProjectType",0,"ES entry/exit"
+34,"ProjectType",1,"ES night-by-night"
+34,"ProjectType",2,"TH"
+34,"ProjectType",3,"PSH"
+34,"ProjectType",8,"SH"
+34,"ProjectType",9,"OPH (no services)"
+34,"ProjectType",10,"OPH (no disability requirement)"
+34,"ProjectType",13,"RRH"
+35,"RRHSubType",1,"RRH: Services Only"
+35,"RRHSubType",2,"RRH: Housing with or without Services"
+36,"TargetPopulation",1,"Domestic violence victims"
+36,"TargetPopulation",3,"People with HIV/AIDS"
+36,"TargetPopulation",4,"Not applicable"
+37,"HousingType",1,"Site-based – single site"
+37,"HousingType",2,"Site-based – clustered / multiple sites"
+37,"HousingType",3,"Tenant-based - scattered site"
+38,"Funder",1,"HUD:  CoC – Homelessness Prevention (High Performing Comm.  Only)"
+38,"Funder",2,"HUD:  CoC – Permanent Supportive Housing"
+38,"Funder",3,"HUD:  CoC – Rapid Re-Housing"
+38,"Funder",4,"HUD:  CoC – Supportive Services Only"
+38,"Funder",5,"HUD:  CoC – Transitional Housing"
+38,"Funder",6,"HUD:  CoC – Safe Haven"
+38,"Funder",7,"HUD:  CoC – Single Room Occupancy (SRO)"
+38,"Funder",8,"HUD:  ESG – Emergency Shelter (operating and/or essential services)"
+38,"Funder",9,"HUD:  ESG – Homelessness Prevention"
+38,"Funder",10,"HUD:  ESG – Rapid Rehousing"
+38,"Funder",11,"HUD:  ESG – Street Outreach"
+38,"Funder",13,"HUD:  HOPWA – Hotel/Motel Vouchers"
+38,"Funder",14,"HUD:  HOPWA – Housing Information"
+38,"Funder",15,"HUD:  HOPWA – Permanent Housing (facility based or TBRA)"
+38,"Funder",16,"HUD:  HOPWA – Permanent Housing Placement "
+38,"Funder",17,"HUD:  HOPWA – Short-Term Rent, Mortgage, Utility assistance"
+38,"Funder",18,"HUD:  HOPWA – Short-Term Supportive Facility"
+38,"Funder",19,"HUD:  HOPWA – Transitional Housing (facility based or TBRA)"
+38,"Funder",20,"HUD:  HUD/VASH"
+38,"Funder",21,"HHS:  PATH – Street Outreach & Supportive Services Only"
+38,"Funder",22,"HHS:  RHY – Basic Center Program (prevention and shelter)"
+38,"Funder",23,"HHS:  RHY – Maternity Group Home for Pregnant and Parenting Youth"
+38,"Funder",24,"HHS:  RHY – Transitional Living Program"
+38,"Funder",25,"HHS:  RHY – Street Outreach Project"
+38,"Funder",26,"HHS:  RHY – Demonstration Project**"
+38,"Funder",27,"VA:  CRS Contract Residential Services"
+38,"Funder",29,"VA:  Domiciliary Care"
+38,"Funder",30,"VA:  Community Contract Safe Haven Program"
+38,"Funder",33,"VA:  Supportive Services for Veteran Families"
+38,"Funder",34,"Not applicable"
+38,"Funder",35,"HUD:  Pay for Success"
+38,"Funder",36,"HUD:  Public and Indian Housing (PIH) Programs"
+38,"Funder",37,"VA:  Grant Per Diem – Bridge Housing"
+38,"Funder",38,"VA:  Grant Per Diem – Low Demand"
+38,"Funder",39,"VA:  Grant Per Diem – Hospital to Housing"
+38,"Funder",40,"VA:  Grant Per Diem – Clinical Treatment"
+38,"Funder",41,"VA:  Grant Per Diem – Service Intensive Transitional Housing"
+38,"Funder",42,"VA:  Grant Per Diem – Transition in Place"
+38,"Funder",43,"HUD:  CoC Youth Demonstration Program (YHDP)"
+38,"Funder",44,"HUD:  CoC Joint Component TH/RRH"
+38,"Funder",45,"VA:  Grant Per Diem – Case Management/Housing Retention"
+38,"Funder",46,"Local or Other Funding Source"
+38,"Funder",50,"HUD: HOME"
+38,"Funder",51,"HUD: HOME (ARP)"
+38,"Funder",52,"HUD: PIH (Emergency Housing Voucher)"
+38,"Funder",53,"HUD: ESG-RUSH"
+38,"Funder",54,"HUD: Unsheltered Special NOFO"
+38,"Funder",55,"HUD: Rural Special NOFO"
+38,"Funder",56,"HUD: CoC Builds"
+39,"HHTypeHMIS",1,"Households without children"
+39,"HHTypeHMIS",3,"Households with at least one adult and one child"
+39,"HHTypeHMIS",4,"Households with only children"
+40,"Availability",1,"Year-round"
+40,"Availability",2,"Seasonal"
+40,"Availability",3,"Overflow"
+41,"BedType",1,"Facility-based"
+41,"BedType",2,"Voucher"
+41,"BedType",3,"Other"
+42,"GeographyType",1,"Urban"
+42,"GeographyType",2,"Suburban"
+42,"GeographyType",3,"Rural"
+42,"GeographyType",99,"Unknown / data not collected"
+43,"HHChronic",0,"Not Chronically Homeless (no missing data)"
+43,"HHChronic",1,"Chronically Homeless"
+43,"HHChronic",2,"Long-Term Homeless with Disability"
+43,"HHChronic",3,"Long-Term Homeless Missing Disability Info"
+43,"HHChronic",4,"Long-Term Homeless without Disability"
+43,"HHChronic",5,"Homeless > 6 Months with Disability (missing data)"
+43,"HHChronic",6,"Homeless > 6 Months with Disability (no missing data)"
+43,"HHChronic",9,"CH Status Unknown (missing data)"
+44,"NoYesNA",0,"No"
+44,"NoYesNA",1,"Yes"
+44,"NoYesNA",-1,"Not applicable"
+45,"NoYesHOPWA",0,"No"
+45,"NoYesHOPWA",1,"Yes"
+45,"NoYesHOPWA",2,"Non-HOPWA Funded Project"
+46,"DisabilityStatus",-1,"Not applicable"
+46,"DisabilityStatus",0,"Not disabled"
+46,"DisabilityStatus",1,"Disabled"
+46,"DisabilityStatus",99,"Unknown"
+47,"HMISParticipationType",0,"Not Participating"
+47,"HMISParticipationType",1,"HMIS Participating"
+47,"HMISParticipationType",2,"Comparable Database Participating"
+48,"HHFleeingDV",0,"No Reported History of DV"
+48,"HHFleeingDV",1,"Household Fleeing Domestic Violence"
+48,"HHFleeingDV",2,"Domestic Violence Survivors not  Currently Fleeing"
+48,"HHFleeingDV",3,"Domestic Violence Survivors (Unknown if Currently Fleeing)"

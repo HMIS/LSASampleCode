@@ -3,6 +3,8 @@ LSA Sample Code
 05_01 to 05_11 LSAPerson Records and Demographics.sql  
 https://github.com/HMIS/LSASampleCode
 
+Last update: 8/21/2025
+
 Source: LSA Programming Specifications v7
 Relevant Sections:
 	5.1.	Identify Active and Active in Residence (AIR) HouseholdIDs
@@ -19,6 +21,7 @@ Relevant Sections:
 	5.4.	LSAPerson Demographics
 			v7 Update
 			- Delete logic associated with Gender  (Step 5.3/5.4)
+			- HMIS Client.csv column name change from Latinaeo to Latinao
 	5.5.	Time Spent in ES/SH or on the Street – LSAPerson
 	5.6.	Enrollments Relevant to Counting ES/SH/Street Dates
 	5.7.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
@@ -110,7 +113,7 @@ Relevant Sections:
 					or c.BlackAfAmerican = 1
 					or c.NativeHIPacific = 1
 					or c.White = 1
-					or c.HispanicLatinaeo = 1
+					or c.HispanicLatinao = 1
 					or c.MidEastNAfrican = 1) then 
 						(select cast (
 							(case when r.AmIndAKNative = 1 then '1' else '' end
@@ -118,7 +121,7 @@ Relevant Sections:
 							+ case when r.BlackAfAmerican = 1 then '3' else '' end
 							+ case when r.NativeHIPacific = 1 then '4' else '' end
 							+ case when r.White = 1 then '5' else '' end
-							+ case when r.HispanicLatinaeo = 1 then '6' else '' end
+							+ case when r.HispanicLatinao = 1 then '6' else '' end
 							+ case when r.MidEastNAfrican = 1 then '7' else '' end) as int)
 						from hmis_Client r
 						where r.PersonalID = c.PersonalID)
