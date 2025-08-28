@@ -3,10 +3,12 @@ LSA Sample Code
 Name: 11 LSAReport DQ and ReportDate.sql
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
+Last update: 8/28/2025
 
 Source: LSA Programming Specifications v7 
 		Changes from AHAR to AIR column names
+		Update to 11.5-11.7 to limit DQ counts to people/households active in residence
+			when LSAScope = 3 (HIC)
 	 
 
 	Please note that if this code is used in production, the first statement in section 11.6 
@@ -107,7 +109,8 @@ from lsa_Report rpt
 
 update rpt
 set rpt.UnduplicatedClient = (select count(distinct PersonalID)
-	from tlsa_Person)
+	from tlsa_Enrollment 
+	where AIR = 1 or (Active = 1 and rpt.LSAScope <> 3))
 	, rpt.HouseholdEntry = (select count(distinct HouseholdID)
 		from tlsa_HHID 
 		where AIR = 1 or (Active = 1 and rpt.LSAScope <> 3))
@@ -120,7 +123,7 @@ set rpt.UnduplicatedClient = (select count(distinct PersonalID)
 		and (ActiveAge between 18 and 65 or RelationshipToHoH = 1))
 	, rpt.ClientExit = (select count(distinct EnrollmentID)
 		from tlsa_Enrollment 
-		where Active = 1 and ExitDate is not NULL)
+		where (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)) and ExitDate is not NULL)
 from lsa_Report rpt
 
 /*
@@ -143,15 +146,20 @@ set lp.SSNValid = case when c.SSNDataQuality in (8,9) then 9
 						, '678901234', '789012345', '890123456', '901234567')
 			then 0 else 1 end 
 from tlsa_Person lp
+inner join tlsa_Enrollment n on lp.PersonalID = n.PersonalID 
 inner join hmis_Client c on c.PersonalID = lp.PersonalID
 
 update rpt
-set SSNNotProvided = (select count(distinct PersonalID)
-	from tlsa_Person
-	where SSNValid = 9)
-	, SSNMissingOrInvalid = (select count(distinct PersonalID)
-		from tlsa_Person
-		where SSNValid = 0)
+set SSNNotProvided = (select count(distinct lp.PersonalID)
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+	where SSNValid = 9
+		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
+	, SSNMissingOrInvalid = (select count(distinct lp.PersonalID)
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+		where SSNValid = 0
+		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
 from lsa_Report rpt
 
 update rpt
@@ -159,8 +167,10 @@ set rpt.ClientSSNNotUnique = case when ssn.people is null then 0 else ssn.people
 	, rpt.DistinctSSNValueNotUnique = case when ssn.SSNs is null then 0 else ssn.SSNs end 
 from lsa_Report rpt
 left outer join 
-	(select lp.ReportID, count(distinct lp.PersonalID) as people, count(distinct c.SSN) as SSNs
+	(select lp.ReportID, count(distinct n.PersonalID) as people, count(distinct c.SSN) as SSNs
 	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+		and (AIR = 1 or (Active = 1 and (select LSAScope from lsa_Report) <> 3))
 	inner join hmis_Client c on c.PersonalID = lp.PersonalID
 	inner join (select distinct dupe.PersonalID, dupeSSN.SSN
 		from tlsa_Person dupe
