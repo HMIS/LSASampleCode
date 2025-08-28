@@ -450,7 +450,6 @@ create table tlsa_Household(
 	create table tlsa_ExitHoHAdult(
 		PersonalID nvarchar(32) not null,
 		QualifyingExitHHID nvarchar(32),
-		EnrollmentID nvarchar(32),
 		Cohort int not NULL,
 		DisabilityStatus int,
 		CHStart date,
@@ -1405,14 +1404,6 @@ insert into ref_PopHHTypes (PopID, HHType) values (5174, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5175, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5176, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5177, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5178, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5179, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5180, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5181, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5182, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5183, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5184, 2);
-insert into ref_PopHHTypes (PopID, HHType) values (5185, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5197, 2);
 insert into ref_PopHHTypes (PopID, HHType) values (5253, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (5254, 3);
@@ -1439,14 +1430,6 @@ insert into ref_PopHHTypes (PopID, HHType) values (5274, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (5275, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (5276, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (5277, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5278, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5279, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5280, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5281, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5282, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5283, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5284, 3);
-insert into ref_PopHHTypes (PopID, HHType) values (5285, 3);
 insert into ref_PopHHTypes (PopID, HHType) values (5297, 3);
 
 insert into ref_RowPopulations (RowMin, RowMax, ByPath, ByProject, PopID, Pop1, Pop2) values (1, 36, NULL, NULL, 0, 0, 0)
