@@ -3,11 +3,12 @@ LSA Sample Code
 Name:  10 LSACalculated Data Quality.sql
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
+Last update: 8/28/2025
 
 Source: LSA Programming Specifications v7
+		Update to 10.8-10.19 to limit DQ counts to people/households active in residence
+			when LSAScope = 3 (HIC)
 	
-
 	10.2 Get Counts of Enrollments Active after Operating End Date by ProjectID
 */
 
@@ -187,8 +188,7 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 910, n.ProjectID, rpt.ReportID, '10.9'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
-	where n.Active = 1
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.10	DQ – Adult/HoH Entry
@@ -201,8 +201,7 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 911, n.ProjectID, rpt.ReportID, '10.10'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 	group by n.ProjectID, rpt.ReportID
 
@@ -217,8 +216,7 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 912, n.ProjectID, rpt.ReportID, '10.11'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.ExitDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
-	where n.Active = 1
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.12	DQ – Disabling Condition
@@ -231,8 +229,7 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 913, n.ProjectID, rpt.ReportID, '10.12'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
-	where n.Active = 1 and n.DisabilityStatus = 99
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.DisabilityStatus = 99
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.13	DQ – Living Situation
@@ -245,9 +242,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 914, n.ProjectID, rpt.ReportID, '10.13'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 		and (hn.LivingSituation in (8,9,99) or hn.LivingSituation is NULL)
 	group by n.ProjectID, rpt.ReportID
@@ -263,9 +259,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 915, n.ProjectID, rpt.ReportID, '10.14'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) 
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 		and (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is NULL)
 	group by n.ProjectID, rpt.ReportID
@@ -280,9 +275,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 916, n.ProjectID, rpt.ReportID, '10.15'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 		and (hn.DateToStreetESSH > hn.EntryDate
 		 or (hn.DateToStreetESSH is null 
@@ -304,9 +298,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 917, n.ProjectID, rpt.ReportID, '10.16'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 		and (hn.TimesHomelessPastThreeYears is NULL
 			or hn.TimesHomelessPastThreeYears not in (1,2,3,4)) 
@@ -325,9 +318,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 918, n.ProjectID, rpt.ReportID, '10.17'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID 
-	where n.Active = 1 
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 		and (n.RelationshipToHoH = 1 or n.ActiveAge between 18 and 65)
 		and (hn.MonthsHomelessPastThreeYears is NULL
 			or hn.MonthsHomelessPastThreeYears not between 101 and 113) 
@@ -346,9 +338,8 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 919, n.ProjectID, rpt.ReportID, '10.18'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.ExitDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
 	inner join hmis_Exit x on x.EnrollmentID = n.EnrollmentID and x.DateDeleted is null
-	where n.Active = 1
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1))
 		and (x.Destination is NULL or x.Destination in (8,9,17,30,99)
 			or (x.Destination = 435 and x.DestinationSubsidyType is NULL))
 	group by n.ProjectID, rpt.ReportID
@@ -364,8 +355,7 @@ Source: LSA Programming Specifications v7
 	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 920, n.ProjectID, rpt.ReportID, '10.19'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	inner join tlsa_Person lp on lp.PersonalID = n.PersonalID
-	where n.Active = 1 and n.ActiveAge in (98,99)
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.ActiveAge in (98,99)
 	group by n.ProjectID, rpt.ReportID
 
 	/*
