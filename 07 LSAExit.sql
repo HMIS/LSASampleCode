@@ -3,7 +3,7 @@ LSA Sample Code
 07 LSAExit.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 7/31/2025 
+Last update: 9/18/2025 
 
 
 Source: LSA Programming Specifications  v7
@@ -361,7 +361,8 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	where ha.CHTime is null
 
 	update ha
-	set ha.CHTimeStatus = 99 
+	set ha.CHTimeStatus = 99,
+		ha.Step = '7.8.3'
 	from tlsa_ExitHoHAdult ha
 	inner join tlsa_CohortDates cd on cd.Cohort = ha.Cohort
 	inner join tlsa_Enrollment n on n.HouseholdID = ha.QualifyingExitHHID 
@@ -369,11 +370,11 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 		and n.PersonalID = ha.PersonalID
 	inner join hmis_Enrollment hn on hn.EnrollmentID = n.EnrollmentID
 	where (n.RelationshipToHoH = 1 
-			or (cd.Cohort = 0 and n.ActiveAge > 18)
-			or (cd.Cohort = -1 and n.Exit1Age > 18)
-			or (cd.Cohort = -2 and n.Exit2Age > 18))
-		and (ha.CHTime in (0,270) or ha.CHTimeStatus = 3)
-		and (hn.DateToStreetESSH > hn.EntryDate 
+			or (cd.Cohort = 0 and n.ActiveAge between 18 and 65)
+			or (cd.Cohort = -1 and n.Exit1Age between 18 and 65)
+			or (cd.Cohort = -2 and n.Exit2Age between 18 and 65))
+		and (ha.CHTime is null or ha.CHTime in (0,270) or ha.CHTimeStatus = 3)
+		and (hn.DateToStreetESSH > n.EntryDate 
 				or (hn.LivingSituation < 100 or hn.LivingSituation is null)
 				or (hn.LengthOfStay in (8,9,99) or hn.LengthOfStay is null)
 				or (n.LSAProjectType not in (0,1,8) and hn.LivingSituation between 200 and 299 
