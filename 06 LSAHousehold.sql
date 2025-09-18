@@ -20,7 +20,7 @@ Source: LSA Programming Specifications v7
 	6.12.	Get Last Inactive Date
 	6.13.	Get Dates of Other System Use (sys_Time)
 	6.14.	Get Other Dates Homeless from 3.917A/B Living Situation
-			v7 Update - Clarification that DateToStreetESSH must be after LastInactive and before EntryDate in Step 6.14.2
+			v7 Update - Clarification that ESSHStreetDates must be after LastInactive and before EntryDate to be counted in Step 6.14.2
 	6.15.	Set System Use Days for LSAHousehold
 	6.16.	Update EST/RRH/PSH/RRHSOStatus
 	6.17.	Set EST/RRH/PSHAIR 
