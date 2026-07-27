@@ -4,9 +4,9 @@ Name:  02 LSA Output Tables.sql
 https://github.com/HMIS/LSASampleCode
 
 Author:  Molly McEvilley
-Last Update: 7/31/2025
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7  
+Source: LSA Programming Specifications v8  
 	2.1.	Project.csv
 	2.2.	Organization.csv
 	2.3.	Funder.csv
@@ -16,12 +16,7 @@ Source: LSA Programming Specifications v7
 	2.7.	Affiliation.csv
 	2.8.	LSAReport.csv
 	2.9.	LSAPerson.csv
-			v7 Updates
-			- Drop Gender column
-			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
 	2.10.	LSAHousehold.csv
-			v7 Update
-			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
 	2.11.	LSAExit.csv
 	2.12.	LSACalculated.csv
 

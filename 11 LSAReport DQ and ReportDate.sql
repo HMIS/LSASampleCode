@@ -3,12 +3,11 @@ LSA Sample Code
 Name: 11 LSAReport DQ and ReportDate.sql
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/28/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7 
-		Changes from AHAR to AIR column names
-		Update to 11.5-11.7 to limit DQ counts to people/households active in residence
-			when LSAScope = 3 (HIC)
+Source: LSA Programming Specifications v8  
+Relevant Sections:	
 	 
 
 	Please note that if this code is used in production, the first statement in section 11.6 
@@ -50,7 +49,7 @@ set rpt.NotOneHoH = (select count (distinct n.HouseholdID)
 				and p.ProjectType in (0,1,2,3,8,13)
 			inner join lsa_Organization org on org.OrganizationID = p.OrganizationID
 				and org.VictimServiceProvider = 0
-			inner join (select distinct hh.HouseholdID
+			inner join (select hh.HouseholdID
 				from hmis_Enrollment hh
 				inner join lsa_Report coc on coc.ReportCoC = hh.EnrollmentCoC
 				where hh.DateDeleted is null

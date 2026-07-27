@@ -3,13 +3,11 @@ LSA Sample Code
 07 LSAExit.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 9/18/2025 
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-
-Source: LSA Programming Specifications  v7
-		Changes in Section 7.8 corresponding to updates in the specs (CHTime and CHTimeStatus)
-		Changes in step 7.9.2 corresponding to HMIS column name change from Latinaeo to Latinao
-		
+Source: LSA Programming Specifications v8  
+Relevant Sections:		
 	7.	HMIS Business Logic: LSAExit
 			
 
@@ -160,9 +158,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	set hoha.DisabilityStatus = 99, Step = '7.4.4'
 	from tlsa_ExitHoHAdult hoha
 	where hoha.DisabilityStatus is null
-
-
-
+	   
 	update hoha
 	set CHTime = 400, CHTimeStatus = 2, Step = '7.4.5'
 	from tlsa_ExitHoHAdult hoha
@@ -188,9 +184,7 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	select distinct ha.PersonalID, cal.theDate, '7.5'
 	from tlsa_ExitHoHAdult ha
 	inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID 
-	inner join ref_Calendar cal on cal.theDate >=
-			case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
-				else chn.EntryDate end
+	inner join ref_Calendar cal on cal.theDate >= chn.MoveInDate  
 		and cal.theDate < chn.ExitDate
 			and cal.theDate between 
 				(select min(earliest.CHStart) from tlsa_ExitHoHAdult earliest where earliest.PersonalID = ha.PersonalID) 
@@ -310,21 +304,35 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	--	Each episodeStart combined with the next earliest episodeEnd represents one episode.
 	--	The length of the episode is the difference in days between episodeStart and episodeEnd + 1 day.
 
-	insert into ch_Episodes_exit (PersonalID, episodeStart, episodeEnd, Step)
-	select distinct s.PersonalID, s.ESSHStreetDate, min(e.ESSHStreetDate), '7.7.1'
-	from ch_Include_exit s 
-	inner join ch_Include_exit e on e.PersonalID = s.PersonalID  and e.ESSHStreetDate >= s.ESSHStreetDate
-	--any date in ch_Include_exit without a record for the day before is the start of an episode
-	where s.PersonalID not in (select PersonalID from ch_Include_exit where ESSHStreetDate = dateadd(dd, -1, s.ESSHStreetDate))
-	--any date in ch_Include_exit without a record for the day after is the end of an episode
-		and e.PersonalID not in (select PersonalID from ch_Include_exit where ESSHStreetDate = dateadd(dd, 1, e.ESSHStreetDate))
-	group by s.PersonalID, s.ESSHStreetDate
+	insert into ch_Episodes_exit (PersonalID, episodeStart, Step)
+	select s.PersonalID, s.ESSHStreetDate, '7.7.1a'
+	from ch_Include_exit s
+	where not exists 
+		(select 1 
+		from ch_Include_exit 
+		where ESSHStreetDate = dateadd(dd, -1, s.ESSHStreetDate)
+			and PersonalID = s.PersonalID)
+
+	update chep
+	set episodeEnd = 
+		(select min(chix.ESSHStreetDate)
+		from ch_Include_exit chix
+		where chix.PersonalID = chep.PersonalID 
+			and chix.ESSHStreetDate > chep.episodeStart
+			and not exists	
+			(select 1 
+			from ch_Include_exit
+			where ESSHStreetDate = dateadd(dd, 1, chix.ESSHStreetDate)
+				and PersonalID = chix.PersonalID)
+			)
+		, Step = '7.7.1b'
+	from ch_Episodes_exit chep
 
 	update chep 
 	set episodeDays = datediff(dd, chep.episodeStart, chep.episodeEnd) + 1
 		, Step = '7.7.2'
 	from ch_Episodes_exit chep
-
+	
 /*
 	7.8 Set CHTime and CHTimeStatus 
 */

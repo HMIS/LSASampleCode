@@ -3,9 +3,11 @@ LSA Sample Code
 04_02 to 04_07 Get Other PDDEs.sql
 https://github.com/HMIS/LSASampleCode
 
-	Source: LSA Programming Specifications v7
-		There are no changes to the code related to selecting PDDE data for v7. 
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
+Source: LSA Programming Specifications v8  
+Relevant Sections:
 	4.2 Get Organization Records for Export
 		Export organization records for all projects selected in 4.1.
 		Organization.csv must have exactly one Organization record for each 

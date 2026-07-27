@@ -3,25 +3,15 @@ LSA Sample Code
 05_01 to 05_11 LSAPerson Records and Demographics.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/21/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7
+Source: LSA Programming Specifications v8  
 Relevant Sections:
 	5.1.	Identify Active and Active in Residence (AIR) HouseholdIDs
-			v7 Updates
-			- 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names (Step 5.1.2)
-			- There must be a bednight in report period to set AIR = 1 for NBN shelters
 	5.2.	Identify Active and Active in Residence (AIR) Enrollments
-			v7 Updates
-			- 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names (Step 5.2.2)
-			- There must be a bednight in report period to set AIR = 1 for NBN shelters
 	5.3.	Get Active Clients for LSAPerson
-			v7 Update
-			- Limit tlsa_Person to people active in residence when LSAScope = 3 (Step 5.3/5.4)
 	5.4.	LSAPerson Demographics
-			v7 Update
-			- Delete logic associated with Gender  (Step 5.3/5.4)
-			- HMIS Client.csv column name change from Latinaeo to Latinao
 	5.5.	Time Spent in ES/SH or on the Street – LSAPerson
 	5.6.	Enrollments Relevant to Counting ES/SH/Street Dates
 	5.7.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
@@ -546,5 +536,4 @@ Relevant Sections:
 		 , -1)
 		, lp.Step = '5.11.4'
 	from tlsa_Person lp
-
 

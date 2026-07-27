@@ -2,9 +2,11 @@
 LSA Sample Code
 03_02 to 03_06 HMIS Households and Enrollments.sql 
 https://github.com/HMIS/LSASampleCode
-Last update: 8/7/2025
 
-Source: LSA Programming Specifications v7 
+Author:  Molly McEvilley
+Last Update: 7/27/2026
+
+Source: LSA Programming Specifications v8  
 	3.2.	LSA Reporting Cohorts and Dates (tlsa_CohortDates)
 	3.3.	HMIS Household Enrollments (tlsa_HHID)
 	3.4.	HMIS Client Enrollments (tlsa_Enrollment)		
@@ -12,10 +14,7 @@ Source: LSA Programming Specifications v7
 	3.6.	Household Types (tlsa_HHID)
 	5.4		LSAPerson Demographics (HIV, SMI, and SUD)
 
-*/
 
-
-/*
 	3.2 Cohort Dates 
 */
 

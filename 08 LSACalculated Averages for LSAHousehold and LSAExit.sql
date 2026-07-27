@@ -3,9 +3,12 @@ LSA Sample Code
 Name:  08 LSACalculated Averages for LSAHousehold and LSAExit.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7 
+Source: LSA Programming Specifications v8  
+Relevant Sections:	
+	8.3 Populations for Average Days from LSAHousehold and LSAExit
 
 Uses static reference tables:
 	ref_RowValues - Required Cohort, Universe, SystemPath values for each RowID
@@ -16,8 +19,6 @@ Uses static reference tables:
 Populates and references:
 	tlsa_AveragePops - By PopID -- HoHID, HHType, and Cohort for each population member
 
-
-	8.3 Populations for Average Days from LSAHousehold and LSAExit
 */
  
 if (select LSAScope from lsa_Report) <> 3

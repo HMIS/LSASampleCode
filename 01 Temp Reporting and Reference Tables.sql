@@ -3,39 +3,34 @@ LSA Sample Code
 01 Temp Reporting and Reference Tables.sql
 https://github.com/HMIS/LSASampleCode
 
-Author: Molly McEvilley
-Last Update: 8/21/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7
+Source: LSA Programming Specifications v8  
 Relevant Sections:
+	3.1		Report Parameters and Metadata (lsa_Report)
 	3.2.	LSA Reporting Cohorts and Dates (tlsa_CohortDates)
 	3.3.	HMIS Household Enrollments (tlsa_HHID)
-			v7 Updates
-			- column 'AHAR' renamed 'AIR' (active in residence) 
 	3.4.	HMIS Client Enrollments (tlsa_Enrollment)
-			v7 Updates
-			- tlsa_Enrollment - column 'AHAR' renamed 'AIR' (active in residence) 
-	5.		HMIS Business Logic: LSAPerson (tlsa_Person)
-			v7 Updates
-			- Drop Gender column
-			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
-	6.3.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
-	6.4.	Get Dates to Include in Counts of ES/SH/Street Days (ch_Include)
-	6.5.	Get ES/SH/Street Episodes (ch_Episodes)
-	   		
-	- ref_PopHHTypes
-		- Remove gender-related populations from insert statements
-	- ref_RowPopulations
-		- Remove gender-related populations from insert statements
-			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
-
-Utilities Update:
-	- Extend ref_Calendar through 9/30/2026
-	- ref_PopHHTypes
-		- Remove gender-related populations from insert statements
-	- ref_RowPopulations
-		- Remove gender-related populations from insert statements
-			-'AIR' (active in residence) has replaced 'AHAR' in all relevant column names
+	4.1		Get Project.csv Records (lsa_Project)
+	4.2		Get Organization.csv Records (lsa_Organization)
+	4.3		Get Funder.csv Records (lsa_Funder)
+	4.4		Get ProjectCoC.csv Records (lsa_ProjectCoC)
+	4.5		Get Inventory.csv Records (lsa_Inventory)
+	4.6		Get HMISParticipation.csv Records (lsa_HMISParticipation)
+	4.7		Get Affiliation.csv Records (lsa_Affiliation)
+	5.		HMIS Business Logic: LSAPerson (tlsa_Person/lsa_Person)
+	5.7.	Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude)
+	5.8.	Get Dates to Include in Counts of ES/SH/Street Days (ch_Include)
+	5.9.	Get ES/SH/Street Episodes (ch_Episodes)
+	6.		HMIS Business Logic - LSAHousehold (lsa_Household/tlsa_household)
+	6.11	Dates Housed in PSH or RRH (sys_Time)
+	6.12	Get Last Inactive Date (sys_TimePadded)
+	7.		HMIS Business Logic - LSAExit (lsa_Exit/tlsa_Exit)
+	7.5		Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude_exit)   		
+	7.6		Get Dates to Include in Counts of ES/SH/Street Days (ch_Include_exit)
+	7.7		Get ES/SH/Street Episodes (ch_Episodes_exit) 
+	8.1		LSACalculated Columns (lsa_Calculated)
 
 It is not necessary to execute this code every time the LSA is run -- only 
 if/when there are changes to it.   It drops (if tables exist) and creates
@@ -47,7 +42,6 @@ the following temp reporting tables:
 			and exit dates, household types, and other frequently-referenced data 
 	tlsa_Enrollment - a 'master' table of enrollments associated with the HouseholdIDs in tlsa_HHID
 			with enrollment ages and other frequently-referenced data
-
 	tlsa_Person - a person-level pre-cursor to LSAPerson / people active in report period
 		ch_Exclude - dates in TH or housed in RRH/PSH; used for LSAPerson chronic homelessness determination
 		ch_Include - dates in ES/SH or on the street; used for LSAPerson chronic homelessness determination
@@ -67,7 +61,7 @@ the following temp reporting tables:
 
 This script also drops (if tables exist), creates, and populates the following 
 reference tables used in the sample code:  
-	ref_Calendar - table of dates between 10/1/2012 and 9/30/2025  
+	ref_Calendar - table of dates between 10/1/2012 and 9/30/2030  
 	ref_RowValues - required combinations of Cohort, Universe, and SystemPath values for each ReportRow in LSACalculated
 	ref_RowPopulations - the populations required for each ReportRow in LSACalculated
 	ref_PopHHTypes - the household types associated with each population 
@@ -497,7 +491,7 @@ create table tlsa_Household(
 
 	--Populate ref_Calendar
 	declare @start date = '2012-10-01'
-	declare @end date = '2026-09-30'
+	declare @end date = '2030-09-30'
 	declare @i int = 0
 	declare @total_days int = DATEDIFF(d, @start, @end) 
 

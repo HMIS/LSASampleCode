@@ -3,10 +3,10 @@ LSA Sample Code
 03_01a LSA Parameters and Metadata - Annual Systemwide.sql 
 https://github.com/HMIS/LSASampleCode
 
-Author: Molly McEvilley
-Last update: 11/13/2025 
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: Source: LSA Programming Specifications v7
+Source: LSA Programming Specifications v8  
 Relevant Sections:
 	3.1 Report Parameters and Metadata
 	
@@ -30,12 +30,12 @@ insert into lsa_Report (
 		)
 	select
 		  right(year(getdate()), 1)*100000000 + cast(format (getdate(),'MMddHHmm') as int)
-		, '10/1/2024'
-		, '9/30/2025'
+		, '10/1/2025'
+		, '9/30/2026'
 		, 'XX-501'
 		, 'Sample Code Inc.'
 		, 'LSA Online'
 		, 'Molly'			
 		, 'molly@squarepegdata.com'
 		, 1					
-		, dateadd(yyyy, -7, '10/1/2024')
+		, dateadd(yyyy, -7, '10/1/2025')

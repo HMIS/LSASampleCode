@@ -3,9 +3,11 @@ LSA Sample Code
 06 LSAHousehold.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7 
+Source: LSA Programming Specifications v8  
+Relevant Sections:
 	6.1.	Get Distinct Households for LSAHousehold
 	6.2.	Set Population Identifiers for LSAHousehold
 	6.3.	EST/RRH/PSH/RRHSOStatus – LSAHousehold
@@ -20,11 +22,9 @@ Source: LSA Programming Specifications v7
 	6.12.	Get Last Inactive Date
 	6.13.	Get Dates of Other System Use (sys_Time)
 	6.14.	Get Other Dates Homeless from 3.917A/B Living Situation
-			v7 Update - Clarification that ESSHStreetDates must be after LastInactive and before EntryDate to be counted in Step 6.14.2
 	6.15.	Set System Use Days for LSAHousehold
 	6.16.	Update EST/RRH/PSH/RRHSOStatus
 	6.17.	Set EST/RRH/PSHAIR 
-			v7 Update - 'AIR' (active in residence) has replaced 'AHAR' in all relevant column names for Steps 6.17.1-6.17.4
 	6.18.	Set SystemPath for LSAHousehold
 	6.19.	LSAHousehold
 
@@ -42,7 +42,7 @@ begin
 		, HHChronic, HHVet, HHDisability, HHFleeingDV
 		, HoHRaceEthnicity
 		, HHParent, ReportID, Step)
-	select distinct hhid.HoHID, hhid.ActiveHHType
+	select hhid.HoHID, hhid.ActiveHHType
 		, case when min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) = 99 then 0 
 			else min(case hhid.HHChronic when 0 then 99 else hhid.HHChronic end) end
 		, max(hhid.HHVet)

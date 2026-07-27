@@ -3,11 +3,11 @@ LSA Sample Code
 Name:  10 LSACalculated Data Quality.sql
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/28/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7
-		Update to 10.8-10.19 to limit DQ counts to people/households active in residence
-			when LSAScope = 3 (HIC)
+Source: LSA Programming Specifications v8  
+Relevant Sections:	
 	
 	10.2 Get Counts of Enrollments Active after Operating End Date by ProjectID
 */

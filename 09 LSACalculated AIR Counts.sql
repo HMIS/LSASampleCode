@@ -3,15 +3,11 @@ LSA Sample Code
 Name:  09 LSACalculated AIR Counts.sql  
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
--- File name changed from '09 LSACalculated AHAR Counts' to '09 LSACalculated AIR Counts'
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source: LSA Programming Specifications v7 
-	
-	Changes
-	-- File name changed from '09 LSACalculated AHAR Counts' to '09 LSACalculated AIR Counts'
-	-- Replace 'AHAR' in column names with 'AIR' (active in residence)
-	-- Deleted step 9.1.26 (populations associated with gender)
+Source: LSA Programming Specifications v8  
+Relevant Sections:	
 	
 
 Uses static reference tables:

@@ -3,10 +3,11 @@ LSA Sample Code
 Name:  04_01 Get Project Records.sql
 https://github.com/HMIS/LSASampleCode
 
-Last update: 8/5/2025
+Author:  Molly McEvilley
+Last Update: 7/27/2026
 
-Source:  LSA Programming Specifications v7
-
+Source: LSA Programming Specifications v8  
+Relevant Sections:
 	4.1 Get Project Records for Export
 		Export records for continuum ES entry/exit (0), ES night-by-night (1), 
 			SH (8), TH (2), RRH (13), PSH (3), and OPH (9 or 10) projects active in the report period
