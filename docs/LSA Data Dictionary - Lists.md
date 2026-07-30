@@ -9,7 +9,6 @@ has_toc: true
 # LSA Data Dictionary - Lists
 
 ## 1 - LSAScope
-<a id="list-1"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -18,7 +17,6 @@ has_toc: true
 | 3 | HIC |
 
 ## 2 - Stat
-<a id="list-2"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -29,7 +27,6 @@ has_toc: true
 | 5 | Continuously engaged |
 
 ## 3 - ReturnTime
-<a id="list-3"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -43,7 +40,6 @@ has_toc: true
 | 730 | 548-730 days |
 
 ## 4 - HHType
-<a id="list-4"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -53,7 +49,6 @@ has_toc: true
 | 99 | UN (unknown) |
 
 ## 5 - NoYes
-<a id="list-5"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -61,7 +56,6 @@ has_toc: true
 | 1 | Yes |
 
 ## 6 - RaceEthnicityLSA
-<a id="list-6"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -196,7 +190,6 @@ has_toc: true
 | 1234567 | American Indian, Alaska Native, or Indigenous & Asian or Asian American & Black, African American, or African & Native Hawaiian or Pacific Islander & White & Hispanic/Latina/o & Middle Eastern or North African |
 
 ## 8 - ZeroToThree
-<a id="list-8"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -206,7 +199,6 @@ has_toc: true
 | 3 | Three or more |
 
 ## 9 - HHAdultAge
-<a id="list-9"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -217,7 +209,6 @@ has_toc: true
 | 55 | All adults are 55 or older |
 
 ## 10 - ProjectGroupStatus
-<a id="list-10"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -229,7 +220,6 @@ has_toc: true
 | 22 | Entered and exited during report period |
 
 ## 11 - MoveInStatus
-<a id="list-11"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -239,7 +229,6 @@ has_toc: true
 | 2 | Placed prior to current report period |
 
 ## 12 - LOTHDays 
-<a id="list-12"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -256,7 +245,6 @@ has_toc: true
 | 1095 | 1095 days+ |
 
 ## 13 - GeographyLSA
-<a id="list-13"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -267,7 +255,6 @@ has_toc: true
 | 99 | Unknown |
 
 ## 14 - LivingSitLSA
-<a id="list-14"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -305,7 +292,6 @@ has_toc: true
 | 440 | Rental by client - Other permanent housing dedicated for formerly homeless persons |
 
 ## 15 - DestinationLSA
-<a id="list-15"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -348,7 +334,6 @@ has_toc: true
 | 440 | Rental by client - Other permanent housing dedicated for formerly homeless persons |
 
 ## 16 - TimeHousedInPSH
-<a id="list-16"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -365,7 +350,6 @@ has_toc: true
 | 121 | 10+ years |
 
 ## 17 - SystemPath
-<a id="list-17"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -384,7 +368,6 @@ has_toc: true
 | 12 | All other combinations |
 
 ## 18 - AgeGroupLSA
-<a id="list-18"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -404,7 +387,6 @@ has_toc: true
 | 99 | Data not collected or invalid |
 
 ## 20 - NoYesOthersLSA
-<a id="list-20"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -415,7 +397,6 @@ has_toc: true
 | 99 | Data not collected or invalid |
 
 ## 21 - CHTime
-<a id="list-21"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -426,7 +407,6 @@ has_toc: true
 | 400 | 12 or more months in three years (3.917) |
 
 ## 22 - CHTimeStatus
-<a id="list-22"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -437,7 +417,6 @@ has_toc: true
 | 99 | Unknown |
 
 ## 23 - DVStatus
-<a id="list-23"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -450,7 +429,6 @@ has_toc: true
 | 99 | Data not collected or invalid |
 
 ## 24 - HHTypeCombos
-<a id="list-24"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -472,7 +450,6 @@ has_toc: true
 | 1239 | AO, AC, CO, and UN |
 
 ## 25 - HHTypeCombosNoCO
-<a id="list-25"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -486,7 +463,6 @@ has_toc: true
 | 129 | AO, AC, and UN |
 
 ## 27 - ExitCohorts
-<a id="list-27"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -495,7 +471,6 @@ has_toc: true
 | 0 | Exit in period (ReportStart) to (ReportEnd - 6 months). If ReportEnd - 6 months < ReportStart, use ReportEnd.  |
 
 ## 28 - ExitFrom
-<a id="list-28"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -510,7 +485,6 @@ has_toc: true
 | 10 | RRH-SO without placement in PH |
 
 ## 29 - CohortsAll
-<a id="list-29"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -524,7 +498,6 @@ has_toc: true
 | 13 | Active July 31 |
 
 ## 30 - Universe
-<a id="list-30"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -543,7 +516,6 @@ has_toc: true
 | 18 | Enrolled in PSH |
 
 ## 31 - HHTypeCalc
-<a id="list-31"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -554,7 +526,6 @@ has_toc: true
 | 99 | UN (unknown) |
 
 ## 32 - Population
-<a id="list-32"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -900,7 +871,6 @@ has_toc: true
 | 5297 | Parenting Child - Domestic Violence Survivor Not Identified as Currently Fleeing |
 
 ## 33 - ReportRow
-<a id="list-33"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1006,7 +976,6 @@ has_toc: true
 | 920 | DQ - Date of Birth |
 
 ## 34 - ProjectType
-<a id="list-34"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1020,7 +989,6 @@ has_toc: true
 | 13 | RRH |
 
 ## 35 - RRHSubType
-<a id="list-35"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1028,7 +996,6 @@ has_toc: true
 | 2 | RRH: Housing with or without Services |
 
 ## 36 - TargetPopulation
-<a id="list-36"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1037,7 +1004,6 @@ has_toc: true
 | 4 | Not applicable |
 
 ## 37 - HousingType
-<a id="list-37"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1046,7 +1012,6 @@ has_toc: true
 | 3 | Tenant-based - scattered site |
 
 ## 38 - Funder
-<a id="list-38"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1103,7 +1068,6 @@ has_toc: true
 | 56 | HUD: CoC Builds |
 
 ## 39 - HHTypeHMIS
-<a id="list-39"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1112,7 +1076,6 @@ has_toc: true
 | 4 | Households with only children |
 
 ## 40 - Availability
-<a id="list-40"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1121,7 +1084,6 @@ has_toc: true
 | 3 | Overflow |
 
 ## 41 - BedType
-<a id="list-41"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1130,7 +1092,6 @@ has_toc: true
 | 3 | Other |
 
 ## 42 - GeographyType
-<a id="list-42"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1140,7 +1101,6 @@ has_toc: true
 | 99 | Unknown / data not collected |
 
 ## 43 - HHChronic
-<a id="list-43"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1154,7 +1114,6 @@ has_toc: true
 | 9 | CH Status Unknown (missing data) |
 
 ## 44 - NoYesNA
-<a id="list-44"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1163,7 +1122,6 @@ has_toc: true
 | -1 | Not applicable |
 
 ## 45 - NoYesHOPWA
-<a id="list-45"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1172,14 +1130,12 @@ has_toc: true
 | 2 | Non-HOPWA Funded Project |
 
 ## 46 - DisabilityStatus
-<a id="list-46"></a>
 
 | intValue | textValue |
 | --- | --- |
 | -1 | Not applicable |
 
 ## 47 - HMISParticipationType
-<a id="list-47"></a>
 
 | intValue | textValue |
 | --- | --- |
@@ -1188,7 +1144,6 @@ has_toc: true
 | 2 | Comparable Database Participating |
 
 ## 48 - HHFleeingDV
-<a id="list-48"></a>
 
 | intValue | textValue |
 | --- | --- |
