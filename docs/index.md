@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "LSA Programming Specifications Table of Contents"
+title: "LSA Programming Specifications"
 nav_order: 1
 has_children: true
 has_toc: true
