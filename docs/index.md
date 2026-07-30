@@ -349,6 +349,7 @@ has_toc: true
    - [ClientExit](11 - LSAReport.md#clientexit)
 
 - [11.6 Data Quality: SSN Issues](11 - LSAReport.md#116-data-quality-ssn-issues)
+   - [SSN4Digit](11 - LSAReport.md#ssn4digit)
    - [SSNValid](11 - LSAReport.md#ssnvalid)
    - [SSNNotProvided](11 - LSAReport.md#ssnnotprovided)
    - [SSNMissingOrInvalid](11 - LSAReport.md#ssnmissingorinvalid)

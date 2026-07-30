@@ -73,11 +73,7 @@ The LSA upload also includes seven CSV files of Project Descriptor Data Elements
 In this document, LSA business logic is described as a series of discrete steps, each with a specific result. Results are cumulative; the ‘output’ of earlier steps serves as input for later steps. The sequence of steps is consistent with the order of operations, but in practice, many could be combined and executed simultaneously. They are separated here to clarify the business logic associated with individual columns.
 
 To avoid repetition, simplify descriptions, and emphasize various aspects of the logic, several of these steps specify the creation of intermediate data constructs (tables) with column names that function as variables in later steps. There is no requirement to use this process or these constructs as long as output is consistent with the logic described here.
-## Companion Documents
 
-Working versions of this document and companion documents are available on GitHub in the [LSASampleCode](https://github.com/HMIS/LSASampleCode/) repository, including:
-- LSA Dictionary – a summary of the files, columns, and valid values for each column
-- Sample Code – SQL code written during the development of these specifications and made available as a reference. There is no requirement to use the code.
 ## External References
 
 This document is comprehensive with respect to the business logic for the LSA upload, but additional references are indicated below. The short-hand terms used to refer to each document are in parentheses following the formal names and are hyperlinked to the documents online.
@@ -176,28 +172,9 @@ The definitions here are intended to serve as a general reference and are not co
 
 **UN** – Unknown household type; includes at least one member without a valid date of birth and does not include both an adult and a child.
 
-# 1.4 Changes Effective 11/1/2025
+# 1.4 Changes Effective 11/1/2026
 
 This section is limited to a high-level review of changes. Tracked versions of this document and [more detailed information about each change](https://github.com/HMIS/LSASampleCode/issues?q=type%3A%22LSA%20Update%22) are available in the [GitHub repository](https://github.com/HMIS/LSASampleCode).
 
-## Identification of Persons and Households Active-in-Residence During the Report Period
-
-### Column Names
-
-The columns in LSAPerson and LSAHousehold that identity people and households active in residence during the report period were originally named 'AHAR' because the distinction between 'active' and 'active in residence' was required for the AHAR.
-
-At this point, the column names are confusing -- particularly because the distinction is also critical for the HIC -- so ‘AHAR’ is being replaced with ‘AIR’. This is primarily a find and replace change; it also impacts the counts in Section 9 LSACalculated Counts (formerly called ‘LSACalculated AHAR Counts’).
-
-### Night-by-Night Shelter
-
-Identification of persons and households active in residence in night-by-night shelter projects now requires a bed night in the report period; this impacts section [5.1 Identify Active and Active in Residence (AIR) HouseholdIDs](#_Get_Active_HouseholdIDs_1) and section [5.2 Identify Active and Active in Residence (AIR) Enrollments](#_Toc29163943).
-
-## HMIS Data Standards Changes
-
-### Gender
-
-All gender-related reporting has been removed from the LSA. This impacts section [5.4 LSAPerson Demographics](#_LSAPerson_Demographics) and section [9.4 Get Counts of People by Project and Personal Characteristics](#_Toc525229521).
-
-## Chronically Homeless Households in LSAExit
-
-Households in exit cohorts were originally identified as either chronically homeless or not chronically homeless in LSAHousehold and LSAExit columns called HHChronic. An expanded list that allows for more nuanced reporting was introduced for reporting on FY2023, but updates to the programming specifications in section [7.8 CHTime and CHTimeStatus for Exit Cohorts](#_CHTime_and_CHTimeStatus_1) were incomplete at that time. That has been corrected for reporting on FY2025.
+## Include Counts of Four Digit Social Security Numbers in LSAReport DQ Counts
+A new column ([SSN4Digit](11 - LSAReport.md#ssn4digit)) has been added to the DQ counts in LSAReport to capture the number clients served during the report period with 4 digit SSNs.  

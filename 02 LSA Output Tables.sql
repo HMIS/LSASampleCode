@@ -4,7 +4,7 @@ Name:  02 LSA Output Tables.sql
 https://github.com/HMIS/LSASampleCode
 
 Author:  Molly McEvilley
-Last Update: 7/27/2026
+Last Update: 7/30/2026
 
 Source: LSA Programming Specifications v8  
 	2.1.	Project.csv
@@ -246,6 +246,7 @@ create table lsa_Report(
 	ClientEntry int,
 	AdultHoHEntry int,
 	ClientExit int,
+	SSN4Digit int,
 	SSNNotProvided int,
 	SSNMissingOrInvalid int,
 	ClientSSNNotUnique int,

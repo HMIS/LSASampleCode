@@ -131,6 +131,8 @@ from lsa_Report rpt
 
 update lp
 set lp.SSNValid = case when c.SSNDataQuality in (8,9) then 9
+		when SUBSTRING(c.SSN,1,5) like '[xX][xX][xX][xX][xX]' and c.SSNDataQuality = 2 
+			and SUBSTRING(c.SSN, 6,4) <> '0000' and SUBSTRING(c.SSN, 6, 4) like '[0-9][0-9][0-9][0-9]' then 4
 		when SUBSTRING(c.SSN,1,3) in ('000','666')
 				or LEN(c.SSN) <> 9
 				or SUBSTRING(c.SSN,4,2) = '00'
@@ -149,7 +151,12 @@ inner join tlsa_Enrollment n on lp.PersonalID = n.PersonalID
 inner join hmis_Client c on c.PersonalID = lp.PersonalID
 
 update rpt
-set SSNNotProvided = (select count(distinct lp.PersonalID)
+set SSN4Digit = (select count(distinct lp.PersonalID)
+	from tlsa_Person lp
+	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+	where SSNValid = 4
+		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
+	,SSNNotProvided = (select count(distinct lp.PersonalID)
 	from tlsa_Person lp
 	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
 	where SSNValid = 9
