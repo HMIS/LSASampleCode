@@ -1,3 +1,15 @@
+---
+layout: default
+title: "1 - Introduction"
+nav_order: 2
+parent: "LSA Programming Specifications"
+has_toc: true
+toc_levels: 1..1
+---
+
+- Contents
+{:toc}
+
 # 1.1 Background 
 
 Every year, the U.S. Department of Housing and Urban Development (HUD) submits an Annual Homeless Assessment Report (AHAR) to the United States Congress. The AHAR is a national-level report that provides information about homeless service providers, people and households experiencing homelessness, and various characteristics of that population. It informs strategic planning for federal, state, and local initiatives designed to prevent and end homelessness.
@@ -21,13 +33,13 @@ The LSA also incorporates follow-up reporting on households and populations who 
 -   Destination types; and,
 -   For those who were served again later by continuum projects, lengths of time between exit and re-engagement or returns to homelessness.
 
-## 1.2 About This Document
+# 1.2 About This Document
 
-### Intended Audience
+## Intended Audience
 
 This document is intended for software and database developers who produce HMIS reporting and are familiar with relational database concepts, Structured Query Language (SQL), as well as other HMIS technical documentation, particularly the HMIS Data Dictionary and the HMIS CSV Format. The document may also be useful to expert-level HMIS system administrators interested in further understanding LSA logic, how HDX 2.0 uses uploaded data to produce report output, or in using the LSA files exported from HMIS to develop custom local reports.
 
-### Purpose and Scope
+## Purpose and Scope
 
 The primary purpose of this document is to define LSA business logic and programming specifications for:
 -   Selection of project descriptor data for export
@@ -36,7 +48,7 @@ The primary purpose of this document is to define LSA business logic and program
 -   Producing and populating LSA CSV files
 -   Validating LSA CSV files
 
-### Structure and Content
+## Structure and Content
 
 **Section 1: Introduction** (this section) outlines general concepts related to the LSA and this document.
 
@@ -61,12 +73,12 @@ The LSA upload also includes seven CSV files of Project Descriptor Data Elements
 In this document, LSA business logic is described as a series of discrete steps, each with a specific result. Results are cumulative; the ‘output’ of earlier steps serves as input for later steps. The sequence of steps is consistent with the order of operations, but in practice, many could be combined and executed simultaneously. They are separated here to clarify the business logic associated with individual columns.
 
 To avoid repetition, simplify descriptions, and emphasize various aspects of the logic, several of these steps specify the creation of intermediate data constructs (tables) with column names that function as variables in later steps. There is no requirement to use this process or these constructs as long as output is consistent with the logic described here.
-### Companion Documents
+## Companion Documents
 
 Working versions of this document and companion documents are available on GitHub in the [LSASampleCode](https://github.com/HMIS/LSASampleCode/) repository, including:
 - LSA Dictionary – a summary of the files, columns, and valid values for each column
 - Sample Code – SQL code written during the development of these specifications and made available as a reference. There is no requirement to use the code.
-### External References
+## External References
 
 This document is comprehensive with respect to the business logic for the LSA upload, but additional references are indicated below. The short-hand terms used to refer to each document are in parentheses following the formal names and are hyperlinked to the documents online.
 
@@ -74,7 +86,7 @@ This document is comprehensive with respect to the business logic for the LSA up
 
 **FY 2026 HMIS CSV Format Specifications** ([](https://www.hudexchange.info/resource/3824/hmis-data-dictionary/)[HMIS CSV](https://www.hudexchange.info/resource/3824/hmis-data-dictionary/)) – Descriptions of LSA business logic reference HMIS fields using the file and column names of the HMIS CSV.
 
-### Style Notes
+## Style Notes
 
 Throughout this document, descriptions of business logic reference diverse types of data – HMIS fields, report parameters, derived variables, intermediate data constructs, etc. – and many have similar (or identical) names.
 
@@ -83,11 +95,11 @@ To help clarify, many sections include simple graphics to illustrate the flow of
 | Example         | Description                                                                                                                                                                                                                                                                                                |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <u>ReportCoC<u> | Report parameters are underlined                                                                                                                                                                                                                                                                           |
-| hmis_Project    | HMIS data structures / raw HMIS data are referenced using HMIS CSV file names with an hmis\_ prefix. This assumes the presence/availability of all HMIS data from <u><u>LookbackDate</u></u> to <u><u>ReportEnd</u></u>.                                                                                   |
-| *ProjectID*     | References to HMIS fields / raw HMIS data use HMIS CSV column names and are italicized. *ProjectID* potentially refers to any project record in the HMIS where the operating end date is >= <u><u>LookbackDate</u></u>.                                                                                    |
+| hmis_Project    | HMIS data structures / raw HMIS data are referenced using HMIS CSV file names with an hmis\_ prefix. This assumes the presence/availability of all HMIS data from <u>LookbackDate</u> to <u>ReportEnd</u>.                                                                                   |
+| *ProjectID*     | References to HMIS fields / raw HMIS data use HMIS CSV column names and are italicized. *ProjectID* potentially refers to any project record in the HMIS where the operating end date is >= <u>LookbackDate</u>.                                                                                    |
 | lsa_Project     | The lsa\_ prefix indicates a CSV file included in the LSA upload and that the data therein is the result of a process / business logic defined by this document.                                                                                                                                           |
 | **ProjectID**   | References to variables and/or data created or transformed by the processes described in this document – e.g., columns in LSA CSV files or intermediate data constructs – are in bold. **ProjectID** refers only to project records that meet the criteria for inclusion in the uploaded Project.csv file. |
-## 1.3 Definitions/Acronyms
+# 1.3 Definitions/Acronyms
 
 The definitions here are intended to serve as a general reference and are not comprehensive with respect to business logic, which is detailed in later sections.
 
@@ -97,7 +109,7 @@ The definitions here are intended to serve as a general reference and are not co
 
 **AIR** – When used in column names, ‘AIR’ indicates that a person or household was active in residence/has at least one bed night in the report period.
 
-**Between** – When used to describe business logic, *between* includes the values used in the description. For example, the report start date and the report end date are both “between <u><u>ReportStart</u></u> and <u><u>ReportEnd</u></u>.”
+**Between** – When used to describe business logic, *between* includes the values used in the description. For example, the report start date and the report end date are both “between <u>ReportStart</u> and <u>ReportEnd</u>.”
 
 **CO** – Child-only household; a household in which all household members have valid dates of birth and are age 17 or younger.
 
@@ -164,28 +176,28 @@ The definitions here are intended to serve as a general reference and are not co
 
 **UN** – Unknown household type; includes at least one member without a valid date of birth and does not include both an adult and a child.
 
-## 1.4 Changes Effective 11/1/2025
+# 1.4 Changes Effective 11/1/2025
 
 This section is limited to a high-level review of changes. Tracked versions of this document and [more detailed information about each change](https://github.com/HMIS/LSASampleCode/issues?q=type%3A%22LSA%20Update%22) are available in the [GitHub repository](https://github.com/HMIS/LSASampleCode).
 
-### Identification of Persons and Households Active-in-Residence During the Report Period
+## Identification of Persons and Households Active-in-Residence During the Report Period
 
-#### Column Names
+### Column Names
 
 The columns in LSAPerson and LSAHousehold that identity people and households active in residence during the report period were originally named 'AHAR' because the distinction between 'active' and 'active in residence' was required for the AHAR.
 
 At this point, the column names are confusing -- particularly because the distinction is also critical for the HIC -- so ‘AHAR’ is being replaced with ‘AIR’. This is primarily a find and replace change; it also impacts the counts in Section 9 LSACalculated Counts (formerly called ‘LSACalculated AHAR Counts’).
 
-#### Night-by-Night Shelter
+### Night-by-Night Shelter
 
 Identification of persons and households active in residence in night-by-night shelter projects now requires a bed night in the report period; this impacts section [5.1 Identify Active and Active in Residence (AIR) HouseholdIDs](#_Get_Active_HouseholdIDs_1) and section [5.2 Identify Active and Active in Residence (AIR) Enrollments](#_Toc29163943).
 
-### HMIS Data Standards Changes
+## HMIS Data Standards Changes
 
-#### Gender
+### Gender
 
 All gender-related reporting has been removed from the LSA. This impacts section [5.4 LSAPerson Demographics](#_LSAPerson_Demographics) and section [9.4 Get Counts of People by Project and Personal Characteristics](#_Toc525229521).
 
-### Chronically Homeless Households in LSAExit
+## Chronically Homeless Households in LSAExit
 
 Households in exit cohorts were originally identified as either chronically homeless or not chronically homeless in LSAHousehold and LSAExit columns called HHChronic. An expanded list that allows for more nuanced reporting was introduced for reporting on FY2023, but updates to the programming specifications in section [7.8 CHTime and CHTimeStatus for Exit Cohorts](#_CHTime_and_CHTimeStatus_1) were incomplete at that time. That has been corrected for reporting on FY2025.
