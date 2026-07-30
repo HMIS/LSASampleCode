@@ -1,0 +1,31 @@
+title: LSA Programming Specifications
+description: "The specs"
+theme: jekyll-theme-primer
+
+# Enable Just the Docs directly via GitHub Pages remote themes
+remote_theme: just-the-docs/just-the-docs
+
+# Search Configurations
+search_enabled: true
+search_tokenizer_separator: /[\s\-]+/
+
+nav_sort: page_order
+
+
+kramdown:
+  toc_levels: 1..1
+
+plugins:
+  - jekyll-relative-links
+
+# Enable built-in support for mermaid diagrams
+mermaid:
+  version: "11.16.0" 
+
+relative_links:
+  enabled: true
+  collections: true
+
+author:
+
+  name: Molly McEvilley
