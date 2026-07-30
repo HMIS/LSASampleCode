@@ -1,3 +1,11 @@
+---
+layout: default
+title: "LSA Data Dictionary - Lists"
+nav_order: 14
+parent: "LSA Programming Specifications"
+has_toc: true
+---
+
 # LSA Data Dictionary - Lists
 
 ## 1 - LSAScope
