@@ -11,43 +11,44 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 1 - LSAReport
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | ReportID | int |  | 0 | Unique identifier | 10 |
 | 2 | ReportDate | datetime |  | 0 | The date and time that reporting procedures completed the process of generating the LSA. | 19 |
 | 3 | ReportStart | date |  | 0 | User-entered report parameter | 19 |
 | 4 | ReportEnd | date |  | 0 | User-entered report parameter | 19 |
-| 5 | ReportCoC | nvarchar(6) |  | 0 | User-entered report parameter | 6 |
+| 5 |  <u>ReportCoC</u> | nvarchar(6) |  | 0 | User-entered report parameter | 6 |
 | 6 | SoftwareVendor | nvarchar(50) |  | 0 | The name of the HMIS vendor  | 50 |
 | 7 | SoftwareName | nvarchar(50) |  | 0 | The name of the HMIS application | 50 |
 | 8 | VendorContact | nvarchar(50) |  | 0 | Optional name of a vendor contact point for HDX 2.0 staff (department or person) | 50 |
 | 9 | VendorEmail | nvarchar(50) |  | 0 | Optional email for vendor contact | 50 |
 | 10 | LSAScope | int | [1](LSA Data Dictionary - Lists.md#list-1) | 0 | Identifies whether LSA is systemwide (clients of all relevant continuum projects are included based on project types); project-focused (only clients of projects selected by the user generating the LSA are included); or HIC (systemwide single day) | 1 |
 | 11 | LookbackDate | date |  | 0 | ReportStart - 7 years | 19 |
-| 12 | NoCoC | int |  | 0 | Systemwide count of HouseholdIDs served in continuum ES/SH/TH/RRH/PSH projects during the report period and excluded from the LSA because there is no record of the CoC in which the households were served.   | 10 |
-| 13 | NotOneHoH | int |  | 0 | Systemwide count of HouseholdIDs active in continuum ES/SH/TH/RRH/PSH projects during the report period but excluded from the LSA due to improper designation of a head of household. | 10 |
-| 14 | RelationshipToHoH | int |  | 0 | Count of enrollments associated with households active during the LSA report period but excluded from the LSA due to missing/invalid RelationshipToHoH values. | 10 |
+| 12 | NoCoC | int |  | 0 | Systemwide count of _HouseholdID_s served in continuum ES/SH/TH/RRH/PSH projects during the report period and excluded from the LSA because there is no record of the CoC in which the households were served.   | 10 |
+| 13 | NotOneHoH | int |  | 0 | Systemwide count of _HouseholdID_s active in continuum ES/SH/TH/RRH/PSH projects during the report period but excluded from the LSA due to improper designation of a head of household. | 10 |
+| 14 | RelationshipToHoH | int |  | 0 | Count of enrollments associated with households active during the LSA report period but excluded from the LSA due to missing/invalid _RelationshipToHoH_ values. | 10 |
 | 15 | MoveInDate | int |  | 0 | Count of RRH/PSH enrollments with move-in dates recorded in HMIS that fall either prior to project entry or after project exit. | 10 |
-| 16 | UnduplicatedClient | int |  | 0 | A count of distinct  PersonalIDs in LSAPerson | 10 |
-| 17 | HouseholdEntry | int |  | 0 | A count of distinct HMIS HouseholdIDs for the active cohort with enrollment dates that fall within the report period.    | 10 |
-| 18 | ClientEntry | int |  | 0 | A count of distinct HMIS EnrollmentIDs for the active cohort with enrollment dates that fall within the report period.    | 10 |
-| 19 | AdultHoHEntry | int |  | 0 | A count of distinct HMIS EnrollmentIDs for adults and heads of household in the active cohort with enrollment dates that fall within the report period.    | 10 |
-| 20 | ClientExit | int |  | 0 | A count of distinct HMIS EnrollmentIDs for the active cohort with an exit date within the report period.    | 10 |
-| 21 | SSNNotProvided | int |  | 0 | The total number of PersonalIDs reported in LSAPerson where:  • The client was active in ReportCoC during the report period; and  • The value for SSNDataQuality is Client doesn’t know (8) or Client refused (9).  | 10 |
-| 22 | SSNMissingOrInvalid | int |  | 0 | The total number of PersonalIDs reported in LSAPerson where:  • The client was active in ReportCoC during the report period; and  • The value for SSNDataQuality is NOT Client doesn’t know (8) or Client refused (9); and • The value for SSN is the system default value (if any) for missing SSN, or the value is not valid per SSA guidelines. | 10 |
-| 23 | ClientSSNNotUnique | int |  | 0 | The total number of PersonalIDs reported in LSAPerson where:  • The client was active in ReportCoC during the report period; and • There is at least one record for a different PersonalID with the same value for SSN, excluding the system default value (if any) for missing SSN. | 10 |
-| 24 | DistinctSSNValueNotUnique | int |  | 0 | The total number of distinct SSN values, excluding the system default value (if any) for missing SSN, that are associated with PersonalIDs reported in LSAPerson; and • The distinct SSN value is shared by one or more PersonalIDs.    | 10 |
-| 25 | DisablingCond | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for DisablingCondition  | 10 |
-| 26 | LivingSituation | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for LivingSituation  | 10 |
-| 27 | LengthOfStay | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for LengthOfStay  | 10 |
-| 28 | HomelessDate | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for DateToStreetESSH  | 10 |
-| 29 | TimesHomeless | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for TimesHomelessPastThreeYears   | 10 |
-| 30 | MonthsHomeless | int |  | 0 | A count of distinct HMIS EnrollmentIDs with missing or invalid values for MonthsHomelessPastThreeYears   | 10 |
-| 31 | Destination | int |  | 0 | A count of distinct HMIS EnrollmentIDs with exits in the report period with missing or invalid values for Destination | 10 |
+| 16 | UnduplicatedClient | int |  | 0 | A count of distinct  **PersonalID**s in LSAPerson | 10 |
+| 17 | HouseholdEntry | int |  | 0 | A count of distinct HouseholdIDs for the active cohort with enrollment dates that fall within the report period.    | 10 |
+| 18 | ClientEntry | int |  | 0 | A count of distinct **EnrollmentID**s for the active cohort with enrollment dates that fall within the report period.    | 10 |
+| 19 | AdultHoHEntry | int |  | 0 | A count of distinct **EnrollmentID**s for adults and heads of household in the active cohort with enrollment dates that fall within the report period.    | 10 |
+| 20 | ClientExit | int |  | 0 | A count of distinct **EnrollmentID**s for the active cohort with an exit date within the report period.    | 10 |
+| 21 | SSN4Digit | int |  | 0 | The total number of **PersonalID**s reported in LSAPerson where the value for *SSNDataQuality* is Approximate or partial SSN collected (2), the first five characters of *SSN* are all x and/or X, and the last 4 are a combination of digits other than '0000'.   | 10 |
+| 22 | SSNNotProvided | int |  | 0 | The total number of **PersonalID**s reported in LSAPerson where the value for _SSNDataQuality_ is Client doesn’t know (8) or Client refused (9).  | 10 |
+| 23 | SSNMissingOrInvalid | int |  | 0 | The total number of **PersonalID**s reported in LSAPerson where the value for *SSNDataQuality* is NOT Client doesn’t know (8) or Client refused (9); and • The value for _SSN_ is the system default value (if any) for missing SSN, or the value is not valid per SSA guidelines. | 10 |
+| 24 | ClientSSNNotUnique | int |  | 0 | The total number of **PersonalID**s reported in LSAPerson where there is at least one record in HMIS for a different *PersonalID* with the same value for SSN, excluding the system default value (if any) for missing SSN. | 10 |
+| 25 | DistinctSSNValueNotUnique | int |  | 0 | The total number of distinct SSN values, excluding the system default value (if any) for missing SSN, that are associated with **PersonalID**s reported in LSAPerson; and • The distinct SSN value is shared by one or more **PersonalID**s.    | 10 |
+| 26 | DisablingCond | int |  | 0 | A count of distinct **EnrollmentID**s with missing or invalid values for _DisablingCondition_  | 10 |
+| 27 | LivingSituation | int |  | 0 | A count of distinct  **EnrollmentID**s with missing or invalid values for _LivingSituation_  | 10 |
+| 28 | LengthOfStay | int |  | 0 | A count of distinct **EnrollmentID**s with missing or invalid values for _LengthOfStay_  | 10 |
+| 29 | HomelessDate | int |  | 0 | A count of distinct **EnrollmentID**s with missing or invalid values for _DateToStreetESSH_  | 10 |
+| 30 | TimesHomeless | int |  | 0 | A count of distinct **EnrollmentID**s with missing or invalid values for _TimesHomelessPastThreeYears_   | 10 |
+| 31 | MonthsHomeless | int |  | 0 | A count of distinct **EnrollmentID**s with missing or invalid values for _MonthsHomelessPastThreeYears_   | 10 |
+| 32 | Destination | int |  | 0 | A count of distinct **EnrollmentID**s with exits in the report period with missing or invalid values for _Destination_ | 10 |
 
 ## 2 - LSAHousehold
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | RowTotal | int |  | 0 | The total number of households served in continuum ES, SH, TH, RRH, and/or PSH projects during the report period with the characteristics represented by the values in each column of the row. All values must be integers > 0.  | 10 |
 | 2 | Stat | int | [2](LSA Data Dictionary - Lists.md#list-2) | 0 | The household status related to continuum engagement on the first day of the earliest enrollment active during the report period. | 1 |
@@ -119,7 +120,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 3 - LSAPerson
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | RowTotal | int |  | 0 | The total number of people served in continuum ES, SH, TH, RRH, and/or PSH projects during the report period with the characteristics represented by the values in each column of the row. All values must be integers > 0.  | 10 |
 | 2 | RaceEthnicity | int | [6](LSA Data Dictionary - Lists.md#list-6) | 0 | Race and Ethnicity for all persons | 7 |
@@ -190,7 +191,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 4 - LSAExit
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | RowTotal | int |  | 0 | The total number of households served in the continuum with the characteristics represented by the values in each column of the row. All values must be integers >0. | 10 |
 | 2 | Cohort | int | [27](LSA Data Dictionary - Lists.md#list-27) | 0 | Identifies which return cohort the household is in. These categories are not mutually exclusive.  | 2 |
@@ -212,7 +213,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 5 - LSACalculated
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Value | int |  | 0 | The calculated report row value (average or count)  | 10 |
 | 2 | Cohort | int | [29](LSA Data Dictionary - Lists.md#list-29) | 0 |  | 2 |
@@ -226,7 +227,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 10 - Organization
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | OrganizationID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | OrganizationName | nvarchar(200) |  | 0 |  | 200 |
@@ -240,7 +241,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 11 - Project
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | ProjectID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | OrganizationID | nvarchar(32) |  | 0 |  | 32 |
@@ -264,7 +265,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 12 - Funder
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | FunderID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | ProjectID | nvarchar(32) |  | 0 |  | 32 |
@@ -281,11 +282,11 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 13 - ProjectCoC
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | ProjectCoCID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | ProjectID | nvarchar(32) |  | 0 |  | 32 |
-| 3 | CoCCode | nvarchar(6) |  | 0 | Must match LSAReport.ReportCoC | 6 |
+| 3 | CoCCode | nvarchar(6) |  | 0 | Must match LSAReport. <u>ReportCoC</u> | 6 |
 | 4 | Geocode | nvarchar(6) |  | 0 |  | 6 |
 | 5 | Address1 | nvarchar(100) |  | 1 |  | 100 |
 | 6 | Address2 | nvarchar(100) |  | 1 |  | 100 |
@@ -301,11 +302,11 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 14 - Inventory
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | InventoryID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | ProjectID | nvarchar(32) |  | 0 |  | 32 |
-| 3 | CoCCode | nvarchar(6) |  | 0 | Must match LSAReport.ReportCoC | 6 |
+| 3 | CoCCode | nvarchar(6) |  | 0 | Must match LSAReport. <u>ReportCoC</u> | 6 |
 | 4 | HouseholdType | int | [39](LSA Data Dictionary - Lists.md#list-39) | 0 |  | 1 |
 | 5 | Availability | int | [40](LSA Data Dictionary - Lists.md#list-40) | 1 |  | 1 |
 | 6 | UnitInventory | int |  | 0 |  | 10 |
@@ -328,7 +329,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 15 - HMISParticipation
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | HMISParticipationID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | ProjectID | nvarchar(32) |  | 0 | Must match a ProjectID in Project.csv | 32 |
@@ -343,7 +344,7 @@ List numbers are clickable and hyperlinked to the relevant list.
 
 ## 16 - Affiliation
 
-| ColumnNumber | Column Name | DataType | List | Nullable | Description | Max Length |
+| # | Column Name | DataType | List | Nullable | Description | Max Length |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | AffiliationID | nvarchar(32) |  | 0 |  | 32 |
 | 2 | ProjectID | nvarchar(32) |  | 0 | Must match a ProjectID in Project.csv where RRHSubType = 1 | 32 |
