@@ -1,9 +1,10 @@
 ---
 layout: default
-title: "LSA Data Dictionary - Lists"
+title: LSA Data Dictionary - Lists
 nav_order: 14
-parent: "LSA Programming Specifications"
+parent: LSA Programming Specifications
 has_toc: true
+toc_levels: 2..2
 ---
 
 # LSA Data Dictionary - Lists
