@@ -5,6 +5,11 @@ nav_order: 15
 parent: LSA Programming Specifications
 has_toc: true
 toc_levels: 2..2
+last_modified_date: 2026-07-31
+last_edit_timestamp: true
+aux_links:
+  "LSASampleCode Repository on GitHub":
+    - "//github.com/HMIS/LSASampleCode"
 ---
 # LSA Temporary and Reference Tables
 These tables are created by [01 Temp Reporting and Reference Tables.sql](https://github.com/HMIS/LSASampleCode/blob/master/01%20Temp%20Reporting%20and%20Reference%20Tables.sql).  
