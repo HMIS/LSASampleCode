@@ -12,7 +12,7 @@ last_modified_date: 2026-08-01
 - [1.1 Background](01 - Introduction.md#11-background)
 - [1.2 About This Document](01 - Introduction.md#12-about-this-document)
 - [1.3 Definitions/Acronyms](01 - Introduction.md#13-definitions-acronyms)
-- [1.4 Changes Effective 11/1/2025](01 - Introduction.md#14-changes-effective-11-1-2025)
+- [1.4 Changes for Reporting on FY2026](01 - Introduction.md#14-changes-for-reporting-on-fy2026)
 
 [2 - HDX 2.0 Upload](02 - HDX 2.0 Upload.md)
 
@@ -83,9 +83,6 @@ last_modified_date: 2026-08-01
 [5 - HMIS Business Logic - LSAPerson](05 - LSAPerson.md)
 
 - [5.1 Identify Active and Active in Residence (AIR) HouseholdIDs](05 - LSAPerson.md#51-identify-active-and-active-in-residence-air-householdids)
-[5 - HMIS Business Logic - LSAPerson](05 - LSAPerson.md)
-
-- [5.1 Identify Active and Active in Residence (AIR) HouseholdIDs](05 - LSAPerson.md#51-identify-active-and-active-in-residence-air-householdids)
    - [Active](05 - LSAPerson.md#active)
    - [AIR](05 - LSAPerson.md#air)
 
@@ -137,6 +134,8 @@ last_modified_date: 2026-08-01
 - [5.14 Adult Age Population Identifiers - LSAPerson](05 - LSAPerson.md#514-adult-age-population-identifiers---lsaperson)
 
 - [5.15 LSAPerson](05 - LSAPerson.md#515-lsaperson)
+
+[6 - HMIS Business Logic - LSAHousehold](06 - LSAHousehold.md)
 
 - [6.1 Get Distinct Households for LSAHousehold](06 - LSAHousehold.md#61-get-distinct-households-for-lsahousehold)
 
@@ -205,6 +204,8 @@ last_modified_date: 2026-08-01
 
 - [6.19 LSAHousehold](06 - LSAHousehold.md#619-lsahousehold)
 
+[7 - HMIS Business Logic - LSAExit](07 - LSAExit.md)
+
 - [7.1 Identify Qualifying Exits in Exit Cohort Periods](07 - LSAExit.md#71-identify-qualifying-exits-in-exit-cohort-periods)
    - [Qualifying Exits](07 - LSAExit.md#qualifying-exits)
 
@@ -256,6 +257,8 @@ last_modified_date: 2026-08-01
 
 - [7.13 LSAExit](07 - LSAExit.md#713-lsaexit)
 
+[8 - HMIS Business Logic - LSACalculated Averages](08 - LSACalculated Averages.md)
+
 - [8.1 LSACalculated Columns](08 - LSACalculated Averages.md#81-lsacalculated-columns)
 
 - [8.2 Report Rows for LSACalculated Averages](08 - LSACalculated Averages.md#82-report-rows-for-lsacalculated-averages)
@@ -278,6 +281,8 @@ last_modified_date: 2026-08-01
 
 - [8.11 Get Average Days to Return/Re-engage by Exit Destination](08 - LSACalculated Averages.md#811-get-average-days-to-returnre-engage-by-exit-destination)
 
+[9 - HMIS Business Logic - LSACalculated Counts](09 - LSACalculated Counts.md)
+
 - [9.1 Report Rows for LSACalculated Counts](09 - LSACalculated Counts.md#91-report-rows-for-lsacalculated-counts)
 
 - [9.2 Identify Active and Point in Time Cohorts for LSACalculated Counts](09 - LSACalculated Counts.md#92-identify-active-and-point-in-time-cohorts-for-lsacalculated-counts)
@@ -289,6 +294,8 @@ last_modified_date: 2026-08-01
 - [9.5 Get Counts of Bednights](09 - LSACalculated Counts.md#95-get-counts-of-bednights)
 
 - [9.6 Get OPH Point-in-Time Counts for HIC](09 - LSACalculated Counts.md#96-get-oph-point-in-time-counts-for-hic)
+
+[10 - HMIS Business Logic - LSACalculated Project-Level Data Quality Counts](10 - LSACalculated Data Quality Counts.md)
 
 - [10.1 Static Column Values](10 - LSACalculated Data Quality Counts.md#101-static-column-values)
 
@@ -332,6 +339,8 @@ last_modified_date: 2026-08-01
 
 - [10.21 LSACalculated](10 - LSACalculated Data Quality Counts.md#1021-lsacalculated)
 
+[11 - HMIS Business Logic - LSAReport Data Quality and ReportDate.md](11 - LSAReport Data Quality and ReportDate.md)
+
 - [11.1 Data Quality: HMIS Household Enrollments Not Associated with a CoC](11 - LSAReport.md#111-data-quality-hmis-household-enrollments-not-associated-with-a-coc)
    - [NoCoC](11 - LSAReport.md#nococ)
 
@@ -371,3 +380,9 @@ last_modified_date: 2026-08-01
 - [11.8 Set LSAReport ReportDate](11 - LSAReport.md#118-set-lsareport-reportdate)
 
 - [11.9 LSAReport](11 - LSAReport.md#119-lsareport)
+
+[LSA Data Dictionary - Files and Columns](LSA Data Dictionary - Columns.md)
+
+[LSA Data Dictionary - Lists](LSA Data Dictionary - Lists.md)
+
+[LSA Temporary and Reference Tables](LSA Temporary and Reference Tables.md)
