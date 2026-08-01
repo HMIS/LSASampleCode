@@ -20,3 +20,6 @@ ExportID,SourceType,SourceID,SourceName,SourceContactFirst,SourceContactLast,Sou
 "FY2025LSATestAug071425",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-08-07 14:25:30,2018-08-01,2026-07-31,"LSA Online","1","2026 v1.0",3,2,1,"SQUAREPEG1234"
 "FY2025LSATestAug071427",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-08-07 14:27:48,2018-08-01,2026-07-31,"LSA Online","1","2026 v1.0",3,2,1,"SQUAREPEG1234"
 "LSAv8TestJul271308",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-07-27 13:08:05,2019-10-01,2026-09-30,"LSA Online","v8","2026 v1.0",3,2,1,"SQUAREPEG1234"
+"LSAv8TestAug011040",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-08-01 10:40:20,2019-10-01,2026-09-30,"LSA Online","v8","2026 v1.0",3,2,1,"SQUAREPEG1234"
+"LSAv8TestAug011127",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-08-01 11:27:11,2019-10-01,2026-09-30,"LSA Online","v8","2026 v1.0",3,2,1,"SQUAREPEG1234"
+"LSAv8TestAug011223",1,"XX-501","Square Peg HMIS","Molly","McEvilley","","","molly@squarepegdata.com",2026-08-01 12:23:30,2019-10-01,2026-09-30,"LSA Online","v8","2026 v1.0",3,2,1,"SQUAREPEG1234"

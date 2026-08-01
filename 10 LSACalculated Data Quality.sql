@@ -367,7 +367,7 @@ Relevant Sections:
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 920, n.ProjectID, rpt.ReportID, '10.20'
+	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 921, n.ProjectID, rpt.ReportID, '10.20'
 	from lsa_Report rpt
 	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
 	inner join hmis_Enrollment hoh on hoh.HouseholdID = n.HouseholdID and hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC
