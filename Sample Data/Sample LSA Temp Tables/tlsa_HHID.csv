@@ -1,0 +1,19 @@
+HouseholdID,HoHID,EnrollmentID,ProjectID,LSAProjectType,EntryDate,MoveInDate,ExitDate,LastBednight,EntryHHType,ActiveHHType,Exit1HHType,Exit2HHType,ExitDest,Active,AIR,PITOctober,PITJanuary,PITApril,PITJuly,ExitCohort,HHChronic,HHVet,HHDisability,HHFleeingDV,HHAdultAge,HHParent,AC3Plus,Step
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 17
+Invalid column name 'PITOctober'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 17
+Invalid column name 'PITOctober'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 18
+Invalid column name 'PITJanuary'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 18
+Invalid column name 'PITJanuary'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 19
+Invalid column name 'PITApril'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 19
+Invalid column name 'PITApril'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 20
+Invalid column name 'PITJuly'.
+Msg 207, Level 16, State 1, Server SquarePeg, Procedure vw_tlsa_HHID, Line 20
+Invalid column name 'PITJuly'.
+Msg 4413, Level 16, State 1, Server SquarePeg, Line 1
+Could not use view or function 'vw_tlsa_HHID' because of binding errors.
