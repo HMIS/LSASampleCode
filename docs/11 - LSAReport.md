@@ -4,6 +4,7 @@ title: "11 - LSAReport Data Quality and ReportDate"
 nav_order: 12
 parent: "LSA Programming Specifications"
 has_toc: true
+last_modified_date: 2026-08-01
 ---
 
 - Contents
@@ -342,7 +343,7 @@ This is a subset of **ClientEntry**.
 
 A count of distinct **EnrollmentIDs** in tlsa_Enrollment where where **AIR** = 1 or (**Active** = 1 and **LSAScope** \<\> 3) and:
 
-- **DisabilityStatus** = 99.
+- **DisabilityStatus** in (98,99).
 
 ### LivingSituation
 

@@ -5,6 +5,7 @@ nav_order: 14
 parent: LSA Programming Specifications
 has_toc: true
 toc_levels: 2..2
+last_modified_date: 2026-08-01
 ---
 
 # LSA Data Dictionary - Lists
@@ -1129,12 +1130,6 @@ toc_levels: 2..2
 | 0 | No |
 | 1 | Yes |
 | 2 | Non-HOPWA Funded Project |
-
-## 46 - DisabilityStatus
-
-| intValue | textValue |
-| --- | --- |
-| -1 | Not applicable |
 
 ## 47 - HMISParticipationType
 

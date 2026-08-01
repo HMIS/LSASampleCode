@@ -256,6 +256,7 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 			when hhid.LSAProjectType in (13,15) and hhid.MoveInDate = hx.ExitDate then dateadd(dd, 1, hx.ExitDate)
 			else hx.ExitDate end
 		, case when hn.DisablingCondition in (0,1) then hn.DisablingCondition 
+			when hn.DisablingCondition in (8,9) then -2
 			else null end
 		, '3.4.1'
 	from tlsa_HHID hhid
@@ -288,7 +289,9 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 		, case when nbnx.ExitDate is null and hhid.ExitDate is null and dateadd(dd, 90, max(svc.DateProvided)) > rpt.ReportEnd then null
 			else dateadd(dd, 1, max(svc.DateProvided)) end as ExitDate				
 		, max(svc.DateProvided) as LastBednight
-		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition else null end
+		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition 
+			when nbn.DisablingCondition in (8,9) then -2
+			else null end
 		, '3.4.2'
 	from hmis_Services svc
 	inner join hmis_Enrollment nbn on nbn.EnrollmentID = svc.EnrollmentID and svc.DateProvided >= nbn.EntryDate
@@ -306,7 +309,9 @@ where core.LSAProjectType <> 1 or core.LastBedNight is not null
 	group by svc.EnrollmentID, nbn.PersonalID, nbn.HouseholdID
 		, nbn.RelationshipToHoH
 		, hhid.ProjectID, hhid.LSAProjectType
-		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition else null end
+		, case when nbn.DisablingCondition in (0,1) then nbn.DisablingCondition 
+			when nbn.DisablingCondition in (8,9) then -2
+			else null end
 		, nbnx.ExitDate, hhid.ExitDate, rpt.ReportEnd
 
 

@@ -4,7 +4,7 @@ Name: 11 LSAReport DQ and ReportDate.sql
 https://github.com/HMIS/LSASampleCode
 
 Author:  Molly McEvilley
-Last Update: 7/27/2026
+Last Update: 8/1/2026
 
 Source: LSA Programming Specifications v8  
 Relevant Sections:	
@@ -152,20 +152,20 @@ inner join hmis_Client c on c.PersonalID = lp.PersonalID
 
 update rpt
 set SSN4Digit = (select count(distinct lp.PersonalID)
-	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
-	where SSNValid = 4
-		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
+		from tlsa_Person lp
+		inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+		where SSNValid = 4
+			and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
 	,SSNNotProvided = (select count(distinct lp.PersonalID)
-	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
-	where SSNValid = 9
-		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
+		from tlsa_Person lp
+		inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+		where SSNValid = 9
+			and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
 	, SSNMissingOrInvalid = (select count(distinct lp.PersonalID)
-	from tlsa_Person lp
-	inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
+		from tlsa_Person lp
+		inner join tlsa_Enrollment n on n.PersonalID = lp.PersonalID
 		where SSNValid = 0
-		and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
+			and (AIR = 1 or (Active = 1 and rpt.LSAScope <> 3)))
 from lsa_Report rpt
 
 update rpt
@@ -193,7 +193,7 @@ update rpt
 set rpt.DisablingCond = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
-	and n.DisabilityStatus = 99
+	and n.DisabilityStatus in (98,99)
 	)
 from lsa_Report rpt
 

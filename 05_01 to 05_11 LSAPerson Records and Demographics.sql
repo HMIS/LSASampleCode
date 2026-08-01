@@ -87,9 +87,9 @@ Relevant Sections:
 			else 99 end
 		, case	
 			when HoHAdult.stat = 0 then -1
-			when Disability.stat = 1 then 1
-			when Disability.stat = 0 then 0
-			else 99 end 		 
+			when Disability.stat =  -2 then 98
+			when Disability.stat is null then 99
+			else Disability.stat end 		 
 		, case	
 			when HoHAdult.stat = 0 then -1
 			when DV.stat = 10 then 0 

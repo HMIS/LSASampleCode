@@ -4,6 +4,7 @@ title: "10 - LSA Calculated Project Level Data Quality Counts"
 nav_order: 11
 parent: "LSA Programming Specifications"
 has_toc: true
+last_modified_date: 2026-08-01
 ---
 
 - Contents
@@ -331,7 +332,7 @@ This is a subset of **ClientEntry** (the **Value** for **ReportRow** 910).
 
 The **Value** for **ReportRow** 913 is a count of distinct **EnrollmentIDs** in tlsa\_Enrollment for **ProjectID**s in lsa\_Project where where **AIR** \= 1 or (**<u>LSAScope</u>** <> 3 and **Active** \= 1) and:
 
--   DisabilityStatus = 99.
+-   DisabilityStatus in (98,99).
 
 # 10.13 DQ – Living Situation
 ``` mermaid
@@ -505,7 +506,28 @@ flowchart LR
 
 The **Value** for **ReportRow** 920 is a count of distinct **PersonalIDs** in tlsa\_Enrollment for **ProjectID**s in lsa\_Project where where **AIR** \= 1 or (**<u>LSAScope</u>** <> 3 and **Active** \= 1) and **ActiveAge** in (98,99).
 
-# 10.20 LSACalculated
+# 10.20 DQ - Night-by-Night Enrollments without Bed Nights
+``` mermaid
+flowchart LR 
+
+    L1[[lsa_Report]] -->
+    H1[(hmis_Project
+    hmis_Enrollment
+    hmis_Services
+    hmis_Exit)] -->
+	L2[[lsa_Calculated]]
+
+    L1:::LSA
+    L2:::LSA
+    H1:::HMIS
+
+    classDef Temp stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+	classDef LSA stroke:#FBB35A, fill:#FFEFDB, color:#8F632D 
+	classDef HMIS stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+	classDef Box stroke:#999, fill:none, color:#FFFFFF 
+```
+
+# 10.21 LSACalculated
 
 LSACalculated has nine columns. Except for **ProjectID,** the datatype for all columns is integer and none may be NULL.
 

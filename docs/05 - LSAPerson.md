@@ -4,6 +4,7 @@ title: "5 - LSAPerson"
 nav_order: 6
 parent: "LSA Programming Specifications"
 has_toc: true
+last_modified_date: 2026-08-01
 ---
 
 - Contents

@@ -5,6 +5,7 @@ nav_order: 13
 parent: LSA Programming Specifications
 has_toc: true
 toc_levels: 2..2
+last_modified_date: 2026-08-01
 ---
 
 # LSA Data Dictionary - Files and Columns
