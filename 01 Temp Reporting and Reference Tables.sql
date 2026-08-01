@@ -99,10 +99,6 @@ create table tlsa_HHID (
 	, ExitDest int
 	, Active bit default 0
 	, AIR bit default 0
-	, PITOctober bit default 0
-	, PITJanuary bit default 0
-	, PITApril bit default 0
-	, PITJuly bit default 0
 	, ExitCohort int
 	, HHChronic int default 0
 	, HHVet int default 0

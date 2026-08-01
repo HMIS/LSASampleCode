@@ -5,7 +5,7 @@ nav_order: 15
 parent: LSA Programming Specifications
 has_toc: true
 toc_levels: 2..2
-last_modified_date: 2026-07-31
+last_modified_date: 2026-08-01
 last_edit_timestamp: true
 aux_links:
   "LSASampleCode Repository on GitHub":
@@ -50,10 +50,6 @@ Business logic associated with populating tlsa_HHID is in section [3.3 HMIS Hous
 | ExitDest | int |  |
 | Active | bit |  |
 | AIR | bit |  |
-| PITOctober | bit |  |
-| PITJanuary | bit |  |
-| PITApril | bit |  |
-| PITJuly | bit |  |
 | ExitCohort | int |  |
 | HHChronic | int |  |
 | HHVet | int |  |
