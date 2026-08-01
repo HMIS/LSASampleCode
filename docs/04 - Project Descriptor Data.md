@@ -234,7 +234,7 @@ Populate **ExportID** with LSAReport.**ReportID***;* the data type for **ExportI
 
 **GrantID** and **UserID** may be exported as NULL; regardless of their values, they will not be imported into the HDX 2.0.
 
-## 4.4 Get ProjectCoC.csv Records / lsa_ProjectCoC
+# 4.4 Get ProjectCoC.csv Records / lsa_ProjectCoC
 ``` mermaid
 
 flowchart LR
