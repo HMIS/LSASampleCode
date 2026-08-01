@@ -184,7 +184,9 @@ inner join tlsa_HHID qx on qx.HouseholdID = ex.QualifyingExitHHID
 	select distinct ha.PersonalID, cal.theDate, '7.5'
 	from tlsa_ExitHoHAdult ha
 	inner join tlsa_Enrollment chn on chn.PersonalID = ha.PersonalID 
-	inner join ref_Calendar cal on cal.theDate >= chn.MoveInDate  
+	inner join ref_Calendar cal on cal.theDate >= 
+		case when chn.LSAProjectType in (3,13) then chn.MoveInDate  
+			else chn.EntryDate end
 		and cal.theDate < chn.ExitDate
 			and cal.theDate between 
 				(select min(earliest.CHStart) from tlsa_ExitHoHAdult earliest where earliest.PersonalID = ha.PersonalID) 
