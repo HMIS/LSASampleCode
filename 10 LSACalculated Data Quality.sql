@@ -4,7 +4,7 @@ Name:  10 LSACalculated Data Quality.sql
 https://github.com/HMIS/LSASampleCode
 
 Author:  Molly McEvilley
-Last Update: 7/27/2026
+Last Update: 8/1/2026
 
 Source: LSA Programming Specifications v8  
 Relevant Sections:	
@@ -229,7 +229,7 @@ Relevant Sections:
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 913, n.ProjectID, rpt.ReportID, '10.12'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.DisabilityStatus = 99
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.DisabilityStatus in (98,99)
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.13	DQ – Living Situation
