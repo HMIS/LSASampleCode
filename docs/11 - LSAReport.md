@@ -17,9 +17,13 @@ last_modified_date: 2026-08-01
 | **lsa_Project**     |
 |---------------------|
 | ProjectType         |
+
 | **hmis_Exit**       |
+|---------------------|
 | ExitDate            |
+
 | **hmis_Enrollment** |
+|---------------------|
 | ProjectID           |
 | RelationshipToHoH   |
 | EntryDate           |
@@ -252,7 +256,10 @@ A count of distinct **PersonalID**s in tlsa_Enrollment where **AIR** = 1 or (**A
 | tlsa_Person               |
 | ------------------------- |
 | SSNValid                  |
+
 | **lsa_Report**            |
+| ------------------------- |
+| SSN4Digit                 |
 | SSNNotProvided            |
 | SSNMissingOrInvalid       |
 | ClientSSNNotUnique        |
@@ -268,15 +275,24 @@ table below where the criteria are consistent with client records:
 | Priority | Value | Criteria                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | -------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | 9     | hmis\_Client**.**_SSNDataQuality_ in (8,9)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| 2        | 0     | hmis\_Client.*SSNDataQuality* NOT in (8,9); and<br>-   Length(hmis\_Client.*SSN*) <> 9; or<br>-   *SSN* is NULL or set to system default; or<br>-   *SSN* begins with ‘000’, ‘666’, or ‘9’; or<br>-   *SSN* middle 2 digits are ‘00’ (e.g. 999-00-9999); or<br>-   *SSN* last 4 digits are ‘0000’; or<br>-   *SSN* contains any character other than 0-9; or<br>-   *SSN* in ('111111111', '222222222', '333333333', '444444444', '555555555', '777777777', '888888888', ‘123456789’, ‘234567890’, ‘345678901’, ‘456789012’, ‘567890123’, ‘678901234’, ‘789012345’, ‘890123456’, ‘901234567’) |
+| 2        | 4     | hmis\_Client.*SSNDataQuality* = 2, the first five characters of *SSN* are all either 'x' or 'X', and the last four are a combination of digits other than '0000' |
+| 3        | 0     | hmis\_Client.*SSNDataQuality* NOT in (8,9); and<br>-   Length(hmis\_Client.*SSN*) <> 9; or<br>-   *SSN* is NULL or set to system default; or<br>-   *SSN* begins with ‘000’, ‘666’, or ‘9’; or<br>-   *SSN* middle 2 digits are ‘00’ (e.g. 999-00-9999); or<br>-   *SSN* last 4 digits are ‘0000’; or<br>-   *SSN* contains any character other than 0-9; or<br>-   *SSN* in ('111111111', '222222222', '333333333', '444444444', '555555555', '777777777', '888888888', ‘123456789’, ‘234567890’, ‘345678901’, ‘456789012’, ‘567890123’, ‘678901234’, ‘789012345’, ‘890123456’, ‘901234567’) |
 | 3        | 1     | (All others)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 These checks will not catch all invalid SSNs, but others will be assumed valid.
+
+### SSN4Digit
+
+A count of distinct **PersonalID**s in tlsa_Enrollment where:
+- tlsa_Person.**SSNValid** = 4; and
+- **AIR** = 1 or (**Active** = 1 and **LSAScope** \<\> 3)
+
 ### SSNNotProvided
 
 A count of distinct **PersonalID**s in tlsa_Enrollment where:
 - tlsa_Person.**SSNValid** = 9; and
 - **AIR** = 1 or (**Active** = 1 and **LSAScope** \<\> 3)
+- 
 ### SSNMissingOrInvalid
 
 A count of distinct **PersonalID**s in tlsa_Enrollment where:
