@@ -96,6 +96,7 @@ To help clarify, many sections include simple graphics to illustrate the flow of
 | *ProjectID*     | References to HMIS fields / raw HMIS data use HMIS CSV column names and are italicized. *ProjectID* potentially refers to any project record in the HMIS where the operating end date is >= <u>LookbackDate</u>.                                                                                    |
 | lsa_Project     | The lsa\_ prefix indicates a CSV file included in the LSA upload and that the data therein is the result of a process / business logic defined by this document.                                                                                                                                           |
 | **ProjectID**   | References to variables and/or data created or transformed by the processes described in this document – e.g., columns in LSA CSV files or intermediate data constructs – are in bold. **ProjectID** refers only to project records that meet the criteria for inclusion in the uploaded Project.csv file. |
+
 # 1.3 Definitions/Acronyms
 
 The definitions here are intended to serve as a general reference and are not comprehensive with respect to business logic, which is detailed in later sections.
