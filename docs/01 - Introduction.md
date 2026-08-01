@@ -5,6 +5,7 @@ nav_order: 2
 parent: "LSA Programming Specifications"
 has_toc: true
 toc_levels: 1..1
+last_modified_date: 2026-08-01
 ---
 
 - Contents
@@ -172,9 +173,15 @@ The definitions here are intended to serve as a general reference and are not co
 
 **UN** – Unknown household type; includes at least one member without a valid date of birth and does not include both an adult and a child.
 
-# 1.4 Changes Effective 11/1/2026
+# 1.4 Changes for Reporting on FY2026
 
 This section is limited to a high-level review of changes. Tracked versions of this document and [more detailed information about each change](https://github.com/HMIS/LSASampleCode/issues?q=type%3A%22LSA%20Update%22) are available in the [GitHub repository](https://github.com/HMIS/LSASampleCode).
 
 ## Include Counts of Four Digit Social Security Numbers in LSAReport DQ Counts
-A new column ([SSN4Digit](11 - LSAReport.md#ssn4digit)) has been added to the DQ counts in LSAReport to capture the number clients served during the report period with 4 digit SSNs.  
+A new column ([SSN4Digit](11 - LSAReport.md#ssn4digit)) has been added to the DQ counts in LSAReport to capture the number clients served during the report period with 4 digit SSNs.  These will be excluded from the count of SSNMissingOrInvalid.  
+
+## Update LSAPerson.DisabilityStatus to Include an Option to Indicate Client Doesn't Know or Prefers Not to Answer
+Consistent with other demographics, reporting on disability status in LSAPerson will now include both a category for Data not provided by client (98) and Data not collected or invalid (99). Previous versions grouped all responses other than Yes and No under the 99 value.  
+
+## Add a Project-Level Count of NBN Enrollments Excluded from the LSA Because of Missing Bed-Nights
+A new count of NBN enrollments excluded from the LSA because there are no bed nights associated with them has been added to LSACalculated as ReportRow 921.  This does not include enrollments that were excluded because they have no bed nights *in the report period* as long as there is at least one bed night record associated with the enrollment prior to the start of the report period. 

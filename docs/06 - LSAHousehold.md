@@ -4,6 +4,7 @@ title: "6 - LSAHousehold"
 nav_order: 7
 parent: "LSA Programming Specifications"
 has_toc: true
+last_modified_date: 2026-07-30
 ---
 
 - Contents

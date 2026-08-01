@@ -4,6 +4,7 @@ title: "8 - LSA Calculated Averages"
 nav_order: 9
 parent: "LSA Programming Specifications"
 has_toc: true
+last_modified_date: 2026-07-30
 ---
 
 - Contents
