@@ -4,6 +4,7 @@ title: "LSA Programming Specifications"
 nav_order: 1
 has_children: true
 has_toc: true
+last_modified_date: 2026-08-01
 ---
 
 [1 - Introduction](01 - Introduction.md)
@@ -327,7 +328,9 @@ has_toc: true
 
 - [10.19 DQ – Date of Birth](10 - LSACalculated Data Quality Counts.md#1019-dq--date-of-birth)
 
-- [10.20 LSACalculated](10 - LSACalculated Data Quality Counts.md#1020-lsacalculated)
+- [10.20 LSACalculated](10 - LSACalculated Data Quality Counts.md#1020-dq--night-by-night-enrollments-without-bednights)
+
+- [10.21 LSACalculated](10 - LSACalculated Data Quality Counts.md#1021-lsacalculated)
 
 - [11.1 Data Quality: HMIS Household Enrollments Not Associated with a CoC](11 - LSAReport.md#111-data-quality-hmis-household-enrollments-not-associated-with-a-coc)
    - [NoCoC](11 - LSAReport.md#nococ)

@@ -510,15 +510,15 @@ The **Value** for **ReportRow** 920 is a count of distinct **PersonalIDs** in tl
 ``` mermaid
 flowchart LR 
 
-    L1[[lsa_Report]] -->
-    H1[(hmis_Project
-    hmis_Enrollment
+    L1[[lsa_Report]] & L3[[lsa_Project]] -->
+    H1[(hmis_Enrollment
     hmis_Services
     hmis_Exit)] -->
 	L2[[lsa_Calculated]]
 
     L1:::LSA
     L2:::LSA
+    L3:::LSA
     H1:::HMIS
 
     classDef Temp stroke:#FF5978, fill:#FFDFE5, color:#8E2236
@@ -526,6 +526,18 @@ flowchart LR
 	classDef HMIS stroke:#374D7C, fill:#E2EBFF, color:#374D7C
 	classDef Box stroke:#999, fill:none, color:#FFFFFF 
 ```
+**ReportRow** 921 is a count of distinct night-by-night enrollments in HMIS that were active during the report period based on entry and exit dates but have no associated records of a bed night dated during the enrollment.
+
+**Value** = a count of distinct EnrollmentIDs in hmis_Enrollment where:
+
+- *ProjectID* = lsa_Project.**ProjectID** where **ProjectType** = 1; and
+- _EntryDate_ <= <u>ReportEnd</u>; and
+  - _ExitDate_ is NULL or
+  - _ExitDate_ >= <u>ReportStart</u> and _ExitDate_ > _EntryDate_
+- _EnrollmentCoC_ = <u>ReportCoC</u> for the head of household’s enrollment; and
+- There is no record in hmis_Services for the EnrollmentID where:
+  - _RecordType_ = 200; and
+  - _DateProvided_ between EntryDate and the earlier of <u>ReportEnd</u> or *ExitDate*
 
 # 10.21 LSACalculated
 

@@ -358,8 +358,31 @@ Relevant Sections:
 	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.ActiveAge in (98,99)
 	group by n.ProjectID, rpt.ReportID
 
+/*
+	10.20 DQ - NBN enrollments with no bed nights
+*/
+
+	delete from lsa_Calculated where ReportRow = 921
+
+	insert into lsa_Calculated
+		(Value, Cohort, Universe, HHType
+		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
+	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 920, n.ProjectID, rpt.ReportID, '10.20'
+	from lsa_Report rpt
+	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
+	inner join hmis_Enrollment hoh on hoh.HouseholdID = n.HouseholdID and hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC
+	inner join lsa_Project p on p.ProjectID  = n.ProjectID and p.ProjectType = 1 
+	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
+	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID and bn.RecordType = 200
+		and bn.DateProvided between n.EntryDate and coalesce(dateadd(dd, -1, x.ExitDate), rpt.ReportEnd)
+		and bn.DateDeleted is NULL
+	where (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
+		and bn.EnrollmentID is null
+	group by n.ProjectID, rpt.ReportID
+
+
 	/*
-		10.20 LSACalculated
+		10.21 LSACalculated
 
 		NOTE:  Export of lsa_Calculated data to LSACalculated.csv has to exclude the Step column.
 
@@ -368,3 +391,5 @@ Relevant Sections:
 		select Value, Cohort, Universe, HHType, Population, SystemPath, ProjectID, ReportRow, ReportID
 		from lsa_Calculated
 	*/
+
+

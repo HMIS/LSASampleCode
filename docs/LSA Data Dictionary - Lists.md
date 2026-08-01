@@ -976,6 +976,7 @@ last_modified_date: 2026-08-01
 | 918 | DQ - Months ES/SH/Street Homeless Last 3 Years |
 | 919 | DQ - Destination  |
 | 920 | DQ - Date of Birth |
+| 921 | DQ - NBN enrollments with no bed nights
 
 ## 34 - ProjectType
 
