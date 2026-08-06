@@ -1389,3 +1389,6 @@ As noted, tlsa\_Person is a client-level precursor to lsa\_Person / LSAPerson.cs
 
 **RowTotal** is a count of **PersonalID**s in tlsa\_Person, grouped by all of the other columns in LSAPerson.
 
+See [LSA Data Dictionary - Files and Columns](LSA Data Dictionary - Columns.md#3---lsaperson) for file specifications.  
+
+

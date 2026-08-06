@@ -1476,7 +1476,7 @@ flowchart LR
     	classDef Man stroke:#999999, fill:#EEEEEE, color:#000000
 	
 ```
-LSAHousehold includes 45 columns. **RowTotal** is a count of distinct combinations of **HoHID** and **HHType** from tlsa\_Household, grouped by the values in all other columns.
+LSAHousehold includes 67 columns. **RowTotal** is a count of distinct combinations of **HoHID** and **HHType** from tlsa\_Household, grouped by the values in all other columns.
 
 In tlsa\_Household, the following columns are populated with actual counts of days because they are needed to generate averages for LSACalculated:
 
@@ -1519,4 +1519,5 @@ Actual values in the **PSHHousedDays** column also have to be grouped into uploa
 | 120   | 8-10 years         | **PSHHousedDays** between 2556 and 3650 |
 | 121   | 10+ years          | **PSHHousedDays** \> 3650               |
 
-All of the columns in LSAHousehold are integers; none may be NULL.
+All of the columns in LSAHousehold are integers; none may be NULL.  See [LSA Data Dictionary - Files and Columns](LSA Data Dictionary - Columns.md#2---lsahousehold) for file specifications.  
+

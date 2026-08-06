@@ -435,46 +435,4 @@ Set LSAReport.**ReportDate** = the system date/time when all other data required
 
 # 11.9 LSAReport
 
-LSAReport has 31 columns; none may be NULL. Data types are shown below.
-
-| \#  | Column Name                   | Data Type                            |
-|-----|-------------------------------|--------------------------------------|
-| 1   | **ReportID**                  | Integer                              |
-| 2   | **ReportDate**                | Date/time                            |
-| 3   | **ReportStart**               | Date                                 |
-| 4   | **ReportEnd**                 | Date                                 |
-| 5   | **ReportCoC**                 | 6-character string (XX-999)          |
-| 6   | **SoftwareVendor**            | String; up to 50 characters or ‘n/a’ |
-| 7   | **SoftwareName**              | String; up to 50 characters or ‘n/a’ |
-| 8   | **VendorContact**             | String; up to 50 characters or ‘n/a’ |
-| 9   | **VendorEmail**               | String; up to 50 characters or ‘n/a’ |
-| 10  | **LSAScope**                  | Integer                              |
-| 11  | **LookbackDate**              | Date                                 |
-| 12  | **NoCoC**                     | Integer                              |
-| 13  | **NotOneHoH**                 | Integer                              |
-| 14  | **RelationshipToHoH**         | Integer                              |
-| 15  | **MoveInDate**                | Integer                              |
-| 16  | **UnduplicatedClient**        | Integer                              |
-| 17  | **HouseholdEntry**            | Integer                              |
-| 18  | **ClientEntry**               | Integer                              |
-| 19  | **AdultHoHEntry**             | Integer                              |
-| 20  | **ClientExit**                | Integer                              |
-| 21  | **SSNNotProvided**            | Integer                              |
-| 22  | **SSNMissingOrInvalid**       | Integer                              |
-| 23  | **ClientSSNNotUnique**        | Integer                              |
-| 24  | **DistinctSSNValueNotUnique** | Integer                              |
-| 25  | **DisablingCond**             | Integer                              |
-| 26  | **LivingSituation**           | Integer                              |
-| 27  | **LengthOfStay**              | Integer                              |
-| 28  | **HomelessDate**              | Integer                              |
-| 29  | **TimesHomeless**             | Integer                              |
-| 30  | **MonthsHomeless**            | Integer                              |
-| 31  | **Destination**               | Integer                              |
-
-<span id="_NoCoC" class="anchor"></span>
-
-[^1]: The only exceptions to this are OPH counts (section 9.6) and data
-    quality reporting (sections 10 and 11).
-
-[^2]: Note that this will exclude night-by-night enrollments without a
-    record of a bed night on the entry date.
+LSAReport has 32 columns; none may be NULL. See [LSA Data Dictionary - Files and Columns](LSA Data Dictionary - Columns.md#1---lsareport) for details.  

@@ -81,7 +81,7 @@ This document is comprehensive with respect to the business logic for the LSA up
 
 **FY 2026 HMIS Data Standards: Data Dictionary** ([Dictionary](https://files.hudexchange.info/resources/documents/HMIS-Data-Dictionary.pdf)) – The Dictionary defines federal data collection requirements for HMIS applications.
 
-**FY 2026 HMIS CSV Format Specifications** ([](https://www.hudexchange.info/resource/3824/hmis-data-dictionary/)[HMIS CSV](https://www.hudexchange.info/resource/3824/hmis-data-dictionary/)) – Descriptions of LSA business logic reference HMIS fields using the file and column names of the HMIS CSV.
+**FY 2026 HMIS CSV Format Specifications** ([HMIS CSV](https://files.hudexchange.info/resources/documents/HMIS-CSV-Format-Specifications.pdf)) – Descriptions of LSA business logic reference HMIS fields using the file and column names of the HMIS CSV.
 
 ## Style Notes
 
