@@ -10,6 +10,10 @@ aux_links:
   "LSASampleCode Repository on GitHub":
     - "//github.com/HMIS/LSASampleCode"
 ---
+
+- Contents
+{:toc}
+
 # LSA Temporary and Reference Tables
 These tables are created by [01 Temp Reporting and Reference Tables.sql](https://github.com/HMIS/LSASampleCode/blob/master/01%20Temp%20Reporting%20and%20Reference%20Tables.sql).  
 

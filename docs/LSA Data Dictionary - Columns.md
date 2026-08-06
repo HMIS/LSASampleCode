@@ -7,6 +7,9 @@ has_toc: true
 last_modified_date: 2026-08-01
 ---
 
+- Contents
+{:toc}
+
 # Data Types
 
 | Abbreviation | Data Type                   | Notes                                                                                                                                                                  |

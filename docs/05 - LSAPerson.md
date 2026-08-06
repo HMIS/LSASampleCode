@@ -10,8 +10,6 @@ last_modified_date: 2026-08-01
 - Contents
 {:toc}
 
-# 5 - HMIS Business Logic - LSAPerson
-
 # 5.1 Identify Active and Active in Residence (AIR) HouseholdIDs
 ``` mermaid
 flowchart LR
