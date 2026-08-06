@@ -7,9 +7,7 @@ has_toc: true
 last_modified_date: 2026-08-01
 ---
 
-# LSA Data Dictionary - Files and Columns
-
-## Data Types
+# Data Types
 
 | Abbreviation | Data Type                   | Notes                                                                                                                                                                  |
 | ------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,7 +17,7 @@ last_modified_date: 2026-08-01
 | L(#)         | List                        | All list columns have a data type of integer and are limited to values included in the list.  The list number in parentheses is a clickable link to the relevant list. |
 | S            | String/varchar              | Maximum number of characters are in parentheses in Type columns below.  For example: S(50)                                                                             |
 
-## 1 - LSAReport
+# 1 - LSAReport
 
 | #   | Column                    | Type                                          | Description                                                                                                                                                                                                                                                        |
 | --- | ------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -55,7 +53,7 @@ last_modified_date: 2026-08-01
 | 31  | MonthsHomeless            | I                                             | A count of distinct **EnrollmentID**s with missing or invalid values for _MonthsHomelessPastThreeYears_                                                                                                                                                            |
 | 32  | Destination               | I                                             | A count of distinct **EnrollmentID**s with exits in the report period with missing or invalid values for _Destination_                                                                                                                                             |
 
-## 2 - LSAHousehold
+# 2 - LSAHousehold
 All columns in LSAHousehold have a data type of integer; there must be a value present in every column of every row.
 
 | #   | Column Name            | List                                         | Description                                                                                                                                                                                                                                                                                                                                                                             |
@@ -128,7 +126,7 @@ All columns in LSAHousehold have a data type of integer; there must be a value p
 | 66  | RRHSOMoveIn            | [11](LSA Data Dictionary - Lists.md#11---moveinstatus) | For households served in RRH-SO during the report period, indicates if the household has a move-in date. If so, indicates whether it was before or during the report period.                                                                                                                                                                                                            |
 | 67  | ReportID               |                                              | Must match LSAReport.ReportID                                                                                                                                                                                                                                                                                                                                                           |
 
-## 3 - LSAPerson
+# 3 - LSAPerson
 All columns in LSAHousehold have a data type of integer; there must be a value present in every column of every row.
 
 | #   | Column Name      | List                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -200,7 +198,7 @@ All columns in LSAHousehold have a data type of integer; there must be a value p
 | 65  | SUD              | [44](LSA Data Dictionary - Lists.md#44---noyesna) | Population identifier for adults with a Substance Use Disorder and active in residence during the report period                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | 66  | ReportID         |                                              | Must match LSAReport.ReportID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
-## 4 - LSAExit
+# 4 - LSAExit
 All columns in LSAExit have a data type of integer; there must be a value present in every column of every row.
 
 | #   | Column Name      | List                                         | Description                                                                                                                                                                                                                                           |
@@ -223,7 +221,7 @@ All columns in LSAExit have a data type of integer; there must be a value presen
 | 16  | SystemPath       | [17](LSA Data Dictionary - Lists.md#17---systempath) | The combinations of system use during the cohort period and in the continuous periods of service prior to the cohort period – i.e., the ‘path’ through the system. It is not dependent on the sequence of service. Categories are mutually exclusive. |
 | 17  | ReportID         |                                              | Must match LSAReport.ReportID                                                                                                                                                                                                                         |
 
-## 5 - LSACalculated
+# 5 - LSACalculated
 All columns other than ProjectID (see below) have a data type of integer and must have a value.
 
 | #   | Column Name | List                                         | Description                                                                                                                                                                                  |
@@ -238,7 +236,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 8   | ReportRow   | [33](LSA Data Dictionary - Lists.md#33---reportrow) |                                                                                                                                                                                              |
 | 9   | ReportID    |                                              | Must match LSAReport.**ReportID**                                                                                                                                                            |
 
-## 10 - Organization
+# 10 - Organization
 
 | #   | Column Name            | DataType                                      | Nullable | Description                                                                                  |
 | --- | ---------------------- | --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------- |
@@ -252,7 +250,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 8   | DateDeleted            | DT                                            | 1        | Must be NULL                                                                                 |
 | 9   | ExportID               | S(32)                                         | 0        | Must match LSAReport.**ReportID**                                                            |
 
-## 11 - Project
+# 11 - Project
 
 | #   | Column Name               | DataType                                        | Nullable | Description                                                         |
 | --- | ------------------------- | ----------------------------------------------- | -------- | ------------------------------------------------------------------- |
@@ -276,7 +274,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 18  | DateDeleted               | DT                                              | 1        | Must be NULL                                                        |
 | 19  | ExportID                  | S(32)                                           | 0        | Must match LSAReport.ReportID                                       |
 
-## 12 - Funder
+# 12 - Funder
 
 | #   | Column Name | DataType                                        | Nullable | Description                   |
 | --- | ----------- | ----------------------------------------------- | -------- | ----------------------------- |
@@ -293,7 +291,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 11  | DateDeleted | DT                                              | 1        | Must be NULL                  |
 | 12  | ExportID    | S(32)                                           | 0        | Must match LSAReport.ReportID |
 
-## 13 - ProjectCoC
+# 13 - ProjectCoC
 
 | #   | Column Name   | DataType                                        | Nullable | Description                            |
 | --- | ------------- | ----------------------------------------------- | -------- | -------------------------------------- |
@@ -313,7 +311,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 14  | DateDeleted   | DT                                              | 1        | Must be NULL                           |
 | 15  | ExportID      | S(32)                                           | 0        | Must match LSAReport.ReportID          |
 
-## 14 - Inventory
+# 14 - Inventory
 
 | #   | Column Name          | DataType                                        | Nullable | Description                            |
 | --- | -------------------- | ----------------------------------------------- | -------- | -------------------------------------- |
@@ -340,7 +338,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 21  | DateDeleted          | DT                                              | 1        | Must be NULL                           |
 | 22  | ExportID             | S(32)                                           | 0        | Must match LSAReport.ReportID          |
 
-## 15 - HMISParticipation
+# 15 - HMISParticipation
 
 | #   | Column Name                      | DataType                                        | Nullable | Description                           |
 | --- | -------------------------------- | ----------------------------------------------- | -------- | ------------------------------------- |
@@ -355,7 +353,7 @@ All columns other than ProjectID (see below) have a data type of integer and mus
 | 9   | DateDeleted                      | DT                                              | 1        | Must be NULL                          |
 | 10  | ExportID                         | S(32)                                           | 0        | Must match LSAReport.ReportID         |
 
-## 16 - Affiliation
+# 16 - Affiliation
 
 | #   | Column Name   | DataType | Nullable | Description                                                         |
 | --- | ------------- | -------- | -------- | ------------------------------------------------------------------- |
