@@ -332,7 +332,7 @@ This is a subset of **ClientEntry** (the **Value** for **ReportRow** 910).
 
 The **Value** for **ReportRow** 913 is a count of distinct **EnrollmentIDs** in tlsa\_Enrollment for **ProjectID**s in lsa\_Project where where **AIR** \= 1 or (**<u>LSAScope</u>** <> 3 and **Active** \= 1) and:
 
--   DisabilityStatus in (98,99).
+-   **DisabilityStatus** is NULL or **DisabilityStatus** not in (0,1)
 
 # 10.13 DQ – Living Situation
 ``` mermaid
@@ -537,7 +537,7 @@ flowchart LR
 - _EnrollmentCoC_ = <u>ReportCoC</u> for the head of household’s enrollment; and
 - There is no record in hmis_Services for the EnrollmentID where:
   - _RecordType_ = 200; and
-  - _DateProvided_ between EntryDate and the earlier of <u>ReportEnd</u> or *ExitDate*
+  - _DateProvided_ between EntryDate and the earlier of <u>ReportEnd</u> or [*ExitDate* - 1 day]
 
 # 10.21 LSACalculated
 

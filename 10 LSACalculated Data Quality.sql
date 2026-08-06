@@ -229,7 +229,8 @@ Relevant Sections:
 	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 913, n.ProjectID, rpt.ReportID, '10.12'
 	from lsa_Report rpt
 	inner join tlsa_Enrollment n on n.EntryDate <= rpt.ReportEnd
-	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) and n.DisabilityStatus in (98,99)
+	where (n.AIR = 1 or (rpt.LSAScope <> 3 and n.Active = 1)) 
+		and (n.DisabilityStatus is NULL or n.DisabilityStatus not in (0,1))
 	group by n.ProjectID, rpt.ReportID
 /*
 	10.13	DQ – Living Situation
@@ -367,17 +368,20 @@ Relevant Sections:
 	insert into lsa_Calculated
 		(Value, Cohort, Universe, HHType
 		, Population, SystemPath, ReportRow, ProjectID, ReportID, Step)
-	select count (distinct n.PersonalID), 1, 10, 0, 0, -1, 921, n.ProjectID, rpt.ReportID, '10.20'
+	select count (distinct n.EnrollmentID), 1, 10, 0, 0, -1, 921, n.ProjectID, rpt.ReportID, '10.20'
 	from lsa_Report rpt
 	inner join hmis_Enrollment n on n.EntryDate <= rpt.ReportEnd
 	inner join hmis_Enrollment hoh on hoh.HouseholdID = n.HouseholdID and hoh.RelationshipToHoH = 1 and hoh.EnrollmentCoC = rpt.ReportCoC
 	inner join lsa_Project p on p.ProjectID  = n.ProjectID and p.ProjectType = 1 
 	left outer join hmis_Exit x on x.EnrollmentID = n.EnrollmentID 
+		and x.DateDeleted is null 
 	left outer join hmis_Services bn on bn.EnrollmentID = n.EnrollmentID and bn.RecordType = 200
 		and bn.DateProvided between n.EntryDate and coalesce(dateadd(dd, -1, x.ExitDate), rpt.ReportEnd)
 		and bn.DateDeleted is NULL
-	where (x.ExitDate is null or x.ExitDate >= rpt.ReportStart)
+	where (x.ExitDate is null or (x.ExitDate >= rpt.ReportStart and x.ExitDate > n.EntryDate)
 		and bn.EnrollmentID is null
+		and n.DateDeleted is null
+		and hoh.DateDeleted is null 
 	group by n.ProjectID, rpt.ReportID
 
 

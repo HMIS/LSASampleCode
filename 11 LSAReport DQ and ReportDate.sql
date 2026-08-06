@@ -193,7 +193,7 @@ update rpt
 set rpt.DisablingCond = (select count(distinct n.EnrollmentID)
 	from tlsa_Enrollment n
 	where (n.AIR = 1 or (n.Active = 1 and rpt.LSAScope <> 3))
-	and n.DisabilityStatus in (98,99)
+	and (n.DisabilityStatus is NULL or n.DisabilityStatus not in (0,1)
 	)
 from lsa_Report rpt
 

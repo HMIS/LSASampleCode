@@ -359,7 +359,7 @@ This is a subset of **ClientEntry**.
 
 A count of distinct **EnrollmentIDs** in tlsa_Enrollment where where **AIR** = 1 or (**Active** = 1 and **LSAScope** \<\> 3) and:
 
-- **DisabilityStatus** in (98,99).
+-   **DisabilityStatus** is NULL or **DisabilityStatus** not in (0,1)
 
 ### LivingSituation
 
