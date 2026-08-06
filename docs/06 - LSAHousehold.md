@@ -124,6 +124,10 @@ The logic associated with values for columns with names in **bold** below is des
 | PSHAIR                 | Identifies households active in residence for PSH in the report period.                                                                                                                                                                                                                                                                                                                   |
 
 ## Logic
+For the LSA, each distinct combination of a head of household’s **PersonalID** and **HHType** from all **HouseholdID**s active in the report period is counted as a single household. 
+
+Records in the intermediate household-level tlsa_Household are created for each distinct combination of **ActiveHHType** and **HoHID** in tlsa_HHID where **Active** = 1. 
+
 
 # 6.2 Set Population Identifiers for LSAHousehold
 ```mermaid
