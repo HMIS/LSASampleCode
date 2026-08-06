@@ -307,7 +307,7 @@ For business logic, see [Section 7 - LSAExit](08 - LSAExit).
 This file is used to upload calculated values for report output that cannot be derived from the aggregate data.
 
 It is used to populate columns that report on average number of days in:
-- System Use – Length of Time Homeless
+
 - System Use – Length of Time Homeless
 - System Use - Cumulative Length of Time in PSH
 - System Use – Length of Time in RRH Projects
