@@ -11,7 +11,7 @@ last_modified_date: 2026-08-01
 
 - [1.1 Background](01 - Introduction.md#11-background)
 - [1.2 About This Document](01 - Introduction.md#12-about-this-document)
-- [1.3 Definitions/Acronyms](01 - Introduction.md#13-definitions-acronyms)
+- [1.3 Definitions/Acronyms](01 - Introduction.md#13-definitionsacronyms)
 - [1.4 Changes for Reporting on FY2026](01 - Introduction.md#14-changes-for-reporting-on-fy2026)
 
 [2 - HDX 2.0 Upload](02 - HDX 2.0 Upload.md)
@@ -111,7 +111,7 @@ last_modified_date: 2026-08-01
 - [5.8 Get Dates to Include in Counts of ES/SH/Street Days (ch_Include)](05 - LSAPerson.md#58-get-dates-to-include-in-counts-of-esshstreet-days-ch_include)
    - [Enrollment in Entry/Exit ES or SH](05 - LSAPerson.md#enrollment-in-entryexit-es-or-sh)
    - [Bed Nights in Night-by-Night ES](05 - LSAPerson.md#bed-nights-in-night-by-night-es)
-   - [ES/SH/Street Dates from 3.917 Living Situation](05 - LSAPerson.md#es-sh-street-dates-from-3-917-living-situation)
+   - [ES/SH/Street Dates from 3.917 Living Situation](05 - LSAPerson.md#esshstreet-dates-from-3917-living-situation)
    - [Gaps of Less than Seven Days Between Two ES/SH/Street Dates](05 - LSAPerson.md#gaps-of-less-than-seven-days-between-two-esshstreet-dates)
 
 - [5.9 Get ES/SH/Street Episodes (ch_Episodes)](05 - LSAPerson.md#59-get-esshstreet-episodes-ch_episodes)
@@ -150,7 +150,7 @@ last_modified_date: 2026-08-01
 
 - [6.3 EST/RRH/PSH/RRHSOStatus – LSAHousehold](06 - LSAHousehold.md#63-estrrhpshrrhsostatus--lsahousehold)
 
-- [6.4 RRH/PSH/RRHSOMoveIn – LSAHousehold](06 - LSAHousehold.md#64-rrhpshrrrhsomovein--lsahousehold)
+- [6.4 RRH/PSH/RRHSOMoveIn – LSAHousehold](06 - LSAHousehold.md#64-rrhpshrrhsomovein--lsahousehold)
 
 - [6.5 EST/RRH/PSHGeography – LSAHousehold](06 - LSAHousehold.md#65-estrrhpshgeography--lsahousehold)
 
@@ -225,15 +225,15 @@ last_modified_date: 2026-08-01
    - [CHStart](07 - LSAExit.md#chstart)
    - [CHTime and CHTimeStatus](07 - LSAExit.md#chtime-and-chtimestatus)
 
-- [7.5 Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude_exit)](07 - LSAExit.md#75-get-dates-to-exclude-from-counts-of-esshstreet-days-ch_exclude)
+- [7.5 Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude_exit)](07 - LSAExit.md#75-get-dates-to-exclude-from-counts-of-esshstreet-days-ch_exclude_exit)
 
-- [7.6 Get Dates to Include in Counts of ES/SH/Street Days (ch_Include_exit)](07 - LSAExit.md#76-get-dates-to-include-in-counts-of-esshstreet-days-ch_include)
+- [7.6 Get Dates to Include in Counts of ES/SH/Street Days (ch_Include_exit)](07 - LSAExit.md#76-get-dates-to-include-in-counts-of-esshstreet-days-ch_include_exit)
    - [Enrollment in Entry/Exit ES or SH](07 - LSAExit.md#enrollment-in-entryexit-es-or-sh)
    - [Bed Nights in Night-by-Night ES](07 - LSAExit.md#bed-nights-in-night-by-night-es)
-   - [ES/SH/Street Dates from 3.917 Living Situation](07 - LSAExit.md#es-sh-street-dates-from-3-917-living-situation)
+   - [ES/SH/Street Dates from 3.917 Living Situation](07 - LSAExit.md#esshstreet-dates-from-3917-living-situation)
    - [Gaps of Less than Seven Days Between Two ES/SH/Street Dates](07 - LSAExit.md#gaps-of-less-than-seven-days-between-two-esshstreet-dates)
 
-- [7.7 Get ES/SH/Street Episodes (ch_Episodes_exit)](07 - LSAExit.md#77-get-esshstreet-episodes-ch_episodes)
+- [7.7 Get ES/SH/Street Episodes (ch_Episodes_exit)](07 - LSAExit.md#77-get-esshstreet-episodes-ch_episodes_exit)
 
 - [7.8 CHTime and CHTimeStatus for Exit Cohorts](07 - LSAExit.md#78-chtime-and-chtimestatus-for-exit-cohorts)
 
@@ -335,7 +335,7 @@ last_modified_date: 2026-08-01
 
 - [10.19 DQ – Date of Birth](10 - LSACalculated Data Quality Counts.md#1019-dq--date-of-birth)
 
-- [10.20 LSACalculated](10 - LSACalculated Data Quality Counts.md#1020-dq--night-by-night-enrollments-without-bednights)
+- [10.20 DQ - Night-by-Night Enrollments without Bed Nights](10 - LSACalculated Data Quality Counts.md#1020-dq---night-by-night-enrollments-without-bed-nights)
 
 - [10.21 LSACalculated](10 - LSACalculated Data Quality Counts.md#1021-lsacalculated)
 
@@ -350,7 +350,7 @@ last_modified_date: 2026-08-01
 - [11.3 Data Quality: Enrollments Excluded from the LSA Due to Invalid RelationshipToHoH](11 - LSAReport.md#113-data-quality-enrollments-excluded-from-the-lsa-due-to-invalid-relationshiptohoh)
    - [RelationshipToHoH](11 - LSAReport.md#relationshiptohoh)
 
-- [11.4 Data Quality: Invalid Move-In Dates](11 - LSAReport.md#114-data-quality-invalid-moveindates)
+- [11.4 Data Quality: Invalid Move-In Dates](11 - LSAReport.md#114-data-quality-invalid-move-in-dates)
    - [MoveInDate](11 - LSAReport.md#moveindate)
 
 - [11.5 Data Quality: Baseline Counts of Clients / HouseholdIDs / EnrollmentIDs](11 - LSAReport.md#115-data-quality-baseline-counts-of-clients--householdids--enrollmentids)

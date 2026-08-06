@@ -4,7 +4,6 @@ title: LSA Temporary and Reference Tables
 nav_order: 15
 parent: LSA Programming Specifications
 has_toc: true
-toc_levels: 2..2
 last_modified_date: 2026-08-01
 last_edit_timestamp: true
 aux_links:
@@ -349,7 +348,7 @@ Business logic begins in section [7.1 Identify Qualifying Exits in Exit Cohort P
 ## ch_Exclude_exit
 An analog to ch_Exclude; used to hold dates in TH or housed in RRH/PSH for LSAExit chronic homelessness determination.
 
-Business logic is in section [7.5 Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude_exit)](07 - LSAExit.md#75-get-dates-to-exclude-from-counts-of-esshstreet-days-ch_exclude)
+Business logic is in section [7.5 Get Dates to Exclude from Counts of ES/SH/Street Days (ch_Exclude_exit)](07 - LSAExit.md#75-get-dates-to-exclude-from-counts-of-esshstreet-days-ch_exclude_exit)
 
 | Column Name | Data Type | Notes |
 | --- | --- | --- |
@@ -360,7 +359,7 @@ Business logic is in section [7.5 Get Dates to Exclude from Counts of ES/SH/Stre
 ## ch_Include_exit
 An analog for ch_Include; holds dates in ES/SH or on the street for LSAExit chronic homelessness determination.
 
-Business logic is in section [7.6 Get Dates to Include in Counts of ES/SH/Street Days (ch_Include_exit)](07 - LSAExit.md#76-get-dates-to-include-in-counts-of-esshstreet-days-ch_include).
+Business logic is in section [7.6 Get Dates to Include in Counts of ES/SH/Street Days (ch_Include_exit)](07 - LSAExit.md#76-get-dates-to-include-in-counts-of-esshstreet-days-ch_include_exit).
 
 | Column Name | Data Type | Notes |
 | --- | --- | --- |

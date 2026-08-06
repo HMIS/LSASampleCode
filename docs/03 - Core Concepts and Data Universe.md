@@ -952,7 +952,7 @@ If tlsa\_HHID.**EntryDate** is >= <u>ReportStart</u> or tlsa\_HHID.**ExitDate** 
 
 For all other households, **ActiveHHType** is based on **ActiveAge** values for records in tlsa\_Enrollment with the same **HouseholdID** where **ExitDate** is NULL or **ExitDate** >= <u>ReportStart</u>. In other words, if the household is active in the report period, household type is based only on the ages of household members who were also active in the report period.
 
-**ActiveHHType** is set for all household enrollments, but it is not an indicator that the household meets all of the criteria for inclusion in the active cohort, which are described in section [5.1 Get Active and AIR HouseholdIDs](#_Get_Active_HouseholdIDs_1).
+**ActiveHHType** is set for all household enrollments, but it is not an indicator that the household meets all of the criteria for inclusion in the active cohort, which are described in section [5.1 Get Active and AIR HouseholdIDs](05 - LSAPerson.md#51-identify-active-and-active-in-residence-air-householdids).
 
 ### Exit1HHType/Exit2HHType
 

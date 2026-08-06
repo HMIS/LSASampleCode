@@ -367,7 +367,7 @@ For every record in tlsa\_Household:
 | \>= <u>ReportStart</u> | NULL / there is an active enrollment for x with no *ExitDate* | 21            |
 | \>= <u>ReportStart</u> | Between <u>ReportStart</u> and <u>ReportEnd</u>               | 22            |
 
-Note: 2 is also a valid value for **xStatus** but is not assigned until a later step in section [6.16 Update EST/RRH/PSHStatus](#update-estrrhpshrrhsostatus).
+Note: 2 is also a valid value for **xStatus** but is not assigned until a later step in section [6.16 Update EST/RRH/PSHStatus](#616-update-estrrhpshrrhsostatus).
 
 # 6.4 RRH/PSH/RRHSOMoveIn – LSAHousehold 
 ```mermaid
@@ -626,7 +626,7 @@ flowchart LR
 
 ## Logic
 
-See section [3.3 HMIS Household Enrollments](#_ExitDest) for logic associated with setting destination for individual enrollments.
+See section [3.3 HMIS Household Enrollments]([03 - Core Concepts and Data Universe.md#exitdest)) for logic associated with setting destination for individual enrollments.
 
 Set **xDestination** = -1 for households not served in project group and households enrolled in project group at <u>ReportEnd</u> (**xStatus** not in (12,22)).
 
@@ -861,7 +861,7 @@ flowchart LR
 
 | **tlsa\_Household**  | **Column Description**                                                                                                                                                                                                                                                                                                                                              |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **RRHPreMoveInDays** | Counts of actual days are set in tlsa\_Household; counts of active households are grouped by ranges – e.g., ‘1-7 days’, ‘8-30 days’, etc. – in the corresponding **LSAHousehold** column. Averages based on the counts of actual days are inserted to LSACalculated. (See section [8.4 Get Average Days for Length of Time in RRH Projects](#_Get_Average_Days_2).) |
+| **RRHPreMoveInDays** | Counts of actual days are set in tlsa\_Household; counts of active households are grouped by ranges – e.g., ‘1-7 days’, ‘8-30 days’, etc. – in the corresponding **LSAHousehold** column. Averages based on the counts of actual days are inserted to LSACalculated. (See section [8.4 Get Average Days for Length of Time in RRH Projects](08 LSACalculated Averages.md#84-get-average-days-for-length-of-time-homeless)).) |
 
 ## Logic
 
@@ -952,7 +952,7 @@ For each **HoHID**/**HHType** in tlsa\_Household, create a record with a **sysSt
   
 ### Dates Housed in RRH 
 
-Dates housed in RRH are counted only for active enrollments. As noted in section 3.3 ([HMIS Data Requirements and Assumptions](#RRHMoveInOnExitDate)) and reflected in the criteria listed below, the *MoveInDate* for an RRH enrollment is counted as a date housed even if it is equal to the *ExitDate*.
+Dates housed in RRH are counted only for active enrollments. As noted in section 3.3 ([HMIS Data Requirements and Assumptions](03 Core Concepts and Data Universe.md#hmis-data-requirements-and-assumptions)) and reflected in the criteria listed below, the *MoveInDate* for an RRH enrollment is counted as a date housed even if it is equal to the *ExitDate*.
 
 For each **HoHID**/**HHType** in tlsa\_Household, create a record with a **sysStatus** = 2 in sys\_Time for any \[Date\] <= <u>ReportEnd</u> where:
 
