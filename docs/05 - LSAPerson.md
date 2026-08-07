@@ -668,7 +668,7 @@ flowchart LR
 
 | **ch_Exclude** | **Column Description** |
 |----|----|
-| **PersonalID** | **PersonalD** |
+| **PersonalID** | **PersonalID** |
 | **ExcludeDate** | Distinct dates between **CHStart** and **LastActive** when client was either in TH or housed in RRH/PSH. |
 
 ## Logic
@@ -736,7 +736,7 @@ flowchart LR
 
 | **ch_Include** | **Column Description** |
 |----|----|
-| **PersonalID** | **PersonalD** |
+| **PersonalID** | **PersonalID** |
 | **ESSHStreetDate** | Distinct dates between **CHStart** and **LastActive** when client was in ES/SH or on the street; also referred to as ES/SH/Street dates. |
 
 ## Logic
@@ -1388,5 +1388,4 @@ As noted, tlsa\_Person is a client-level precursor to lsa\_Person / LSAPerson.cs
 **RowTotal** is a count of **PersonalID**s in tlsa\_Person, grouped by all of the other columns in LSAPerson.
 
 See [LSA Data Dictionary - Files and Columns](LSA Data Dictionary - Columns.md#3---lsaperson) for file specifications.  
-
 
